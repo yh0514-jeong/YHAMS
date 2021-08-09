@@ -1,0 +1,32 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhams.common.CommonMapper">
+
+	<select id="getUserNextSeq" resultType="String">
+		SELECT CONCAT('USER_', LPAD(NEXT VALUE FOR TB_META_USER_SEQ, 5, 0))
+	</select>
+	
+	<select id="getNextCodeId" resultType="String">
+		SELECT CONCAT('CG_', LPAD(NEXT VALUE FOR TB_CMM_CD_SEQ, 4, 0))
+	</select>
+
+	<select id="getCgList" parameterType="String" resultType="java.util.HashMap">
+			
+			SELECT  CODE_ID, 
+			        CODE_CD,
+			        CODE_NM,
+			        USE_YN,
+			        CODE_ORDR,
+			        CREATE_ID,
+			        CREATE_DATE,
+			        UPDATE_ID,
+			        UPDATE_DATE
+				FROM TB_CMM_CDDTL
+				
+				WHERE CODE_ID = #{codeGrp}
+				
+				<if test="USE_YN = 'N' or USE_YN = 'Y'">
+					AND   USE_YN  = #{useYn}
+				</if>
+	</select>
+	
+</mapper>	

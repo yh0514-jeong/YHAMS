@@ -1,0 +1,126 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhams.detailCode.detailCodeMapper">
+
+    <sql id="dtlCodeListCondition">
+    	<if test="CODE_ID != null and CODE_ID != ''">
+		AND   CODE_ID LIKE CONCAT('%',#{CODE_ID},'%')
+		</if>
+		<if test="CODE_CD != null and CODE_CD != ''">
+		AND   CODE_CD LIKE CONCAT('%',#{CODE_CD},'%')
+		</if>
+		<if test="CODE_NM != null and CODE_NM != ''">
+		AND   CODE_NM LIKE CONCAT('%',#{CODE_NM},'%')
+		</if>
+    </sql>
+
+	<select id="selectCodeCd" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+		SELECT  CODE_CD,
+		        CODE_ID,
+		        CODE_NM,
+		        USE_YN,
+		        CREATE_ID,
+		        CREATE_DATE,
+		        UPDATE_ID,
+		        UPDATE_DATE,
+		        CODE_ORDR
+		   
+		   FROM TB_CMM_CDDTL
+			
+		   WHERE CODE_ID = #{CODE_ID}
+		   AND   CODE_CD = #{CODE_CD}
+	
+	</select>
+	
+	
+	<select id="dtlCodeList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		
+		SELECT T1.RNUM,
+		       T1.CODE_CD,
+		       T1.CODE_ID,
+		       T1.CODE_NM,
+		       T1.CODE_ORDR,
+		       T1.USE_YN,
+		       T1.CREATE_ID,
+		       T1.CREATE_NM,
+		       DATE_FORMAT(T1.CREATE_DATE, '%Y-%m-%d %H:%i:%s') AS CREATE_DATE,
+		       T1.UPDATE_ID,
+		       T1.UPDATE_NM,
+		       DATE_FORMAT(T1.UPDATE_DATE, '%Y-%m-%d %H:%i:%s') AS UPDATE_DATE
+       
+	      FROM (SELECT  ROW_NUMBER() OVER(ORDER BY CODE_ID ASC) AS RNUM,
+				        TCC.CODE_CD,
+				        TCC.CODE_ID,
+				        TCC.CODE_NM,
+				        TCC.CODE_ORDR,
+				        TCC.USE_YN,
+				        TCC.CREATE_ID,
+				        (SELECT TU.USER_NM
+							 FROM TB_META_USER TU
+							WHERE TCC.UPDATE_ID = TU.CREATE_ID
+							) CREATE_NM,
+							TCC.CREATE_DATE,
+					      TCC.UPDATE_ID,
+					      (SELECT TU.USER_NM
+					      	FROM TB_META_USER TU
+					      	WHERE TCC.UPDATE_ID = TU.CREATE_ID
+						   ) UPDATE_NM,
+					      TCC.UPDATE_DATE
+					FROM TB_CMM_CDDTL TCC
+					
+					WHERE 1=1
+					
+					<include refid="dtlCodeListCondition"/>
+				  
+				  ) T1
+				  
+	    WHERE T1.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
+	
+		ORDER BY CODE_ID ASC, CODE_ORDR ASC
+	
+	</select>
+	
+	
+	<select id="dtlCodeCount" parameterType="java.util.HashMap" resultType="long">
+	
+		SELECT  COUNT(*)
+		  FROM  TB_CMM_CDDTL TCC
+		  WHERE 1=1
+		  
+		  <include refid="dtlCodeListCondition"/> 
+	</select>
+	
+	<insert id="insertDtlCode" parameterType="java.util.HashMap">
+	
+		INSERT INTO TB_CMM_CDDTL
+		 (CODE_CD,
+		  CODE_ID,
+		  CODE_NM,
+		  USE_Y,
+		  CREATE_ID,
+		  CREATE_DATE,
+		  UPDATE_ID,
+		  UPDATE_DATE,
+		  CODE_ORDR
+		 
+		 ) VALUES (
+		 
+		  CODE_CD,
+		  CODE_ID,
+		  CODE_NM,
+		  USE_Y,
+		  CREATE_ID,
+		  CREATE_DATE,
+		  UPDATE_ID,
+		  UPDATE_DATE,
+		  CODE_ORDR
+		  ) 
+	
+	</insert>
+	
+	<update id="updateDtlCode" parameterType="java.util.HashMap">
+	
+	</update>
+
+
+</mapper>

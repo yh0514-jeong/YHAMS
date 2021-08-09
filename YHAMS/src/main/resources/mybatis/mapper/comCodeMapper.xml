@@ -1,0 +1,142 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhams.comCode.comCodeMapper">
+
+	<sql id="comCodeListCondition">
+		<if test="CODE_ID != null and CODE_ID != ''">
+	     	AND TC.CODE_ID LIKE CONCAT('%',#{CODE_ID},'%')
+	     </if>
+	     
+	     <if test="CODE_NM != null and CODE_NM != ''">
+	     	AND TC.CODE_NM LIKE CONCAT('%',#{CODE_NM},'%')
+	     </if>
+	     
+	     <if test="CODE_DC != null and CODE_DC != ''">
+	     	AND TC.CODE_DC LIKE CONCAT('%',#{CODE_DC},'%')
+	     </if>
+	     
+	</sql>
+
+	<insert id="insertComCode" parameterType="java.util.HashMap">
+		
+		INSERT INTO TB_CMM_CD(
+			
+			CODE_ID,
+			CODE_NM,
+			CODE_DC,
+			USE_YN,
+			CREATE_ID,
+			CREATE_DATE,
+			UPDATE_ID,
+			UPDATE_DATE
+			
+			) VALUES (
+			
+			   #{CODE_ID},    
+			   #{CODE_NM},    
+			   #{CODE_DC},    
+			   #{USE_YN},     
+			   #{CREATE_ID},  
+			   NOW(), 
+			   #{UPDATE_ID},  
+			   NOW()
+			)
+			
+	</insert>
+	
+	<update id="updateComCode" parameterType="java.util.HashMap">
+		
+		UPDATE TB_CMM_CD
+		
+		SET CODE_NM     = #{CODE_NM},
+		    CODE_DC     = #{CODE_DC},
+		    USE_YN      = #{USE_YN},
+		    UPDATE_ID   = #{UPDATE_ID},
+		    UPDATE_DATE = NOW()
+		
+		WHERE CODE_ID   = #{CODE_ID}
+	
+	</update>
+	
+	<select id="comCodeListUp" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		
+		SELECT  T1.RNUM,
+				T1.CODE_ID,
+		        T1.CODE_NM,
+		        T1.CODE_DC,
+		        T1.USE_YN,
+		        T1.CREATE_ID,
+		        T1.CREATE_NM,
+		        DATE_FORMAT(T1.CREATE_DATE, '%Y-%m-%d %H:%i:%s') AS CREATE_DATE,
+		        T1.UPDATE_ID,
+		        T1.UPDATE_NM,
+		        DATE_FORMAT(T1.UPDATE_DATE, '%Y-%m-%d %H:%i:%s') AS UPDATE_DATE
+			
+			FROM (SELECT  ROW_NUMBER() OVER (ORDER BY CODE_ID ASC) AS RNUM,
+						  TC.CODE_ID,
+					      TC.CODE_NM,
+					      TC.CODE_DC,
+					      TC.USE_YN,
+					      TC.CREATE_ID,
+					      (SELECT TU.USER_NM
+					      	FROM TB_META_USER TU
+					      	WHERE TC.UPDATE_ID = TU.CREATE_ID
+						  ) CREATE_NM,
+					      TC.CREATE_DATE,
+					      TC.UPDATE_ID,
+					      (SELECT TU.USER_NM
+					      	FROM TB_META_USER TU
+					      	WHERE TC.UPDATE_ID = TU.CREATE_ID
+						  ) UPDATE_NM,
+					      TC.UPDATE_DATE
+				     FROM TB_CMM_CD TC 
+				     
+				     WHERE 1=1
+				     
+				     <include refid="comCodeListCondition"/>
+				     
+				  ) T1
+				  
+				  WHERE T1.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
+	
+	</select>
+	
+	<select id="comCodeCount" parameterType="java.util.HashMap" resultType="int">
+	
+		SELECT       COUNT(*) AS CNT
+				     
+				     FROM TB_CMM_CD TC 
+				     
+				     WHERE 1=1
+				     
+				     <include refid="comCodeListCondition"/>
+	
+	</select>
+	
+	
+	<select id="selectCodeId" parameterType="String" resultType="java.util.HashMap">
+	
+		SELECT  CODE_ID,
+		        CODE_NM,
+		        CODE_DC,
+		        USE_YN
+		  FROM  TB_CMM_CD
+		  WHERE CODE_ID = #{CODE_ID}
+	
+	</select>
+
+
+
+	<select id="getComCodeUseList" resultType="java.util.HashMap">
+	
+		SELECT  CODE_ID,
+		        CODE_NM,
+		        CODE_DC,
+		        USE_YN
+		  FROM  TB_CMM_CD
+		  WHERE USE_YN = 'Y'
+		  
+		  ORDER BY CODE_ID ASC
+	
+	</select>
+
+</mapper>

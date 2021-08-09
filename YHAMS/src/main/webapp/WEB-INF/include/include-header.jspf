@@ -1,0 +1,13 @@
+<!-- JSTL -->
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
+<!-- bootStrap -->
+<script src="/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+
+<!-- JQuery -->
+<script src="/js/jquery-3.6.0.min.js"></script>
+
+<!-- Paging Util -->
+<!-- <script src="/js/paging.js?version=3123123123123123"></script> -->

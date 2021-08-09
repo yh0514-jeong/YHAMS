@@ -1,0 +1,118 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhams.login.LoginMapper">
+
+	<select id="getLogininfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT * 
+			FROM tb_meta_user
+	</select>
+
+    <insert id="insertUser" parameterType="java.util.HashMap">
+    	
+    	INSERT INTO TB_META_USER (
+
+			USER_SEQ,
+			USER_ID,
+			USER_PW,
+			USER_NM,
+			USER_NM_EN,
+			USER_EMAIL,
+			USER_ADRS,
+			USER_PHONE,
+			USE_YN,
+			CREATE_ID,
+			CREATE_DATE,
+			UPDATE_ID,
+			UPDATE_DATE
+			
+			) VALUES (
+			
+			   #{USER_SEQ},    
+			   #{USER_ID},     
+			   #{USER_PW},     
+			   #{USER_NM},     
+			   #{USER_NM_EN},  
+			   #{USER_EMAIL},
+			   #{USER_ADRS},   
+			   #{USER_PHONE},  
+			   'Y',      
+			   #{USER_SEQ},
+			   NOW(), 
+			   #{USER_SEQ},
+			   NOW()  
+   			 
+   			 )
+    </insert>
+    
+    
+    <select id="chkUserInfo" parameterType="java.util.HashMap" resultType="String">
+    
+    	SELECT  CASE WHEN COUNT(*) = 1 THEN 'TRUE'
+		        ELSE 'FALSE'
+				END AS RESULT        
+			FROM TB_META_USER 
+			WHERE USER_ID = #{USER_ID}
+			AND   USER_PW = #{USER_PW}
+    
+    </select>
+    
+    <select id="getUserInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    	
+    	SELECT  TMU.USER_SEQ,
+		        TMU.USER_ID,
+		        TMU.USER_NM,
+		        TMU.USER_NM_EN,
+		        TMU.USER_EMAIL,
+		        TMURM.ROLE_ID,
+		        TMR.ROLE_NM
+		        
+			FROM TB_META_USER TMU
+			
+			LEFT OUTER JOIN
+			TB_META_USER_ROLE_MAPPING TMURM
+			ON TMU.USER_SEQ = TMURM.USER_SEQ
+			
+			LEFT OUTER JOIN
+			TB_META_ROLE TMR
+			ON TMURM.ROLE_ID = TMR.ROLE_ID
+			
+			WHERE TMU.USER_ID = #{USER_ID}
+			
+    </select>
+    
+    
+    <select id="getUserMenuList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    
+    	SELECT  TMMRM.MENU_ID,
+		        TMM.MENU_NM,
+		        TMM.MENU_NM_EN,
+		        TMM.MENU_URL
+			FROM TB_META_MENU_ROLE_MAPPING TMMRM
+			
+			LEFT OUTER JOIN
+			TB_META_MENU TMM
+			ON TMMRM.MENU_ID = TMM.MENU_ID
+		
+		   WHERE ROLE_ID = (SELECT ROLE_ID 
+		   	                FROM TB_META_USER_ROLE_MAPPING 
+		   	                WHERE USER_SEQ = #{USER_SEQ})
+									 	
+		   AND TMM.PAR_MENU_ID IS NULL
+		   
+		   ORDER BY MENU_ORDR ASC
+    
+    </select>
+    
+    <select id="getSubMenuList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    	
+    	SELECT   MENU_ID,
+		         MENU_NM,
+		         MENU_NM_EN,
+		         MENU_URL,
+		         MENU_ORDR
+			FROM  TB_META_MENU
+			WHERE PAR_MENU_ID = #{PAR_MENU_ID}
+			ORDER BY MENU_ORDR ASC
+	
+    </select>
+
+</mapper>
