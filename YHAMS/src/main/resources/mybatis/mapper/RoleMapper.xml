@@ -1,0 +1,191 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhams.role.RoleMapper">
+
+	<sql id="roleListCondition">
+		<if test="ROLE_ID != null and ROLE_ID != ''">
+    	  AND   TMR.ROLE_ID LIKE CONCAT('%',#{ROLE_ID},'%')
+		</if>
+		<if test="ROLE_NM != null and ROLE_NM != ''">
+	      AND   TMR.ROLE_NM LIKE CONCAT('%',#{ROLE_NM},'%')
+		</if>
+    </sql>
+
+	<select id="roleCount" parameterType="java.util.HashMap" resultType="long">
+	
+		SELECT COUNT(*)
+		
+		FROM (SELECT  ROW_NUMBER() OVER(ORDER BY TMR.ROLE_ID DESC) AS RNUM,
+			          TMR.ROLE_ID,
+			          TMR.PAR_ROLE_ID,
+			          TMR.ROLE_NM,
+			          TMR.ROLE_DC,
+			          TMR.CREATE_ID,
+			          (SELECT TU.USER_NM
+				          FROM TB_META_USER TU
+				         WHERE TMR.CREATE_ID = TU.USER_SEQ
+					     ) CREATE_NM,
+				        TMR.CREATE_DATE,
+				        TMR.UPDATE_ID,
+				        (SELECT TU.USER_NM
+				        	FROM TB_META_USER TU
+				          WHERE TMR.UPDATE_ID = TU.USER_SEQ
+					    ) UPDATE_NM,
+				        TMR.UPDATE_DATE
+			     FROM tb_meta_role TMR
+
+			     WHERE 1=1
+			    
+			     <include refid="roleListCondition"/>
+			     
+			   ) T1
+	
+	</select>
+
+	<select id="roleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+		SELECT T1.RNUM,
+		       T1.ROLE_ID,
+		       IFNULL(CONCAT(T1.PAR_ROLE_NM, '(' , T1.PAR_ROLE_ID, ')'), '') AS PAR_ROLE_ID,
+		       T1.ROLE_NM,
+		       T1.ROLE_DC,
+		       T1.CREATE_ID,
+		       T1.CREATE_DATE,
+			   T1.UPDATE_ID,
+			   T1.UPDATE_NM,
+			   T1.UPDATE_DATE
+		
+		FROM (SELECT  ROW_NUMBER() OVER(ORDER BY TMR.ROLE_ID DESC) AS RNUM,
+			          TMR.ROLE_ID,
+			          TMR.PAR_ROLE_ID,
+			          (SELECT TMR2.ROLE_NM
+				         FROM TB_META_ROLE TMR2
+				        WHERE TMR.PAR_ROLE_ID = TMR2.ROLE_ID
+					  ) PAR_ROLE_NM,
+			          TMR.ROLE_NM,
+			          TMR.ROLE_DC,
+			          TMR.CREATE_ID,
+			          (SELECT TU.USER_NM
+				          FROM TB_META_USER TU
+				         WHERE TMR.CREATE_ID = TU.USER_SEQ
+					     ) CREATE_NM,
+				        TMR.CREATE_DATE,
+				        TMR.UPDATE_ID,
+				        (SELECT TU.USER_NM
+				        	FROM TB_META_USER TU
+				          WHERE TMR.UPDATE_ID = TU.USER_SEQ
+					    ) UPDATE_NM,
+				        TMR.UPDATE_DATE
+			     FROM TB_META_ROLE TMR
+
+			     WHERE 1=1
+			    
+			     <include refid="roleListCondition"/>
+			     
+			   ) T1
+	
+	</select>
+	
+	
+	<select id="selectRole" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		
+		SELECT  TMR.ROLE_ID,
+		        TMR.PAR_ROLE_ID,
+		        (SELECT TMR2.ROLE_NM 
+		        	  FROM TB_META_ROLE TMR2
+		        	WHERE  TMR.PAR_ROLE_ID = TMR2.ROLE_ID
+				  ) PAR_ROLE_NM,
+		        TMR.ROLE_NM,
+		        TMR.ROLE_DC,
+		        (SELECT TU.USER_NM
+		           FROM  TB_META_USER TU
+		          WHERE  TMR.CREATE_ID = TU.USER_SEQ
+			      ) CREATE_NM,
+		        TMR.CREATE_DATE,
+		        TMR.UPDATE_ID,
+		        (SELECT TU.USER_NM
+		        	FROM TB_META_USER TU
+		          WHERE TMR.UPDATE_ID = TU.USER_SEQ
+			    ) UPDATE_NM,
+		        TMR.UPDATE_DATE
+	
+	  FROM TB_META_ROLE TMR
+	  
+	  WHERE TMR.ROLE_ID  = #{ROLE_ID}
+	
+	</select>
+	
+	
+	<insert id="insertRole" parameterType="java.util.HashMap">
+	
+			INSERT INTO TB_META_ROLE(
+				ROLE_ID,
+				PAR_ROLE_ID,
+				ROLE_NM,
+				ROLE_DC,
+				CREATE_ID,
+				CREATE_DATE,
+				UPDATE_ID,
+				UPDATE_DATE
+				
+				) VALUES (
+				
+				#{ROLE_ID},
+				#{PAR_ROLE_ID},
+				#{ROLE_NM},
+				#{ROLE_DC},
+				#{CREATE_ID},
+				NOW(),
+				#{UPDATE_ID},
+				NOW()				
+				
+				)
+	</insert>
+	
+	<update id="updateRole" parameterType="java.util.HashMap">
+	
+			UPDATE  TB_META_ROLE
+			
+				SET PAR_ROLE_ID = #{PAR_ROLE_ID},
+		   			ROLE_NM     = #{ROLE_NM},	
+				    ROLE_DC     = #{ROLE_DC},
+				    UPDATE_ID   = #{UPDATE_ID},
+				    UPDATE_DATE = NOW()
+				    
+			   WHERE ROLE_ID    = #{ROLE_ID}
+	</update>
+	
+	<select id="getRoleList"  parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+		SELECT  ROLE_ID,
+		        ROLE_NM
+			FROM TB_META_ROLE
+			
+			<if test="ROLE_ID != NULL and ROLE_ID != ''">
+				WHERE ROLE_ID != #{ROLE_ID}
+			</if>
+			
+			ORDER BY ROLE_ID ASC
+		
+	</select>
+	
+	<select id="getRoleMenuMapList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+		SELECT  TMMRM.ROLE_ID,
+		        TMMRM.MENU_ID,
+				TMM.MENU_NM,
+				TMM.MENU_NM_EN
+		  
+	    FROM    TB_META_MENU_ROLE_MAPPING TMMRM
+	
+		LEFT OUTER JOIN
+		TB_META_MENU TMM
+		ON TMMRM.MENU_ID = TMM.MENU_ID
+		
+		WHERE TMMRM.ROLE_ID = #{ROLE_ID}
+		
+		ORDER BY MENU_ID ASC
+	
+	</select>
+	
+	
+</mapper>

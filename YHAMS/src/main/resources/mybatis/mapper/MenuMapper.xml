@@ -1,0 +1,17 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yhams.menu.MenuMapper">
+
+	<select id="getMenuList" resultType="java.util.HashMap">
+	
+		SELECT  MENU_ID,
+		        PAR_MENU_ID,
+		        MENU_NM,
+		        MENU_NM_EN,
+		        MENU_URL
+		   FROM TB_META_MENU
+	     
+	     ORDER BY MENU_ID ASC
+	     
+	</select>
+
+</mapper>
