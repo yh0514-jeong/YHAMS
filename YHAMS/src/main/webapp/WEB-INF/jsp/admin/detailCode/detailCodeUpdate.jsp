@@ -11,9 +11,11 @@
 <script type="text/javascript">
 
     var CODE_ID = '${result.CODE_ID}';
+    var CODE_CD = '${result.CODE_CD}';
+    var ACTION  =  (CODE_ID != null && CODE_ID != '') && (CODE_CD != null && CODE_CD != '') ? "UPDATE" : "INSERT";
 
 	$(document).ready(function(){
-		if(CODE_ID != null && CODE_ID != ''){
+		if(ACTION == "UPDATE"){
 			$("#btnUpdate").html('수정');
 		}else{
 			$("#btnUpdate").html('등록');
@@ -49,6 +51,7 @@
 		}
 		
 		var param = {
+				ACTION    : ACTION,
 				CODE_ID   : $("#CODE_ID").val().trim(),
 				CODE_CD   : $("#CODE_CD").val().trim(),
 				CODE_NM   : $("#CODE_NM").val().trim(),
@@ -63,7 +66,7 @@
 		    data : param,
 		    success : function(result) { 
 		        if(result.result == "success"){
-		        	if(param.CODE_ID != null && param.CODE_CD != null){
+		        	if(ACTION == "UPDATE"){
 			        	alert('수정 성공!');
 		        	}else{
 			        	alert('등록 성공!');
@@ -100,7 +103,7 @@
 	<div class="row mb-3">
 	    <label for="inputEmail3" class="col-sm-2 col-form-label">상세코드</label>
 	    <div class="col-sm-10">
-	      <input type="text" class="form-control" id="CODE_CD"  value="${result.CODE_CD}">
+	      <input type="text" class="form-control" id="CODE_CD"  value="${result.CODE_CD}" <c:if test="${result.CODE_CD ne null}">disabled="disabled"</c:if>>
 	    </div>
     </div>
     <div class="row mb-3">

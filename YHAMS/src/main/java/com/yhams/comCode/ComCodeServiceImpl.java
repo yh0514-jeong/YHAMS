@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class comCodeServiceImpl implements comCodeService {
+public class ComCodeServiceImpl implements ComCodeService {
 	
 	@Autowired
-	comCodeMapper mapper;
+	ComCodeMapper mapper;
 
 	@Override
 	public int insertComCode(HashMap<String, Object> param) throws Exception {

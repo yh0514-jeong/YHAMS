@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.mybatis.spring.SqlSessionTemplate;
 
-public interface commonDAO {
+public interface CommonDAO {
 	
 	public void setSqlSessionTemplate(SqlSessionTemplate template);
 	

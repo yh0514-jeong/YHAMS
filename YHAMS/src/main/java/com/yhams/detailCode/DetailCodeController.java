@@ -18,25 +18,25 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yhams.comCode.comCodeService;
+import com.yhams.comCode.ComCodeService;
 import com.yhams.common.CommonService;
 import com.yhams.util.PagingUtil;
 import com.yhams.util.StringUtil;
 
 @Controller
 @RequestMapping("/dtlCode")
-public class detailCodeController {
+public class DetailCodeController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(detailCodeController.class);
+	private static final Logger logger = LoggerFactory.getLogger(DetailCodeController.class);
 	
 	@Autowired
-	detailCodeService dtlCodeService;
+	DetailCodeService dtlCodeService;
 	
 	@Autowired
 	CommonService commonService;
 	
 	@Autowired
-	comCodeService comCodeService;
+	ComCodeService comCodeService;
 	
 	
 	@RequestMapping(value = "/dtlCodeManageMain")
@@ -94,15 +94,19 @@ public class detailCodeController {
 			                                     HttpServletResponse response){
 		
 		HashMap<String, Object> result = new HashMap<String, Object>();
+		
+		logger.info("/updateDtlCode, param.toString()==>" + param.toString());
 		int r = 0;
 		try {
 			param.put("CREATE_ID", session.getAttribute("USER_SEQ"));
 			param.put("UPDATE_ID", session.getAttribute("USER_SEQ"));
-			if(StringUtil.StringNVL(param.get("CODE_ID")) == null && StringUtil.StringNVL(param.get("CODE_CD")) == null){
-				r = dtlCodeService.insertDtlCode(param);
-			}else {
-				r = dtlCodeService.updateDtlCode(param);
+			
+			if("INSERT".equals(StringUtil.StringNVL(param.get("ACTION")))){ 
+				r =	dtlCodeService.insertDtlCode(param); 
+			}else { 
+				r =	dtlCodeService.updateDtlCode(param); 
 			}
+			
 		}catch (Exception e) {
 			e.printStackTrace();
 			result.put("result", "fail");

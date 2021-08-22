@@ -8,6 +8,10 @@
 	<select id="getNextCodeId" resultType="String">
 		SELECT CONCAT('CG_', LPAD(NEXT VALUE FOR TB_CMM_CD_SEQ, 4, 0))
 	</select>
+	
+	<select id="getNextRoleId" resultType="String">
+		SELECT CONCAT('ROLE_', LPAD(NEXT VALUE FOR TB_META_ROLE_SEQ, 3, 0));
+	</select>
 
 	<select id="getCgList" parameterType="String" resultType="java.util.HashMap">
 			

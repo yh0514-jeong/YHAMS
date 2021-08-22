@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class detailCodeServiceImpl implements detailCodeService{
+public class DetailCodeServiceImpl implements DetailCodeService{
 	
 	@Autowired
-	detailCodeMapper mapper;
+	DetailCodeMapper mapper;
 
 	@Override
 	public HashMap<String, Object> selectCodeCd(HashMap<String, Object> param) throws Exception {

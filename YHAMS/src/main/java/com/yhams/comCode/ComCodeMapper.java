@@ -6,7 +6,7 @@ import java.util.HashMap;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface comCodeMapper {
+public interface ComCodeMapper {
 
 	int insertComCode(HashMap<String, Object> param) throws Exception;
 

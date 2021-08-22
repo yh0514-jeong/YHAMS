@@ -9,5 +9,7 @@
 <!-- JQuery -->
 <script src="/js/jquery-3.6.0.min.js"></script>
 
-<!-- Paging Util -->
-<!-- <script src="/js/paging.js?version=3123123123123123"></script> -->
+<!-- Table.js -->
+<script src="/js/datatables.js"></script>
+<link rel="stylesheet" href="/css/datatables.css">
+

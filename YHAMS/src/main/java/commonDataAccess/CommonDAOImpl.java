@@ -6,7 +6,7 @@ import javax.annotation.Resource;
 
 import org.mybatis.spring.SqlSessionTemplate;
 
-public class commonDAOImpl implements commonDAO {
+public class CommonDAOImpl implements CommonDAO {
 	
 	@Resource(name = "CommonDAO")
 	protected SqlSessionTemplate templates;

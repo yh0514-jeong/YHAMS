@@ -3,7 +3,7 @@ package com.yhams.comCode;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public interface comCodeService {
+public interface ComCodeService {
 
 	int insertComCode(HashMap<String, Object> param) throws Exception;
 

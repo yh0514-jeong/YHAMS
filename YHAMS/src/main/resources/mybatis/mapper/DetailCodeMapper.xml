@@ -1,5 +1,5 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.yhams.detailCode.detailCodeMapper">
+<mapper namespace="com.yhams.detailCode.DetailCodeMapper">
 
     <sql id="dtlCodeListCondition">
     	<if test="CODE_ID != null and CODE_ID != ''">
@@ -96,7 +96,7 @@
 		 (CODE_CD,
 		  CODE_ID,
 		  CODE_NM,
-		  USE_Y,
+		  USE_YN,
 		  CREATE_ID,
 		  CREATE_DATE,
 		  UPDATE_ID,
@@ -105,22 +105,33 @@
 		 
 		 ) VALUES (
 		 
-		  CODE_CD,
-		  CODE_ID,
-		  CODE_NM,
-		  USE_Y,
-		  CREATE_ID,
-		  CREATE_DATE,
-		  UPDATE_ID,
-		  UPDATE_DATE,
-		  CODE_ORDR
+		  #{CODE_CD},
+		  #{CODE_ID},
+		  #{CODE_NM},
+		  #{USE_YN},
+		  #{CREATE_ID},
+		  NOW(), 
+		  #{UPDATE_ID},
+		  NOW(),
+		  #{CODE_ORDR}
 		  ) 
 	
 	</insert>
 	
 	<update id="updateDtlCode" parameterType="java.util.HashMap">
 	
-	</update>
+		UPDATE  TB_CMM_CDDTL
+		
+		   SET  CODE_CD = #{CODE_CD},
+			    CODE_NM = #{CODE_NM},
+			    USE_YN  = #{USE_YN},
+			    UPDATE_DATE = NOW(),
+			    UPDATE_ID = #{UPDATE_ID},
+			    CODE_ORDR = #{CODE_ORDR}
+			    
+			    WHERE CODE_CD = #{CODE_CD}
+			    AND   CODE_ID = #{CODE_ID}
 
+	</update>
 
 </mapper>

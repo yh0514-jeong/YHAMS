@@ -25,12 +25,12 @@ import lombok.extern.log4j.Log4j2;
 @Controller
 @Log4j2
 @RequestMapping("/comCode")
-public class comCodeController {
+public class ComCodeController {
 	
 	private Logger logger = Logger.getLogger(this.getClass());
 	
 	@Autowired
-	comCodeService comCodeService;
+	ComCodeService comCodeService;
 	
 	@Autowired
 	CommonService commonService;

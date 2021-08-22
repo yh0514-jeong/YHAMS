@@ -40,7 +40,7 @@
 			    	var html = "";
 			    	if(data.length == 0){
 				    		html += '<tr align="center">';
-				    		html += '    <th scope="row" colspan="10">조회된 결과가 없습니다.</th>';
+				    		html += '    <th scope="row" colspan="10"><spring:message code="com.txt.noresult"/></th>';
 				    		html += '</tr>';
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
@@ -54,17 +54,17 @@
 				    		html += '    <td scope="row">' + data[i].USE_YN + '</td>';
 				    		html += '    <td scope="row">' + data[i].CREATE_NM + '</td>';
 				    		html += '    <td scope="row">' + data[i].CREATE_DATE + '</td>';
-				    		html += '    <td scope="row"><button type="button" class="btn btn-danger" onclick=\"javascript:goUpdate(\'' + data[i].CODE_ID + '\',\'' + data[i].CODE_CD + '\' );\">' + '수정</button></td>';
+				    		html += '    <td scope="row"><button type="button" class="btn btn-danger" onclick=\"javascript:goUpdate(\'' + data[i].CODE_ID + '\',\'' + data[i].CODE_CD + '\' );\">' + '<spring:message code="com.txt.update"/></button></td>';
 				    		html += '</tr>';
 				    	}
 			    	}
 			    	$("#list").append(html);
 		    	}else{
-				   alert("로드 실패!");		    		
+		    		alert('<spring:message code="com.msg.loadfail"/>');		    		
 		    	}
 		    },
 		    error : function(request, status, error) { 
-		        alert('등록 실패!!');
+		    	alert('<spring:message code="com.msg.registerfail"/>');
 		    }
 		});		
 	 
@@ -134,7 +134,7 @@ function enterkey(){
 </div>
 <div class="table table-hover">
 	<table class="table">
-	  <thead>
+	  <thead align="center">
 	    <tr>
 	      <th scope="col"></th>
 	      <th scope="col">No.</th>
