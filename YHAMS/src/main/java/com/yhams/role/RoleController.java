@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yhams.common.CommonService;
 import com.yhams.menu.MenuService;
 import com.yhams.util.PagingUtil;
@@ -96,7 +99,6 @@ public class RoleController {
 		
 		ArrayList<HashMap<String, Object>> roleList = new ArrayList<HashMap<String,Object>>();
 		
-		
 		try {
 			
 			if(ROLE_ID != null && ROLE_ID != "undefined" && ROLE_ID != "") {
@@ -165,9 +167,10 @@ public class RoleController {
 							            HttpServletRequest request,
 							            HttpServletResponse response) {
 		
-		ModelAndView mv               = new ModelAndView();
-		HashMap<String, Object> r     = new HashMap<String, Object>();
-		HashMap<String, Object> param = new HashMap<String, Object>();
+		ModelAndView mv                 = new ModelAndView();
+		HashMap<String, Object> r       = new HashMap<String, Object>();
+		HashMap<String, Object> param   = new HashMap<String, Object>();
+		HashMap<String, Object> roleMap = new HashMap<String, Object>();
 		
 		ArrayList<HashMap<String, Object>> menuList        = new ArrayList<HashMap<String,Object>>();
 		ArrayList<HashMap<String, Object>> roleMenuMapList = new ArrayList<HashMap<String,Object>>();
@@ -175,20 +178,48 @@ public class RoleController {
 		try {
 			
 			menuList = menuService.getMenuList();
-			
 			param.put("ROLE_ID", ROLE_ID);
+			roleMap = roleservice.selectRole(param);
 			roleMenuMapList = roleservice.getRoleMenuMapList(param);
-			
-			mv.addObject("menuList", menuList);
-			mv.addObject("roleMenuMapList", roleMenuMapList);
 			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		
+		mv.addObject("roleMap", roleMap);
+		mv.addObject("menuList", menuList);
+		mv.addObject("roleMenuMapList", roleMenuMapList);
 		mv.setViewName("admin/role/roleMenuMap");
+		
 		return mv;
 	}
+	
+	
+	@RequestMapping(value = "/updateRoleMenuMap", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> updateRoleMenuMap(@RequestParam HashMap<String, Object> param,
+													  HttpSession session,
+													  HttpServletRequest  request,
+													  HttpServletResponse response){
+		
+		HashMap<String, Object> result          = new HashMap<String, Object>();
+		int r = 0;
+		
+		try {
+			param.put("CREATE_ID", session.getAttribute("USER_SEQ"));
+			param.put("UPDATE_ID", session.getAttribute("USER_SEQ"));
+			
+			r = roleservice.updateRoleMenuMap(param);
+			
+			result.put("resultCode",  "success");
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode",  "fail");
+		}
+		
+		return result;
+	}
+	
 	
 	
 	@RequestMapping(value = "/roleUserMap")

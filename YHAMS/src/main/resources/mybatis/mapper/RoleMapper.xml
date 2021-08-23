@@ -188,4 +188,31 @@
 	</select>
 	
 	
+	<delete id="deleteRoleMenuMap" parameterType="java.util.HashMap">
+		
+		DELETE FROM TB_META_MENU_ROLE_MAPPING
+		WHERE ROLE_ID = #{ROLE_ID}
+	
+	</delete>
+	
+	<insert id="insertRoleMenuMap" parameterType="java.util.HashMap">
+	
+		INSERT INTO TB_META_MENU_ROLE_MAPPING
+		( ROLE_ID,
+		  MENU_ID,
+		  CREATE_ID,
+		  CREATE_DATE,
+		  UPDATE_DATE,
+		  UPDATE_ID
+		) VALUES (
+		  #{ROLE_ID},
+		  #{MENU_ID},
+		  #{CREATE_ID},
+		  NOW(),
+		  NOW(),
+		  #{UPDATE_ID}
+		)
+	
+	</insert>
+	
 </mapper>

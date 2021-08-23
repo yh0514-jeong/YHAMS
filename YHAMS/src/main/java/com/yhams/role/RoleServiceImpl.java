@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -45,6 +46,33 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	public ArrayList<HashMap<String, Object>> getRoleMenuMapList(HashMap<String, Object> param) throws Exception {
 		return mapper.getRoleMenuMapList(param);
+	}
+
+	@Override
+	@Transactional
+	public int updateRoleMenuMap(HashMap<String, Object> param) throws Exception {
+		
+		int result = 0;
+		
+		try {
+			
+			result = mapper.deleteRoleMenuMap(param);
+					
+			String ROLE_ID = param.get("ROLE_ID").toString();
+			String[] menuIds = param.get("MENU_ID").toString().split(",");
+			
+			for(int i=0; i<menuIds.length; i++) {
+				param.put("MENU_ID", menuIds[i]);
+				result = mapper.insertRoleMenuMap(param);
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+		
+		return result;
+		
 	}
 
 }

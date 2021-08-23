@@ -22,4 +22,8 @@ public interface RoleMapper {
 
 	ArrayList<HashMap<String, Object>> getRoleMenuMapList(HashMap<String, Object> param) throws Exception;
 
+	int deleteRoleMenuMap(HashMap<String, Object> param) throws Exception;
+
+	int insertRoleMenuMap(HashMap<String, Object> param) throws Exception;
+
 }

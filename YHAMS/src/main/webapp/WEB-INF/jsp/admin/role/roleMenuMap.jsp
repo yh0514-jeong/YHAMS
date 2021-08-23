@@ -11,6 +11,9 @@
 <script type="text/javascript" src='<c:url value="/js/paging.js"/>'></script>
 <script type="text/javascript">
 
+var ROLE_ID  = "${roleMap.ROLE_ID}";
+var ROLE_NM  = "${roleMap.ROLE_NM}";
+
 $(document).ready(function() {
 	
 	
@@ -39,10 +42,8 @@ function addMenuMapp(){
 		var html        = '';
 		
 		$('#allMenuList tr input[type="checkbox"]:checked').each(function(index) {
-			 
 			 var menuId = $(this).closest('tr').find('input[type="checkbox"]').val();
 			 var menuNm = $(this).closest('tr').find('td').eq(1).text();
-	       	
 			 if(alreadyAddedList.indexOf($(this).val()) == -1){
 	       		 html += '<tr>';
 	       		 html += '	 <td><img src="/img/x-lg.svg" menuId="' + menuId + '" onclick="javascript:deleteMappedMenu(this);" style="cursor: pointer;"></td>';
@@ -52,12 +53,47 @@ function addMenuMapp(){
 	       		 alert('이미 추가되어 있는 메뉴입니다.');
 	       		 return false;
 	       	 }
-			 
 	    });
-		
 		$("#addedMenuList").append(html);
 	}
 	$('#allMenuList tr input[type="checkbox"]').prop("checked", false);
+}
+
+function save(){
+	
+	var arr = '';
+	
+	$('#addedMenuList tr').each(function(idx) {
+		if(idx == 0){
+			arr += $(this).find('img').attr('menuId');
+		}else{
+			arr += ',' + $(this).find('img').attr('menuId');
+		}
+    });
+	
+	var param = {
+	    ROLE_ID : ROLE_ID,
+	    MENU_ID : arr
+	};
+	
+	$.ajax({
+	    type : 'post',
+	    url : '/role/updateRoleMenuMap', 
+	    dataType : 'json', 
+	    data : param,
+	    success : function(result) { 
+	        if(result.resultCode == "success"){
+	        	alert('저장성공!');
+	        	opener.parent.list(); 
+	        	window.close();
+	        }else{
+	        	alert('저장실패!');
+	        }
+	    },
+	    error : function(request, status, error) { 
+	        alert('<spring:message code="com.msg.registerfail"/>');  // 등록 실패
+	    }
+	});
 	
 }
 
@@ -66,7 +102,8 @@ function addMenuMapp(){
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5 class="panel-title">권한 - 메뉴 매핑관리</h5>
+    <h5 class="panel-title">권한 - 메뉴 매핑관리<h6 class="panel-title">${roleMap.ROLE_NM}(${roleMap.ROLE_ID})</h6></h5>
+    
   </div>
 </div>
 
@@ -111,7 +148,7 @@ function addMenuMapp(){
 <!-- 현재 권한에 추가되어 있는 메뉴 테이블 -->
 <div style="float:right;  width: 45%; height: 70%;">
 	<div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right; padding-right: 10px;">
-	  <button type="button" class="btn btn-success" onclick="javascript:list();" type="button">저장</button>
+	  <button type="button" class="btn btn-success" onclick="javascript:save();" type="button">저장</button>
 	</div>	
 	<div class="table table-hover">
 		<table class="table">
