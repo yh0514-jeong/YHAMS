@@ -84,7 +84,7 @@ function goMenuMap(roleId){
 function goUserMap(roleId){
 	var url    = "/role/roleUserMap?ROLE_ID=" + roleId ;
 	var name   = "사용자 관리"
-	var option = "width = 500, height = 500, top = 100, left = 200, location = no";
+	var option = "width = 850, height = 500, top = 100, left = 200, location = no";
     window.open(url, name, option);
 }
 

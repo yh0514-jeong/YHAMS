@@ -229,22 +229,25 @@ public class RoleController {
 									HttpServletResponse response) {
 		
 		ModelAndView mv               = new ModelAndView();
-		HashMap<String, Object> r     = new HashMap<String, Object>();
-		
-		ArrayList<HashMap<String, Object>> useYnCodeList = new ArrayList<HashMap<String,Object>>();
-		ArrayList<HashMap<String, Object>> comCodeList = new ArrayList<HashMap<String,Object>>();
-		
 		HashMap<String, Object> param = new HashMap<String, Object>();
+		HashMap<String, Object> roleMap = new HashMap<String, Object>();
+		
+		ArrayList<HashMap<String, Object>> roleUserMapList = new ArrayList<HashMap<String,Object>>();
 		
 		try {
+			
+			param.put("ROLE_ID", ROLE_ID);
+			roleMap = roleservice.selectRole(param);
+			roleUserMapList = roleservice.getRoleUserMapList(param);
 			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		mv.addObject("comCodeList"  ,  comCodeList);
-		mv.addObject("useYnCodeList", useYnCodeList);
+		mv.addObject("roleMap", roleMap);
+		mv.addObject("roleUserMapList", roleUserMapList);
 		mv.setViewName("admin/role/roleUserMap");
+		
 		return mv;
 	}
 	

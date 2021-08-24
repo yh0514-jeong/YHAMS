@@ -111,8 +111,14 @@
 		         MENU_ORDR
 			FROM  TB_META_MENU
 			WHERE PAR_MENU_ID = #{PAR_MENU_ID}
+			AND   MENU_ID IN (SELECT MENU_ID
+			                    FROM TB_META_MENU_ROLE_MAPPING
+			                    WHERE ROLE_ID  = (SELECT ROLE_ID
+			                                       FROM  TB_META_USER_ROLE_MAPPING
+			                                       WHERE USER_SEQ = #{USER_SEQ}) 
+						      )
+			
 			ORDER BY MENU_ORDR ASC
-	
     </select>
 
 </mapper>

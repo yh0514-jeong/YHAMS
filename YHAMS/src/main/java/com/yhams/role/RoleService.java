@@ -21,4 +21,6 @@ public interface RoleService {
 
 	int updateRoleMenuMap(HashMap<String, Object> param) throws Exception;
 
+	ArrayList<HashMap<String, Object>> getRoleUserMapList(HashMap<String, Object> param) throws Exception;
+
 }

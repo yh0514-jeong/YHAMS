@@ -26,4 +26,6 @@ public interface RoleMapper {
 
 	int insertRoleMenuMap(HashMap<String, Object> param) throws Exception;
 
+	ArrayList<HashMap<String, Object>> getRoleUserMapList(HashMap<String, Object> param)  throws Exception;
+
 }

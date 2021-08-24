@@ -215,4 +215,25 @@
 	
 	</insert>
 	
+	<select id="getRoleUserMapList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+		SELECT  TMURM.USER_SEQ,
+		        CONCAT(TMU.USER_NM, '(', TMU.USER_ID, ')') AS USER_INFO,        
+		        TMU.USER_ID,
+		        TMU.USER_NM,
+		        TMU.USER_EMAIL
+		
+		 FROM	TB_META_USER_ROLE_MAPPING TMURM
+			
+		 LEFT OUTER JOIN
+		 TB_META_USER TMU
+		 ON TMURM.USER_SEQ   = TMU.USER_SEQ
+		 
+		 WHERE TMURM.ROLE_ID = #{ROLE_ID}
+		 AND   TMU.USE_YN    = 'Y'
+		 
+		 ORDER BY TMURM.USER_SEQ ASC
+	
+	</select>
+	
 </mapper>

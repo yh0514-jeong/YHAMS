@@ -11,148 +11,178 @@
 <script type="text/javascript" src='<c:url value="/js/paging.js"/>'></script>
 <script type="text/javascript">
 
+var ROLE_ID  = "${roleMap.ROLE_ID}";
+var ROLE_NM  = "${roleMap.ROLE_NM}";
+
 $(document).ready(function() {
-	list();
+	
+	
 });
 
 
-function list(){
+function deleteMappedUser(target){
+	$(target).closest('tr').remove();
+}
+
+function addMenuMapp(){
+    
+	var length = $('#allMenuList tr input[type="checkbox"]:checked').length;
 	
-	 var param = {
-		ROLE_ID    : $("#ROLE_ID").val().trim(),
-		ROLE_NM    : $("#ROLE_NM").val().trim(),
-		cntPerPage : $("#cntPerPage").val(),
-		curPage    : $("#curPage").val()
-	 };
-	 
-	 
-	 $.ajax({
-		    type : 'get',
-		    url : '/role/roleListUp', 
+	if(length == 0){
+		alert('선택된 사용자가 없습니다.');
+		return;
+	}else{
+		var alreadyAddedList = new Array();
+		
+		$("#addedUserList tr img").each(function(){
+			alreadyAddedList.push($(this).attr("userId"));
+		});
+		
+		var toBeAddList = '';
+		var html        = '';
+		
+		$('#allUserList tr input[type="checkbox"]:checked').each(function(index) {
+			 var userId   = $(this).closest('tr').find('input[type="checkbox"]').val();
+			 var userInfo = $(this).closest('tr').find('td').eq(1).text();
+			 if(alreadyAddedList.indexOf($(this).val()) == -1){
+	       		 html += '<tr>';
+	       		 html += '	 <td><img src="/img/x-lg.svg" userId="' + userId + '" onclick="javascript:deleteMappedUser(this);" style="cursor: pointer;"></td>';
+	       		 html += '	 <td>' + userInfo + '</td>';
+	       		 html += '</tr>';
+	       	 }else{
+	       		 alert('이미 추가되어 있는 사용자입니다.');
+	       		 return false;
+	       	 }
+	    });
+		$("#addedUserList").append(html);
+	}
+	$('#allUserList tr input[type="checkbox"]').prop("checked", false);
+}
+
+function searchUser(){
+	var searchContent = $("#SEARCH_USER").val();
+	
+	if(searchContent.trim().length == 0){
+		alert('검색어를 입력해주세요.');
+		return;
+	}else{
+		var param = {
+		    searchContent : searchContent	
+		};
+		
+		$.ajax({
+		    type : 'post',
+		    url : '/user/getUserList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
-		    	if(result.resultCode == "success"){
-		    		$("#list").empty();
-		    		var data = result.list;
-			    	var html = "";
-			    	if(data.length == 0){
-				    		html += '<tr align="center">';
-				    		html += '    <th scope="row" colspan="5"><spring:message code="com.txt.noresult"/></th>';
-				    		html += '</tr>';
-			    	}else{
-			    		for(var i=0; i<data.length; i++){
-			    			html += '<tr align="center">';
-				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ROLE_ID + '</td>';
-				    		html += '    <td scope="row">' + data[i].PAR_ROLE_ID + '</td>';
-				    		html += '    <td scope="row">' + data[i].ROLE_DC + '</td>';
-				    		html += '    <td scope="row">';
-				    		html += '         <button type="button" class="btn btn-outline-danger" onclick=\"javascript:goNew(\'' + data[i].ROLE_ID +  '\');\">' + '수정</button>';
-				    		html += '         <button type="button" class="btn btn-outline-success" onclick=\"javascript:goMenuMap(\'' + data[i].ROLE_ID +  '\');\">' + '메뉴 관리</button>';
-				    		html += '         <button type="button" class="btn btn-outline-info" onclick=\"javascript:goUserMap(\'' + data[i].ROLE_ID +  '\');\">' + '사용자 관리</button>';
-				    		html += '    </td>';
-				    		html += '</tr>';
-				    	}
-			    	}
-			    	$("#list").append(html);
-		    	}else{
-				   alert('<spring:message code="com.msg.loadfail"/>');		    		
-		    	}
 		    },
 		    error : function(request, status, error) { 
-		        alert('<spring:message code="com.msg.registerfail"/>');
 		    }
-		});		
+		});
+	}
+	
 }
 
-function goNew(roleId){
-	 var url    = (roleId == null || typeof roleId == 'undefined') ? "/role/roleUpdate" : "/role/roleUpdate?ROLE_ID=" + roleId ;
-	 var name   = (roleId == null || typeof roleId == 'undefined') ? '권한 등록': '권한 수정';
-	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
-     window.open(url, name, option);
-}
-
-function goMenuMap(roleId){
-	var url    = "/role/roleMenuMap?ROLE_ID=" + roleId ;
-	var name   = "메뉴 관리"
-	var option = "width = 500, height = 500, top = 100, left = 200, location = no";
-    window.open(url, name, option);
-}
-
-function goUserMap(roleId){
-	var url    = "/role/roleUserMap?ROLE_ID=" + roleId ;
-	var name   = "사용자 관리"
-	var option = "width = 500, height = 500, top = 100, left = 200, location = no";
-    window.open(url, name, option);
-}
-
-
-function enterkey(){
-	if (window.event.keyCode == 13) { list(); }
+function save(){
+	var arr = '';
+	$('#addedMenuList tr').each(function(idx) {
+		if(idx == 0){
+			arr += $(this).find('img').attr('menuId');
+		}else{
+			arr += ',' + $(this).find('img').attr('menuId');
+		}
+    });
+	var param = {
+	    ROLE_ID : ROLE_ID,
+	    MENU_ID : arr
+	};
+	$.ajax({
+	    type : 'post',
+	    url : '/role/updateRoleUserMap', 
+	    dataType : 'json', 
+	    data : param,
+	    success : function(result) { 
+	        if(result.resultCode == "success"){
+	        	alert('저장성공!');
+	        	opener.parent.list(); 
+	        	window.close();
+	        }else{
+	        	alert('저장실패!');
+	        }
+	    },
+	    error : function(request, status, error) { 
+	        alert('<spring:message code="com.msg.registerfail"/>');  // 등록 실패
+	    }
+	});
 }
 
 </script>
 <body>
+
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5 class="panel-title">권한 관리</h5>
+    <h5 class="panel-title">권한 - 사용자 매핑관리<h6 class="panel-title">${roleMap.ROLE_NM}(${roleMap.ROLE_ID})</h6></h5>
+    
   </div>
-  <div class="panel-body">
-    관리자 > 권한관리
-  </div>
-</div>
-<div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
-  <div class="input-group">
-    <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">권한코드</div>
-    </div>
-    <input type="text" class="form-control" id="ROLE_ID"  onkeyup="javascript:enterkey();">
-  </div>
-  &nbsp;
-  <div class="input-group">
-    <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">권한명</div>
-    </div>
-    <input type="text" class="form-control" id="ROLE_NM"  onkeyup="javascript:enterkey();">
-  </div>
-  &nbsp;
-  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button">검색</button>
-  &nbsp;
-</div>
-<!-- Paging Util Parameter Start -->
-<input id="cntPerPage"     name="cntPerPage"     type="hidden"   value="10">
-<input id="curPage"        name="curPage"        type="hidden"   value="1">
-<!-- Paging Util Parameter End -->
-<br>
-<br>
-<div style="float: left;">
-	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success">등록</button> 
 </div>
 
-<div class="table table-hover">
-	<table class="table">
-	  <thead>
-	    <tr>
-	      <th scope="col">No.</th>
-	      <th scope="col">권한코드</th>
-	      <th scope="col">상위권한</th>
-	      <th scope="col">권한설명</th>
-	      <th scope="col">기능</th>
-	    </tr>
-	  </thead>
-	  <tbody id="list">
-	  </tbody>
-	</table>
+<!-- 전체 메뉴리스트 -->
+<div style="float:left; width: 45%;  height: 70%;">
+	<div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
+	  <div class="input-group">
+	    <div class="input-group-prepend">
+	      <div class="input-group-text" id="btnGroupAddon">사용자</div>
+	    </div>
+	    <input type="text" class="form-control" id="SEARCH_USER" placeholder="사용자 ID 혹은 사용자명" style="width: 240px;">
+	  </div>
+	  &nbsp;
+	  <button type="button" class="btn btn-primary" onclick="javascript:searchUser();" type="button">검색</button>
+	</div>	
+	<div class="table table-hover">	
+		<table class="table">
+		  <thead class="thead-dark" align="center">
+		    <tr>
+		      <th scope="col"></th>
+		       <th scope="col">사용자</th>
+		    </tr>
+		  </thead>
+		  <tbody id="allMenuList">
+		  </tbody>
+		</table>
+	</div>
 </div>
-<!-- 페이징 처리 -->
-<div id="pagination"></div>
-<select id='postPerPage' onchange='javascript:changePerPage(this.value);' style='float:center;'>
-		<option value='10'>10</option>
-		<option value='20'>20</option>
-		<option value='30'>30</option>
-		<option value='50'>50</option>
-		<option value='100'>100</option>
-</select>     
+
+
+<div style="float:left; text-align:center; width: 10%; height: 70%; padding-top: 27%;">
+    <img src="/img/arrow-right-square.svg" onclick="javascript:addMenuMapp();" style="cursor: pointer; width: 40px; vertical-align: middle; padding-bottom: 10px;">
+</div>
+
+
+<!-- 현재 권한에 추가되어 있는 메뉴 테이블 -->
+<div style="float:right;  width: 45%; height: 70%;">
+	<div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right; padding-right: 10px;">
+	  <button type="button" class="btn btn-success" onclick="javascript:save();" type="button">저장</button>
+	</div>	
+	<div class="table table-hover">
+		<table class="table">
+		  <thead class="thead-dark" align="center">
+		    <tr>
+		      <th scope="col"></th>
+		      <th scope="col">사용자</th>
+		    </tr>
+		  </thead>
+		  <tbody id="addedUserList">
+		  	<c:forEach items="${roleUserMapList}" var="item">
+		  		<tr>
+		  		  <td><img src="/img/x-lg.svg" userId="${item.USER_ID}" onclick="javascript:deleteMappedUser(this);" style="cursor: pointer;"></td>
+		  		  <td>${item.USER_INFO}</td>
+		  		</tr>
+		  	</c:forEach>
+		  </tbody>
+		</table>
+	</div>
+</div>
+
 </body>    
 </html>

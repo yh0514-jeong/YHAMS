@@ -142,6 +142,7 @@ public class LoginController {
 		try {
 		
 			param.put("PAR_MENU_ID", param.get("PAR_MENU_ID"));
+			param.put("USER_SEQ",    session.getAttribute("USER_SEQ"));
 			subMenuList = loginservice.getSubMenuList(param);
 			
 		}catch (Exception e) {

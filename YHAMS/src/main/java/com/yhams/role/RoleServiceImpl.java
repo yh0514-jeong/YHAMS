@@ -3,12 +3,16 @@ package com.yhams.role;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ch.qos.logback.classic.Logger;
+
 @Service
 public class RoleServiceImpl implements RoleService {
+	
 	
 	@Autowired
 	RoleMapper mapper;
@@ -51,28 +55,28 @@ public class RoleServiceImpl implements RoleService {
 	@Override
 	@Transactional
 	public int updateRoleMenuMap(HashMap<String, Object> param) throws Exception {
-		
 		int result = 0;
-		
 		try {
-			
 			result = mapper.deleteRoleMenuMap(param);
-					
-			String ROLE_ID = param.get("ROLE_ID").toString();
-			String[] menuIds = param.get("MENU_ID").toString().split(",");
-			
-			for(int i=0; i<menuIds.length; i++) {
-				param.put("MENU_ID", menuIds[i]);
-				result = mapper.insertRoleMenuMap(param);
+			if(!"".equals(param.get("MENU_ID").toString().trim()) && param.get("MENU_ID") != null) {
+				String[] menuIds = param.get("MENU_ID").toString().split(",");
+				System.out.println("updateRoleMenuMap menuIds==>" + menuIds.toString());
+				for(int i=0; i<menuIds.length; i++) {
+					param.put("MENU_ID", menuIds[i]);
+					result = mapper.insertRoleMenuMap(param);
+				}
 			}
-			
 		}catch (Exception e) {
 			e.printStackTrace();
 			return -1;
 		}
-		
 		return result;
-		
+	}
+
+	
+	@Override
+	public ArrayList<HashMap<String, Object>> getRoleUserMapList(HashMap<String, Object> param) throws Exception {
+		return mapper.getRoleUserMapList(param);
 	}
 
 }
