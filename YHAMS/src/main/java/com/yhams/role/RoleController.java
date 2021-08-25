@@ -251,4 +251,30 @@ public class RoleController {
 		return mv;
 	}
 	
+	
+	@RequestMapping(value = "/updateRoleUserMap", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> updateRoleUserMap(@RequestParam HashMap<String, Object> param,
+													  HttpSession session,
+													  HttpServletRequest  request,
+													  HttpServletResponse response){
+		
+		HashMap<String, Object> result          = new HashMap<String, Object>();
+		int r = 0;
+		
+		try {
+			param.put("CREATE_ID", session.getAttribute("USER_SEQ"));
+			param.put("UPDATE_ID", session.getAttribute("USER_SEQ"));
+			
+			r = roleservice.updateRoleUserMap(param);
+			
+			result.put("resultCode",  "success");
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode",  "fail");
+		}
+		
+		return result;
+	}
+	
 }

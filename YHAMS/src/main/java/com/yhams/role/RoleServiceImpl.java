@@ -79,4 +79,26 @@ public class RoleServiceImpl implements RoleService {
 		return mapper.getRoleUserMapList(param);
 	}
 
+	
+	@Override
+	@Transactional
+	public int updateRoleUserMap(HashMap<String, Object> param) throws Exception {
+		int result = 0;
+		try {
+			result = mapper.deleteRoleUseruMap(param);
+			if(!"".equals(param.get("USER_SEQ").toString().trim()) && param.get("USER_SEQ") != null) {
+				String[] userSeqs = param.get("USER_SEQ").toString().split(",");
+				System.out.println("updateRoleUserMap userSeqs==>" + userSeqs.toString());
+				for(int i=0; i<userSeqs.length; i++) {
+					param.put("USER_SEQ", userSeqs[i]);
+					result = mapper.insertRoleUserMap(param);
+				}
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			return -1;
+		}
+		return result;
+	}
+
 }

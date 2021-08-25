@@ -82,6 +82,8 @@
 			     <include refid="roleListCondition"/>
 			     
 			   ) T1
+			   
+			    WHERE T1.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
 	
 	</select>
 	
@@ -235,5 +237,39 @@
 		 ORDER BY TMURM.USER_SEQ ASC
 	
 	</select>
+	
+	
+	<delete id="deleteRoleUseruMap" parameterType="java.util.HashMap">
+		
+		DELETE FROM TB_META_USER_ROLE_MAPPING
+	     
+	    WHERE ROLE_ID = #{ROLE_ID}
+	
+	</delete>
+	
+	<insert id="insertRoleUserMap" parameterType="java.util.HashMap">
+	
+		INSERT INTO tb_meta_user_role_mapping
+		( 
+		  
+		  USER_SEQ,
+	      ROLE_ID,
+	      CREATE_ID,
+	      CREATE_DATE,
+	      UPDATE_ID,
+	      UPDATE_DATE
+		
+		) VALUES (
+			
+		  #{USER_SEQ},
+	      #{ROLE_ID},
+	      #{CREATE_ID},
+	      NOW(),
+	      #{UPDATE_ID},
+	      NOW()
+	    
+	    )
+	
+	</insert>
 	
 </mapper>

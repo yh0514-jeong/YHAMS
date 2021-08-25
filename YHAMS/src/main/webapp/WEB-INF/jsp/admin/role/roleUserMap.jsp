@@ -26,7 +26,7 @@ function deleteMappedUser(target){
 
 function addMenuMapp(){
     
-	var length = $('#allMenuList tr input[type="checkbox"]:checked').length;
+	var length = $('#searchUserList tr input[type="checkbox"]:checked').length;
 	
 	if(length == 0){
 		alert('선택된 사용자가 없습니다.');
@@ -35,18 +35,18 @@ function addMenuMapp(){
 		var alreadyAddedList = new Array();
 		
 		$("#addedUserList tr img").each(function(){
-			alreadyAddedList.push($(this).attr("userId"));
+			alreadyAddedList.push($(this).attr("userSeq"));
 		});
 		
 		var toBeAddList = '';
 		var html        = '';
 		
-		$('#allUserList tr input[type="checkbox"]:checked').each(function(index) {
-			 var userId   = $(this).closest('tr').find('input[type="checkbox"]').val();
+		$('#searchUserList tr input[type="checkbox"]:checked').each(function(index) {
+			 var userSeq  = $(this).closest('tr').find('input[type="checkbox"]').val();
 			 var userInfo = $(this).closest('tr').find('td').eq(1).text();
 			 if(alreadyAddedList.indexOf($(this).val()) == -1){
 	       		 html += '<tr>';
-	       		 html += '	 <td><img src="/img/x-lg.svg" userId="' + userId + '" onclick="javascript:deleteMappedUser(this);" style="cursor: pointer;"></td>';
+	       		 html += '	 <td><img src="/img/x-lg.svg" userSeq="' + userSeq + '" onclick="javascript:deleteMappedUser(this);" style="cursor: pointer;"></td>';
 	       		 html += '	 <td>' + userInfo + '</td>';
 	       		 html += '</tr>';
 	       	 }else{
@@ -56,7 +56,7 @@ function addMenuMapp(){
 	    });
 		$("#addedUserList").append(html);
 	}
-	$('#allUserList tr input[type="checkbox"]').prop("checked", false);
+	$('#searchUserList tr input[type="checkbox"]').prop("checked", false);
 }
 
 function searchUser(){
@@ -71,11 +71,34 @@ function searchUser(){
 		};
 		
 		$.ajax({
-		    type : 'post',
+		    type : 'get',
 		    url : '/user/getUserList', 
 		    dataType : 'json', 
 		    data : param,
-		    success : function(result) { 
+		    success : function(result) {
+		    	if(result.resultCode == "success"){
+		    		var list = result.list;
+		    		var html = "";
+		    		if(list.length == 0){
+						html +=  '<tr>';		    			
+						html +=  ' 	<td colspan="2" align="center">조회된 사용자가 없습니다.</td>';
+						html +=  '</tr>';	    			
+		    		}else{
+		    			for(var i=0; i<list.length; i++){
+		    				html +=  '<tr>';		    			
+							html +=  '  <td><input type="checkbox" value="' + list[i].USER_SEQ + '"></td>';
+							html +=  ' 	<td>' + list[i].USER_INFO +'</td>';
+							html +=  '</tr>'; 
+		    			}
+		    		}
+		    		
+		    		$("#searchUserList").children().remove();
+		    		$("#searchUserList").append(html);
+		    		
+		    	}else{
+		    		alert('로드 실패!');
+		    		return;
+		    	}
 		    },
 		    error : function(request, status, error) { 
 		    }
@@ -86,16 +109,16 @@ function searchUser(){
 
 function save(){
 	var arr = '';
-	$('#addedMenuList tr').each(function(idx) {
+	$('#addedUserList tr').each(function(idx) {
 		if(idx == 0){
-			arr += $(this).find('img').attr('menuId');
+			arr += $(this).find('img').attr('userSeq');
 		}else{
-			arr += ',' + $(this).find('img').attr('menuId');
+			arr += ',' + $(this).find('img').attr('userSeq');
 		}
     });
 	var param = {
-	    ROLE_ID : ROLE_ID,
-	    MENU_ID : arr
+	    ROLE_ID   : ROLE_ID,
+	    USER_SEQ  : arr
 	};
 	$.ajax({
 	    type : 'post',
@@ -144,10 +167,10 @@ function save(){
 		  <thead class="thead-dark" align="center">
 		    <tr>
 		      <th scope="col"></th>
-		       <th scope="col">사용자</th>
+		      <th scope="col">사용자</th>
 		    </tr>
 		  </thead>
-		  <tbody id="allMenuList">
+		  <tbody id="searchUserList">
 		  </tbody>
 		</table>
 	</div>
@@ -175,7 +198,7 @@ function save(){
 		  <tbody id="addedUserList">
 		  	<c:forEach items="${roleUserMapList}" var="item">
 		  		<tr>
-		  		  <td><img src="/img/x-lg.svg" userId="${item.USER_ID}" onclick="javascript:deleteMappedUser(this);" style="cursor: pointer;"></td>
+		  		  <td><img src="/img/x-lg.svg" userSeq="${item.USER_SEQ}" onclick="javascript:deleteMappedUser(this);" style="cursor: pointer;"></td>
 		  		  <td>${item.USER_INFO}</td>
 		  		</tr>
 		  	</c:forEach>

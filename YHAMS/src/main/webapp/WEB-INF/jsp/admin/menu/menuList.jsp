@@ -12,7 +12,7 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-	list();
+	//list();
 });
 
 
@@ -98,23 +98,23 @@ function enterkey(){
 <body>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5 class="panel-title">권한 관리</h5>
+    <h5 class="panel-title">메뉴관리</h5>
   </div>
   <div class="panel-body">
-    관리자 > 권한관리
+    관리자 > 메뉴 관리
   </div>
 </div>
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">권한코드</div>
+      <div class="input-group-text" id="btnGroupAddon">메뉴ID</div>
     </div>
     <input type="text" class="form-control" id="ROLE_ID"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">권한명</div>
+      <div class="input-group-text" id="btnGroupAddon">메뉴명</div>
     </div>
     <input type="text" class="form-control" id="ROLE_NM"  onkeyup="javascript:enterkey();">
   </div>
@@ -137,10 +137,10 @@ function enterkey(){
 	  <thead class="thead-dark" align="center">
 	    <tr>
 	      <th scope="col">No.</th>
-	      <th scope="col">권한코드</th>
-	      <th scope="col">상위권한</th>
-	      <th scope="col">권한명</th>
-	      <th scope="col">권한설명</th>
+	      <th scope="col">메뉴ID</th>
+	      <th scope="col">메뉴명</th>
+	      <th scope="col">메뉴영문명</th>
+	      <th scope="col">메뉴URL</th>
 	      <th scope="col">기능</th>
 	    </tr>
 	  </thead>

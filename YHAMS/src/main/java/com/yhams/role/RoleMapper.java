@@ -28,4 +28,8 @@ public interface RoleMapper {
 
 	ArrayList<HashMap<String, Object>> getRoleUserMapList(HashMap<String, Object> param)  throws Exception;
 
+	int deleteRoleUseruMap(HashMap<String, Object> param) throws Exception;
+
+	int insertRoleUserMap(HashMap<String, Object> param) throws Exception;
+
 }
