@@ -10,4 +10,8 @@ public interface MenuMapper {
 
 	ArrayList<HashMap<String, Object>> getMenuList() throws Exception;
 
+	long menuCount(HashMap<String, Object> param) throws Exception;
+
+	ArrayList<HashMap<String, Object>> menuList(HashMap<String, Object> param)  throws Exception;
+
 }

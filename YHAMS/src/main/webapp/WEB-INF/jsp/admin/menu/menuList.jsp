@@ -12,15 +12,15 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-	//list();
+	list();
 });
 
 
 function list(){
 	
 	 var param = {
-		ROLE_ID    : $("#ROLE_ID").val().trim(),
-		ROLE_NM    : $("#ROLE_NM").val().trim(),
+		MENU_ID    : $("#MENU_ID").val().trim(),
+		MENU_NM    : $("#MENU_NM").val().trim(),
 		cntPerPage : $("#cntPerPage").val(),
 		curPage    : $("#curPage").val()
 	 };
@@ -28,7 +28,7 @@ function list(){
 	 
 	 $.ajax({
 		    type : 'get',
-		    url : '/role/roleListUp', 
+		    url : '/menu/menuListUp', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
@@ -43,16 +43,14 @@ function list(){
 				    		html += '</tr>';
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
-			    			html += '<tr align="center">';
+			    			html += '<tr align="left">';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ROLE_ID + '</td>';
-				    		html += '    <td scope="row">' + data[i].PAR_ROLE_ID + '</td>';
-				    		html += '    <td scope="row">' + data[i].ROLE_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ROLE_DC + '</td>';
+				    		html += '    <td scope="row">' + data[i].MENU_ID + '</td>';
+				    		html += '    <td scope="row">' + ('&nbsp'.repeat(5 * parseInt(data[i].LVL)) ) + data[i].MENU_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].MENU_NM_EN + '</td>';
+				    		html += '    <td scope="row">' + data[i].MENU_URL + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '         <button type="button" class="btn btn-outline-danger" onclick=\"javascript:goNew(\'' + data[i].ROLE_ID +  '\');\">' + '수정</button>';
-				    		html += '         <button type="button" class="btn btn-outline-success" onclick=\"javascript:goMenuMap(\'' + data[i].ROLE_ID +  '\');\">' + '메뉴 관리</button>';
-				    		html += '         <button type="button" class="btn btn-outline-info" onclick=\"javascript:goUserMap(\'' + data[i].ROLE_ID +  '\');\">' + '사용자 관리</button>';
+				    		html += '         <button type="button" class="btn btn-outline-danger" onclick=\"javascript:goNew(\'' + data[i].MENU_ID +  '\');\">' + '수정</button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -109,14 +107,14 @@ function enterkey(){
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon">메뉴ID</div>
     </div>
-    <input type="text" class="form-control" id="ROLE_ID"  onkeyup="javascript:enterkey();">
+    <input type="text" class="form-control" id="MENU_ID"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon">메뉴명</div>
     </div>
-    <input type="text" class="form-control" id="ROLE_NM"  onkeyup="javascript:enterkey();">
+    <input type="text" class="form-control" id="MENU_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button">검색</button>
@@ -144,7 +142,7 @@ function enterkey(){
 	      <th scope="col">기능</th>
 	    </tr>
 	  </thead>
-	  <tbody id="list">
+	  <tbody id="list" align="left">
 	  </tbody>
 	</table>
 </div>

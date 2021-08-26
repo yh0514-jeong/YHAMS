@@ -1,6 +1,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yhams.menu.MenuMapper">
 
+	<sql id="menuListWhere">
+		<if test="MENU_ID != null and MENU_ID != ''">
+	    AND  MENU_ID LIKE CONCAT('%',#{MENU_ID},'%')
+	    </if>
+	    
+	    <if test="MENU_NM != null and MENU_NM != ''">
+        AND  MENU_NM LIKE CONCAT('%',#{MENU_NM},'%')
+	    </if>
+	</sql>
+
+
 	<select id="getMenuList" resultType="java.util.HashMap">
 	
 		SELECT  MENU_ID,
@@ -14,4 +25,121 @@
 	     
 	</select>
 
+
+	<select id="menuList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+			SELECT  T1.RNUM,
+			        T1.MENU_ID,
+			        T1.PAR_MENU_ID,
+			        T1.MENU_NM,
+			        T1.MENU_NM_EN,
+			        T1.MENU_URL,
+			        T1.LVL,
+			        T1.GRP
+		    FROM (
+					WITH RECURSIVE CTE AS
+					(
+						SELECT     MENU_ID,
+							        PAR_MENU_ID,
+							        MENU_NM,
+							        MENU_NM_EN,
+							        MENU_URL,
+							        1 AS LVL,
+							        MENU_ID AS GRP
+							      
+							   FROM tb_meta_menu 
+						WHERE      PAR_MENU_ID IS NULL
+						
+						UNION ALL
+						
+						SELECT     B.MENU_ID,
+							        B.PAR_MENU_ID,
+							        B.MENU_NM,
+							        B.MENU_NM_EN,
+							        B.MENU_URL,
+							        LVL + 1 AS LVL,
+							        B.PAR_MENU_ID AS GRP
+							        
+						FROM       tb_meta_menu B
+						
+						INNER JOIN CTE C 
+						ON  B.PAR_MENU_ID = C.MENU_ID     
+					
+					)
+					
+					SELECT  ROW_NUMBER() OVER (ORDER BY GRP, LVL) AS RNUM,
+						    MENU_ID,
+					        PAR_MENU_ID,
+					        CONCAT(REPEAT('     ', LVL-1), MENU_NM) AS MENU_NM,
+					        MENU_NM_EN,
+					        MENU_URL,
+					        LVL,
+					        GRP
+					
+						    FROM CTE
+						    
+						    WHERE 1=1
+						    
+						    <include refid="menuListWhere"/>
+						   
+				  ) T1
+				 
+				  WHERE T1.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
+	</select>
+	
+	
+	<select id="menuCount" parameterType="java.util.HashMap" resultType="long">
+		
+		SELECT  COUNT(*)
+		
+		    FROM (
+					WITH RECURSIVE CTE AS
+					(
+						SELECT     MENU_ID,
+							        PAR_MENU_ID,
+							        MENU_NM,
+							        MENU_NM_EN,
+							        MENU_URL,
+							        1 AS LVL,
+							        MENU_ID AS GRP
+							      
+							   FROM tb_meta_menu 
+						WHERE      PAR_MENU_ID IS NULL
+						
+						UNION ALL
+						
+						SELECT     B.MENU_ID,
+							        B.PAR_MENU_ID,
+							        B.MENU_NM,
+							        B.MENU_NM_EN,
+							        B.MENU_URL,
+							        LVL + 1 AS LVL,
+							        B.PAR_MENU_ID AS GRP
+							        
+						FROM       tb_meta_menu B
+						
+						INNER JOIN CTE C 
+						ON  B.PAR_MENU_ID = C.MENU_ID     
+					
+					)
+					
+					SELECT  ROW_NUMBER() OVER (ORDER BY GRP, LVL) AS RNUM,
+						    MENU_ID,
+					        PAR_MENU_ID,
+					        CONCAT(REPEAT('     ', LVL-1), MENU_NM) AS MENU_NM,
+					        MENU_NM_EN,
+					        MENU_URL,
+					        LVL,
+					        GRP
+					
+						    FROM CTE
+						    
+						    WHERE 1=1
+						    
+						    <include refid="menuListWhere"/>
+						   
+				  ) T1
+	
+	</select>
+	
 </mapper>

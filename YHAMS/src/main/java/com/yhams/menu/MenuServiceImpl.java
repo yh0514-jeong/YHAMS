@@ -17,4 +17,14 @@ public class MenuServiceImpl implements MenuService {
 		return menuMapper.getMenuList();
 	}
 
+	@Override
+	public long menuCount(HashMap<String, Object> param) throws Exception {
+		return menuMapper.menuCount(param);
+	}
+
+	@Override
+	public ArrayList<HashMap<String, Object>> menuList(HashMap<String, Object> param) throws Exception {
+		return menuMapper.menuList(param);
+	}
+
 }
