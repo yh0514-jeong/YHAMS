@@ -14,6 +14,9 @@ public interface CommonMapper {
 
 	String getNextRoleId() throws Exception;
 	
+	String getNextMenuId() throws Exception;
+	
 	ArrayList<HashMap<String, Object>> getCgList(String codeGrp, String useYn) throws Exception;
+
 
 }

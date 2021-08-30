@@ -66,10 +66,10 @@ function list(){
 		});		
 }
 
-function goNew(roleId){
-	 var url    = (roleId == null || typeof roleId == 'undefined') ? "/role/roleUpdate" : "/role/roleUpdate?ROLE_ID=" + roleId ;
-	 var name   = (roleId == null || typeof roleId == 'undefined') ? '권한 등록': '권한 수정';
-	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
+function goNew(menuId){
+	 var url    = (menuId == null || typeof menuId == 'undefined') ? "/menu/menuUpdate" : "/menu/menuUpdate?MENU_ID=" + menuId;
+	 var name   = (menuId == null || typeof menuId == 'undefined') ? '메뉴 등록': '메뉴 수정';
+	 var option = "width = 500, height = 590, top = 100, left = 200, location = no";
      window.open(url, name, option);
 }
 

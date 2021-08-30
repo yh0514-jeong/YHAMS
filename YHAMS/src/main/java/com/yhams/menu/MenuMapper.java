@@ -12,6 +12,12 @@ public interface MenuMapper {
 
 	long menuCount(HashMap<String, Object> param) throws Exception;
 
-	ArrayList<HashMap<String, Object>> menuList(HashMap<String, Object> param)  throws Exception;
+	ArrayList<HashMap<String, Object>> menuList(HashMap<String, Object> param) throws Exception;
+
+	HashMap<String, Object> selectMenu(String param) throws Exception;
+
+	int insertMenu(HashMap<String, Object> param) throws Exception;
+
+	int updatetMenu(HashMap<String, Object> param) throws Exception;
 
 }

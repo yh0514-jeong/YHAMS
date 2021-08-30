@@ -26,11 +26,18 @@ public class CommonServiceImpl implements CommonService {
 	public String getNextRoleId() throws Exception {
 		return mapper.getNextRoleId();
 	}
+	
+	@Override
+	public String getNextMenuId() throws Exception {
+		return mapper.getNextMenuId();
+	}
 
 	@Override
 	public ArrayList<HashMap<String, Object>> getCgList(String codeGrp, String useYn) throws Exception {
 		return mapper.getCgList(codeGrp, useYn);
 	}
+
+	
 	
 
 }

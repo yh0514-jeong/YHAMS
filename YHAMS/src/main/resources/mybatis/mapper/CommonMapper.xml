@@ -12,6 +12,10 @@
 	<select id="getNextRoleId" resultType="String">
 		SELECT CONCAT('ROLE_', LPAD(NEXT VALUE FOR TB_META_ROLE_SEQ, 3, 0));
 	</select>
+	
+	<select id="getNextMenuId" resultType="String">
+		SELECT CONCAT('MENU_', LPAD(NEXT VALUE FOR TB_META_MENU_SEQ, 3, 0));
+	</select>
 
 	<select id="getCgList" parameterType="String" resultType="java.util.HashMap">
 			

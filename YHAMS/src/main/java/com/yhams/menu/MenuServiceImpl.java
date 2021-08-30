@@ -27,4 +27,19 @@ public class MenuServiceImpl implements MenuService {
 		return menuMapper.menuList(param);
 	}
 
+	@Override
+	public HashMap<String, Object> selectMenu(String param) throws Exception {
+		return menuMapper.selectMenu(param);
+	}
+
+	@Override
+	public int insertMenu(HashMap<String, Object> param) throws Exception {
+		return menuMapper.insertMenu(param);
+	}
+
+	@Override
+	public int updatetMenu(HashMap<String, Object> param) throws Exception {
+		return menuMapper.updatetMenu(param);
+	}
+
 }

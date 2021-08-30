@@ -11,6 +11,8 @@ public interface CommonService {
 	
 	String getNextRoleId() throws Exception;
 	
+	String getNextMenuId() throws Exception;
+	
 	/*
 	 * @Description 코드그룹 리스트 가져오기
 	 * @Param codeGrp : 코드그룹,
@@ -18,6 +20,8 @@ public interface CommonService {
 	 * 
 	 */
 	ArrayList<HashMap<String, Object>> getCgList(String codeGrp, String useYn) throws Exception;
+
+	
 	
 
 }
