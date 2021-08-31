@@ -49,7 +49,7 @@
 							        1 AS LVL,
 							        MENU_ID AS GRP
 							      
-							   FROM tb_meta_menu 
+							   FROM TB_META_MENU 
 						WHERE      PAR_MENU_ID IS NULL
 						
 						UNION ALL
@@ -62,7 +62,7 @@
 							        LVL + 1 AS LVL,
 							        B.PAR_MENU_ID AS GRP
 							        
-						FROM       tb_meta_menu B
+						FROM       TB_META_MENU B
 						
 						INNER JOIN CTE C 
 						ON  B.PAR_MENU_ID = C.MENU_ID     
@@ -105,7 +105,7 @@
 							        1 AS LVL,
 							        MENU_ID AS GRP
 							      
-							   FROM tb_meta_menu 
+							   FROM TB_META_MENU 
 						WHERE      PAR_MENU_ID IS NULL
 						
 						UNION ALL
@@ -118,7 +118,7 @@
 							        LVL + 1 AS LVL,
 							        B.PAR_MENU_ID AS GRP
 							        
-						FROM       tb_meta_menu B
+						FROM       TB_META_MENU B
 						
 						INNER JOIN CTE C 
 						ON  B.PAR_MENU_ID = C.MENU_ID     
@@ -178,8 +178,13 @@
 		
 		) VALUES (
 		
-		   #{MENU_ID},     
+		   #{MENU_ID},    
+		   <if test="PAR_MENU_ID != '' and PAR_MENU_ID != null"> 
 		   #{PAR_MENU_ID},  
+		   </if>
+		   <if test="PAR_MENU_ID == '' or PAR_MENU_ID == null">
+		   NULL,  
+		   </if>
 		   #{MENU_NM},      
 		   #{MENU_NM_EN},   
 		   #{MENU_URL},     
@@ -195,7 +200,13 @@
 	
 		 UPDATE TB_META_MENU
 		 
-			SET PAR_MENU_ID = #{PAR_MENU_ID},
+			SET PAR_MENU_ID = 
+				<if test="PAR_MENU_ID != '' and PAR_MENU_ID != null">
+				#{PAR_MENU_ID},
+				</if>
+				<if test="PAR_MENU_ID == '' or PAR_MENU_ID == null">
+				NULL,
+				</if>
 			    MENU_NM     = #{MENU_NM},
 			    MENU_NM_EN  = #{MENU_NM_EN},
 			    MENU_URL    = #{MENU_URL},

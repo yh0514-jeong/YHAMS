@@ -49,7 +49,6 @@
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
-		    	alert(JSON.stringify(result));
 		        if(result.result == "success"){
 		        	if(ACTION == "UPDATE"){
 			        	alert('수정 성공!');
