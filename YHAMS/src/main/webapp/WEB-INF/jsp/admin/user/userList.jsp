@@ -19,8 +19,8 @@ $(document).ready(function() {
 function list(){
 	
 	 var param = {
-		MENU_ID    : $("#MENU_ID").val().trim(),
-		MENU_NM    : $("#MENU_NM").val().trim(),
+		USER_ID    : $("#USER_ID").val().trim(),
+		USER_NM    : $("#USER_NM").val().trim(),
 		cntPerPage : $("#cntPerPage").val(),
 		curPage    : $("#curPage").val()
 	 };
@@ -45,12 +45,14 @@ function list(){
 			    		for(var i=0; i<data.length; i++){
 			    			html += '<tr align="left">';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].MENU_ID + '</td>';
-				    		html += '    <td scope="row">' + ('&nbsp'.repeat(5 * parseInt(data[i].LVL)) ) + data[i].MENU_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].MENU_NM_EN + '</td>';
-				    		html += '    <td scope="row">' + data[i].MENU_URL + '</td>';
+				    		html += '    <td scope="row">' + data[i].USER_ID + '</td>';
+				    		html += '    <td scope="row">' + data[i].USER_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].USER_NM_EN + '</td>';
+				    		html += '    <td scope="row">' + data[i].USER_ADRS + '</td>';
+				    		html += '    <td scope="row">' + data[i].USER_PHONE + '</td>';
+				    		html += '    <td scope="row">' + data[i].ACT_ST + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '         <button type="button" class="btn btn-outline-danger" onclick=\"javascript:goNew(\'' + data[i].MENU_ID +  '\');\">' + '수정</button>';
+				    		html += '         <button type="button" class="btn btn-outline-danger" onclick=\"javascript:goNew(\'' + data[i].USER_SEQ +  '\');\">' + '수정</button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -66,9 +68,9 @@ function list(){
 		});		
 }
 
-function goNew(menuId){
-	 var url    = (menuId == null || typeof menuId == 'undefined') ? "/menu/menuUpdate" : "/menu/menuUpdate?MENU_ID=" + menuId;
-	 var name   = (menuId == null || typeof menuId == 'undefined') ? '메뉴 등록': '메뉴 수정';
+function goNew(userSeq){
+	 var url    = (userSeq == null || typeof userSeq == 'undefined') ? "/user/userUpdate" : "/user/userUpdate?USER_SEQ=" + userSeq;
+	 var name   = (userSeq == null || typeof userSeq == 'undefined') ? '사용자 등록': '사용자 수정';
 	 var option = "width = 500, height = 590, top = 100, left = 200, location = no";
      window.open(url, name, option);
 }
@@ -126,7 +128,7 @@ function enterkey(){
 	      <th scope="col">사용자 영문명</th>
 	      <th scope="col">주소</th>
 	      <th scope="col">전화번호</th>
-	      <th scope="col">사용여부</th>
+	      <th scope="col">활동상태</th>
 	      <th scope="col">기능</th>
 	    </tr>
 	  </thead>

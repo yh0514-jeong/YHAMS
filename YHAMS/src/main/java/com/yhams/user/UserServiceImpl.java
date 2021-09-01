@@ -17,4 +17,19 @@ public class UserServiceImpl implements UserService{
 		return mapper.getUserList(param);
 	}
 
+	@Override
+	public long userCount(HashMap<String, Object> param) throws Exception {
+		return mapper.userCount(param);
+	}
+
+	@Override
+	public ArrayList<HashMap<String, Object>> userList(HashMap<String, Object> param) throws Exception {
+		return mapper.userList(param);
+	}
+
+	@Override
+	public HashMap<String, Object> getUserInfo(String param) throws Exception {
+		return mapper.getUserInfo(param);
+	}
+
 }

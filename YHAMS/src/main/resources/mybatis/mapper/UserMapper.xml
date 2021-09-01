@@ -1,6 +1,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yhams.user.UserMapper">
 
+
+    <sql id="userSearchWhere">
+    	<if test="USER_ID != null and USER_ID != ''">
+		AND   USER_ID LIKE CONCAT('%',#{USER_ID},'%')
+		</if>
+		<if test="USER_NM != null and USER_NM != ''">
+		AND   USER_NM LIKE CONCAT('%',#{USER_NM},'%')
+		</if>	
+    </sql>
+
 	
 	<select id="getUserList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	
@@ -31,6 +41,84 @@
 		
 		ORDER BY T1.RNUM DESC
 		
+	</select>
+	
+	
+	<select id="userList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+		SELECT   T1.RNUM,
+		         T1.USER_SEQ,
+		         T1.USER_ID,
+		         T1.USER_NM,
+		         T1.USER_NM_EN,
+		         T1.USER_EMAIL,
+		         T1.USER_ADRS,
+		         T1.USER_PHONE,
+		         T1.ACT_ST
+	
+	    FROM (
+				SELECT  ROW_NUMBER() OVER(ORDER BY USER_SEQ ASC) RNUM,
+				        USER_SEQ,
+				        USER_ID,
+				        USER_NM,
+				        USER_NM_EN,
+				        USER_EMAIL,
+				        USER_ADRS,
+				        USER_PHONE,
+				        (SELECT  CODE_NM
+				           FROM  TB_CMM_CDDTL
+				           WHERE ACT_ST = CODE_CD
+						 ) ACT_ST
+					FROM TB_META_USER
+					
+					WHERE 1=1
+					
+					<include refid="userSearchWhere"/>
+									
+			) T1
+			
+			WHERE T1.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
+	
+	</select>
+	
+	<select id="userCount" parameterType="java.util.HashMap" resultType="long">
+		
+		SELECT  COUNT(*)
+	
+	    FROM (
+				SELECT  USER_SEQ,
+				        USER_ID,
+				        USER_NM,
+				        USER_NM_EN,
+				        USER_EMAIL,
+				        USER_ADRS,
+				        USER_PHONE,
+				        ACT_ST
+					FROM TB_META_USER
+					
+					WHERE 1=1
+					
+					<include refid="userSearchWhere"/>
+			) T1
+	
+	</select>
+	
+	<select id="getUserInfo" parameterType="String" resultType="java.util.HashMap">
+	
+			SELECT   USER_SEQ,
+				     USER_ID,
+				     USER_PW,
+				     USER_NM,
+				     USER_NM_EN,
+				     USER_EMAIL,
+				     USER_ADRS,
+				     USER_PHONE,
+				     ACT_ST
+							
+			  FROM TB_META_USER
+							
+			  WHERE USER_SEQ = #{USER_SEQ}
+	
 	</select>
 
 

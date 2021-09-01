@@ -48,7 +48,7 @@
 		       T1.UPDATE_NM,
 		       DATE_FORMAT(T1.UPDATE_DATE, '%Y-%m-%d %H:%i:%s') AS UPDATE_DATE
        
-	      FROM (SELECT  ROW_NUMBER() OVER(ORDER BY CODE_ID ASC) AS RNUM,
+	      FROM (SELECT  ROW_NUMBER() OVER(ORDER BY CODE_ID, CODE_ORDR) AS RNUM,
 				        TCC.CODE_CD,
 				        TCC.CODE_ID,
 				        TCC.CODE_NM,
@@ -76,7 +76,7 @@
 				  
 	    WHERE T1.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
 	
-		ORDER BY CODE_ID ASC, CODE_ORDR ASC
+		ORDER BY RNUM ASC
 	
 	</select>
 	
