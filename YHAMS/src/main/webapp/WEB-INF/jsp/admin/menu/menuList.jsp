@@ -50,7 +50,7 @@ function list(){
 				    		html += '    <td scope="row">' + data[i].MENU_NM_EN + '</td>';
 				    		html += '    <td scope="row">' + data[i].MENU_URL + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '         <button type="button" class="btn btn-outline-danger" onclick=\"javascript:goNew(\'' + data[i].MENU_ID +  '\');\">' + '수정</button>';
+				    		html += '         <button type="button" class="btn btn-danger" onclick=\"javascript:goNew(\'' + data[i].MENU_ID +  '\');\">' + '수정</button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -68,23 +68,9 @@ function list(){
 
 function goNew(menuId){
 	 var url    = (menuId == null || typeof menuId == 'undefined') ? "/menu/menuUpdate" : "/menu/menuUpdate?MENU_ID=" + menuId;
-	 var name   = (menuId == null || typeof menuId == 'undefined') ? '메뉴 등록': '메뉴 수정';
+	 var name   = (menuId == null || typeof menuId == 'undefined') ? '<spring:message code="com.menu.insertMenu"/>': '<spring:message code="com.menu.updateMenu"/>';
 	 var option = "width = 500, height = 590, top = 100, left = 200, location = no";
      window.open(url, name, option);
-}
-
-function goMenuMap(roleId){
-	var url    = "/role/roleMenuMap?ROLE_ID=" + roleId ;
-	var name   = "메뉴 관리"
-	var option = "width = 850, height = 500, top = 100, left = 200, location = no";
-    window.open(url, name, option);
-}
-
-function goUserMap(roleId){
-	var url    = "/role/roleUserMap?ROLE_ID=" + roleId ;
-	var name   = "사용자 관리"
-	var option = "width = 850, height = 500, top = 100, left = 200, location = no";
-    window.open(url, name, option);
 }
 
 
@@ -105,19 +91,19 @@ function enterkey(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">메뉴ID</div>
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.menu.menuId"/></div> <!-- 메뉴ID -->
     </div>
     <input type="text" class="form-control" id="MENU_ID"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">메뉴명</div>
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.menu.menuNm"/></div> <!-- 메뉴명 -->
     </div>
     <input type="text" class="form-control" id="MENU_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
-  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button">검색</button>
+  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button"><spring:message code="com.btn.search"/></button><!-- 검색 -->
   &nbsp;
 </div>
 <!-- Paging Util Parameter Start -->
@@ -127,19 +113,19 @@ function enterkey(){
 <br>
 <br>
 <div style="float: left;">
-	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success">등록</button> 
+	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success"><spring:message code="com.btn.register"/></button> <!-- 등록 -->
 </div>
 
 <div class="table table-hover">
 	<table class="table">
 	  <thead class="thead-dark" align="center">
 	    <tr>
-	      <th scope="col">No.</th>
-	      <th scope="col">메뉴ID</th>
-	      <th scope="col">메뉴명</th>
-	      <th scope="col">메뉴영문명</th>
-	      <th scope="col">메뉴URL</th>
-	      <th scope="col">기능</th>
+	      <th scope="col"><spring:message code="com.txt.number"/></th> <!-- No. -->
+	      <th scope="col"><spring:message code="com.menu.menuId"/></th> <!-- 메뉴ID -->
+	      <th scope="col"><spring:message code="com.menu.menuNm"/></th> <!-- 메뉴명 -->
+	      <th scope="col"><spring:message code="com.menu.menuNmEn"/></th> <!-- 메뉴영문명 -->
+	      <th scope="col"><spring:message code="com.menu.menuUrl"/></th> <!-- 메뉴URL -->
+	      <th scope="col"><spring:message code="com.txt.function"/></th> <!-- 기능 -->
 	    </tr>
 	  </thead>
 	  <tbody id="list" align="left">

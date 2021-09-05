@@ -15,9 +15,9 @@
 
 	$(document).ready(function(){
 		if(ACTION == "UPDATE"){
-			$("#btnUpdate").html('수정');
+			$("#btnUpdate").html('<spring:message code="com.txt.update"/>');
 		}else{
-			$("#btnUpdate").html('등록');
+			$("#btnUpdate").html('<spring:message code="com.txt.register"/>');
 		}
 	});
 
@@ -25,13 +25,12 @@
 	function updateDetailCode(){
 		
 		if($("#ROLE_NM").val().trim().length == 0){
-			alert('권한명을 확인해주세요.');
+			alert('<spring:message code="com.role.chkRoleNm"/>');  // 권한명을 확인해주세요.
 			return;
 		}	
-		
 	
 		if($("#ROLE_DC").val().trim().length == 0){
-			alert('권한 설명을 확인해주세요.');
+			alert('<spring:message code="com.role.chkRoleDc"/>');  // 권한 설명을 확인해주세요.
 			return;
 		}	
 		
@@ -51,16 +50,16 @@
 		    success : function(result) { 
 		        if(result.result == "success"){
 		        	if(ACTION == "UPDATE"){
-			        	alert('수정 성공!');
+			        	alert('<spring:message code="com.msg.updateSuccess"/>');    // 수정 성공!
 		        	}else{
-			        	alert('등록 성공!');
+			        	alert('<spring:message code="com.msg.registerSuccess"/>');  // 등록 성공!
 		        	}
 		        	opener.parent.list(); 
 		        	window.close();
 		        }
 		    },
 		    error : function(request, status, error) { 
-		        alert('등록 실패!!');
+		        alert('<spring:message code="com.msg.registerfail"/>');  // 등록 실패!!
 		    }
 		});		
 	}
@@ -74,13 +73,13 @@
   </div>
 </div>
 	<div class="row mb-3">
-	    <label for="inputEmail3" class="col-sm-2 col-form-label">권한코드</label>
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.role.roleId"/></label>  <!-- 권한코드 -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="ROLE_ID"  value="${result.ROLE_ID}" disabled="disabled">
 	    </div>
     </div>
     <div class="row mb-3">
-	    <label for="inputPassword3" class="col-sm-2 col-form-label">상위권한</label>
+	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.role.uppserRole"/></label>  <!-- 상위권한 -->
 	    <div class="col-sm-10">
 	      <select id="PAR_ROLE_ID" class="form-select" aria-label="Default select example">
 	          		<option value="">선택</option>
@@ -91,13 +90,13 @@
 	    </div>	
     </div>
     <div class="row mb-3">
-	    <label for="inputPassword3" class="col-sm-2 col-form-label">권한명</label>
+	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.role.roleNm"/></label>  <!-- 권한명 -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="ROLE_NM" value="${result.ROLE_NM}">
     	</div>
 	</div>
 	<div class="row mb-3">
-	    <label for="inputPassword3" class="col-sm-2 col-form-label">권한설명</label>
+	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.role.roleDc"/></label>  <!-- 권한설명 -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="ROLE_DC" value="${result.ROLE_DC}">
     	</div>
@@ -106,7 +105,7 @@
 <div align="center" style="padding-top: 5%;">
 	<button id="btnUpdate" onclick="javascript:updateDetailCode();" type="button" class="btn btn-primary">
 	</button> 
-	<button id="btnDel" onclick="javascript:window.close();" type="button" class="btn btn-primary">닫기</button>
+	<button id="btnDel" onclick="javascript:window.close();" type="button" class="btn btn-primary"><spring:message code="com.btn.close"/></button> <!-- 닫기 -->
 </div>
 </body>    
 </html>

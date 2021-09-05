@@ -16,9 +16,9 @@
 
 	$(document).ready(function(){
 		if(ACTION == "UPDATE"){
-			$("#btnUpdate").html('수정');
+			$("#btnUpdate").html('<spring:message code="com.txt.update"/>');
 		}else{
-			$("#btnUpdate").html('등록');
+			$("#btnUpdate").html('<spring:message code="com.txt.register"/>');
 		}
 	});
 
@@ -26,27 +26,27 @@
 	function updateDetailCode(){
 		
 		if($("#CODE_ID").val().trim().length == 0){
-			alert('공통코드를 확인해주세요.');
+			alert('<spring:message code="com.dtlCode.chkComCode"/>');  // 공통코드를 확인해주세요.
 			return;
 		}
 		
 		if($("#CODE_CD").val().trim().length == 0){
-			alert('상세코드명을 확인해주세요.');
+			alert('<spring:message code="com.dtlCode.chkDtlCodeNm"/>'); // 상세코드명을 확인해주세요.
 			return;
 		}
 	
 		if($("#CODE_NM").val().trim().length == 0){
-			alert('코드명을 확인해주세요.');
+			alert('<spring:message code="com.comCode.chkCodeNm"/>');  // 코드명을 확인해주세요.
 			return;
 		}	
 		
 		if($("#CODE_ORDR").val().trim().length == 0){
-			alert('코드순서를 확인해주세요.');
+			alert('<spring:message code="com.dtlCode.chkCodeOrdr"/>');  // 코드순서를 확인해주세요.
 			return;
 		}	
 		
 		if($("#USE_YN").val().trim().length == 0){
-			alert('사용여부를 선택해주세요.');
+			alert('<spring:message code="com.comCode.chkUseYn"/>');  // 사용여부를 선택해주세요.
 			return;
 		}
 		
@@ -67,16 +67,16 @@
 		    success : function(result) { 
 		        if(result.result == "success"){
 		        	if(ACTION == "UPDATE"){
-			        	alert('수정 성공!');
+			        	alert('<spring:message code="com.msg.updateSuccess"/>');  // 수정 성공!
 		        	}else{
-			        	alert('등록 성공!');
+			        	alert('<spring:message code="com.msg.registerSuccess"/>');  // 등록 성공!
 		        	}
 		        	opener.parent.list(); 
 		        	window.close();
 		        }
 		    },
 		    error : function(request, status, error) { 
-		        alert('등록 실패!!');
+		        alert('<spring:message code="com.msg.registerfail"/>');  // 등록 실패!!
 		    }
 		});		
 	}
@@ -90,10 +90,10 @@
   </div>
 </div>
 	<div class="row mb-3">
-	    <label for="inputEmail3" class="col-sm-2 col-form-label">공통코드</label>
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.comCode.comCode"/></label><!-- 공통코드 -->
 	    <div class="col-sm-10">
 		    <select id="CODE_ID" class="form-select" aria-label="Default select example" <c:if test="${result.CODE_ID ne null}">disabled="disabled"</c:if>>
-	          		<option value="">===선택===</option>
+	          		<option value=""><spring:message code="com.txt.optionSelect"/></option>
 	          <c:forEach items="${comCodeList}" var="item">
 	          		<option value="${item.CODE_ID}" <c:if test ="${result.CODE_ID eq item.CODE_ID}"> selected="selected"</c:if>>${item.CODE_NM}</option>
 	          </c:forEach>
@@ -101,25 +101,25 @@
 	    </div>
     </div>
 	<div class="row mb-3">
-	    <label for="inputEmail3" class="col-sm-2 col-form-label">상세코드</label>
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.dtlCode.dtlCode"/></label><!-- 상세코드 -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="CODE_CD"  value="${result.CODE_CD}" <c:if test="${result.CODE_CD ne null}">disabled="disabled"</c:if>>
 	    </div>
     </div>
     <div class="row mb-3">
-	    <label for="inputPassword3" class="col-sm-2 col-form-label">코드명</label>
+	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.comCode.codeNm"/></label> <!-- 코드명 -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="CODE_NM" value="${result.CODE_NM}">
 	    </div>
     </div>
 	<div class="row mb-3">
-	    <label for="inputPassword3" class="col-sm-2 col-form-label">코드순서</label>
+	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.dtlCode.codeOrdr"/></label> <!-- 코드순서 -->
 	    <div class="col-sm-10">
 	      <input type="number" class="form-control" id="CODE_ORDR" value="${result.CODE_ORDR}">
     	</div>
 	</div>
     <div class="row mb-3">
-	    <label for="inputPassword3" class="col-sm-2 col-form-label">사용여부</label>
+	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.comCode.useYn"/></label> <!-- 사용여부 -->
 	    <div class="col-sm-10">
 	      <select id="USE_YN" class="form-select" aria-label="Default select example">
 	          <c:forEach items="${useYnCodeList}" var="item">
@@ -131,7 +131,7 @@
 <div align="center" style="padding-top: 5%;">
 	<button id="btnUpdate" onclick="javascript:updateDetailCode();" type="button" class="btn btn-primary">
 	</button> 
-	<button id="btnDel" onclick="javascript:window.close();" type="button" class="btn btn-primary">닫기</button>
+	<button id="btnDel" onclick="javascript:window.close();" type="button" class="btn btn-primary"><spring:message code="com.btn.close"/></button> <!-- 닫기 -->
 </div>
 </body>    
 </html>

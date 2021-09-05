@@ -52,7 +52,7 @@ function list(){
 				    		html += '    <td scope="row">' + data[i].USER_PHONE + '</td>';
 				    		html += '    <td scope="row">' + data[i].ACT_ST + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '         <button type="button" class="btn btn-outline-danger" onclick=\"javascript:goNew(\'' + data[i].USER_SEQ +  '\');\">' + '수정</button>';
+				    		html += '         <button type="button" class="btn btn-danger" onclick=\"javascript:goNew(\'' + data[i].USER_SEQ +  '\');\">' + '수정</button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -70,8 +70,8 @@ function list(){
 
 function goNew(userSeq){
 	 var url    = (userSeq == null || typeof userSeq == 'undefined') ? "/user/userUpdate" : "/user/userUpdate?USER_SEQ=" + userSeq;
-	 var name   = (userSeq == null || typeof userSeq == 'undefined') ? '사용자 등록': '사용자 수정';
-	 var option = "width = 500, height = 590, top = 100, left = 200, location = no";
+	 var name   = (userSeq == null || typeof userSeq == 'undefined') ? '<spring:message code="com.user.insertUser"/>': '<spring:message code="com.user.updateUser"/>';
+	 var option = "width = 500, height = 650, top = 100, left = 200, location = no";
      window.open(url, name, option);
 }
 
@@ -93,19 +93,19 @@ function enterkey(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">사용자ID</div>
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.user.userId"/></div> <!-- 사용자ID -->
     </div>
     <input type="text" class="form-control" id="USER_ID"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">사용자명</div>
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.user.userNm"/></div>  <!-- 사용자명 -->
     </div>
     <input type="text" class="form-control" id="USER_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
-  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button">검색</button>
+  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
   &nbsp;
 </div>
 <!-- Paging Util Parameter Start -->
@@ -115,21 +115,21 @@ function enterkey(){
 <br>
 <br>
 <div style="float: left;">
-	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success">등록</button> 
+	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success"><spring:message code="com.btn.register"/></button>  <!-- 등록 -->
 </div>
 
 <div class="table table-hover">
 	<table class="table">
 	  <thead class="thead-dark" align="center">
 	    <tr>
-	      <th scope="col">No.</th>
-	      <th scope="col">사용자ID</th>
-	      <th scope="col">사용자명</th>
-	      <th scope="col">사용자 영문명</th>
-	      <th scope="col">주소</th>
-	      <th scope="col">전화번호</th>
-	      <th scope="col">활동상태</th>
-	      <th scope="col">기능</th>
+	      <th scope="col"><spring:message code="com.txt.number"/></th>    <!-- No. -->
+	      <th scope="col"><spring:message code="com.user.userId"/></th>   <!-- 사용자ID -->
+	      <th scope="col"><spring:message code="com.user.userNm"/></th>   <!-- 사용자명 -->
+	      <th scope="col"><spring:message code="com.user.userNmEn"/></th> <!-- 사용자 영문명 -->
+	      <th scope="col"><spring:message code="com.user.userAdrs"/></th>  <!-- 주소 -->
+	      <th scope="col"><spring:message code="com.user.userPhone"/></th> <!-- 전화번호 -->
+	      <th scope="col"><spring:message code="com.user.actSt"/></th>     <!-- 활동상태 -->
+	      <th scope="col"><spring:message code="com.txt.function"/></th>   <!-- 기능 -->
 	    </tr>
 	  </thead>
 	  <tbody id="list" align="left">

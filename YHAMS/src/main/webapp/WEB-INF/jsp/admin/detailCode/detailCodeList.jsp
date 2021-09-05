@@ -73,7 +73,7 @@
  function goUpdate(codeId, codeCd){
 	 var flag = (codeId != null && typeof codeId != 'undefined') && (codeCd != null && typeof codeCd != 'undefined');
 	 var url    = flag ?  "/dtlCode/dtlCodeUpdate?CODE_ID=" + codeId + "&CODE_CD="+ codeCd : "/dtlCode/dtlCodeUpdate"; 
-	 var name   = flag ? "상세코드 수정" : "상세코드 등록";
+	 var name   = flag ? '<spring:message code="com.dtlCode.updateDtlCode"/>' : '<spring:message code="com.dtlCode.insertDtlCode"/>';
 	 var option = "width = 500, height = 600, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
@@ -101,26 +101,26 @@ function enterkey(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">상세코드</div>
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.dtlCode.dtlCode"/></div> <!-- 상세코드 -->
     </div>
     <input type="text" class="form-control" id="CODE_CD"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">공통코드</div>
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.comCode.comCode"/></div> <!-- 공통코드 -->
     </div>
     <input type="text" class="form-control" id="CODE_ID"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">코드명</div>
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.comCode.codeNm"/></div> <!-- 코드명 -->
     </div>
     <input type="text" class="form-control" id="CODE_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
-  <button type="button" class="btn btn-primary" onclick="javascript:list();">검색</button>
+  <button type="button" class="btn btn-primary" onclick="javascript:list();"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
   &nbsp;
 </div>
 <!-- Paging Util Parameter Start -->
@@ -137,14 +137,14 @@ function enterkey(){
 	  <thead align="center">
 	    <tr>
 	      <th scope="col"></th>
-	      <th scope="col">No.</th>
-	      <th scope="col">상세코드</th>
-	      <th scope="col">공통코드</th>
-	      <th scope="col">코드명</th>
-	      <th scope="col">코드순서</th>
-	      <th scope="col">사용여부</th>
-	      <th scope="col">등록자</th>
-	      <th scope="col">생성일</th>
+	      <th scope="col"><spring:message code="com.txt.number"/></th> <!-- No. -->
+	      <th scope="col"><spring:message code="com.dtlCode.dtlCode"/></th> <!-- 상세코드 -->
+	      <th scope="col"><spring:message code="com.comCode.comCode"/></th><!-- 공통코드 -->
+	      <th scope="col"><spring:message code="com.comCode.codeNm"/></th><!-- 코드명 -->
+	      <th scope="col"><spring:message code="com.dtlCode.codeOrdr"/></th> <!-- 코드순서 -->
+	      <th scope="col"><spring:message code="com.comCode.useYn"/></th> <!-- 사용여부 -->
+	      <th scope="col"><spring:message code="com.txt.createId"/></th> <!-- 등록자 -->
+	      <th scope="col"><spring:message code="com.txt.createDtm"/></th> <!-- 생성일 -->
 	      <th scope="col"></th>
 	    </tr>
 	  </thead>

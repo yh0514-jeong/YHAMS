@@ -16,7 +16,6 @@ var ROLE_NM  = "${roleMap.ROLE_NM}";
 
 $(document).ready(function() {
 	
-	
 });
 
 
@@ -29,7 +28,7 @@ function addMenuMapp(){
 	var length = $('#allMenuList tr input[type="checkbox"]:checked').length;
 	
 	if(length == 0){
-		alert('선택된 메뉴가 없습니다.');
+		alert('<spring:message code="com.menu.noSelected"/>');  // 선택된 메뉴가 없습니다.
 		return;
 	}else{
 		var alreadyAddedList = new Array();
@@ -50,7 +49,7 @@ function addMenuMapp(){
 	       		 html += '	 <td>' + menuNm + '</td>';
 	       		 html += '</tr>';
 	       	 }else{
-	       		 alert('이미 추가되어 있는 메뉴입니다.');
+	       		 alert('<spring:message code="com.menu.alreadyAdded"/>');  // 이미 추가되어 있는 메뉴입니다.
 	       		 return false;
 	       	 }
 	    });
@@ -83,11 +82,11 @@ function save(){
 	    data : param,
 	    success : function(result) { 
 	        if(result.resultCode == "success"){
-	        	alert('저장성공!');
+	        	alert('<spring:message code="com.msg.saveSuccess"/>');  // 저장성공!
 	        	opener.parent.list(); 
 	        	window.close();
 	        }else{
-	        	alert('저장실패!');
+	        	alert('<spring:message code="com.msg.saveFail"/>');  // 저장실패!
 	        }
 	    },
 	    error : function(request, status, error) { 
@@ -112,19 +111,19 @@ function save(){
 	<div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
 	  <div class="input-group">
 	    <div class="input-group-prepend">
-	      <div class="input-group-text" id="btnGroupAddon">메뉴명</div>
+	      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.menu.menuNm"/></div>  <!-- 메뉴명 -->
 	    </div>
 	    <input type="text" class="form-control" id="ROLE_NM"  onkeyup="javascript:enterkey();">
 	  </div>
 	  &nbsp;
-	  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button">검색</button>
+	  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
 	</div>	
 	<div class="table table-hover">	
 		<table class="table">
 		  <thead class="thead-dark" align="center">
 		    <tr>
 		      <th scope="col"></th>
-		      <th scope="col">메뉴명</th>
+		      <th scope="col"><spring:message code="com.menu.menuNm"/></th> <!-- 메뉴명 -->
 		    </tr>
 		  </thead>
 		  <tbody id="allMenuList">

@@ -50,9 +50,9 @@ function list(){
 				    		html += '    <td scope="row">' + data[i].ROLE_NM + '</td>';
 				    		html += '    <td scope="row">' + data[i].ROLE_DC + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '         <button type="button" class="btn btn-outline-danger" onclick=\"javascript:goNew(\'' + data[i].ROLE_ID +  '\');\">' + '수정</button>';
-				    		html += '         <button type="button" class="btn btn-outline-success" onclick=\"javascript:goMenuMap(\'' + data[i].ROLE_ID +  '\');\">' + '메뉴 관리</button>';
-				    		html += '         <button type="button" class="btn btn-outline-info" onclick=\"javascript:goUserMap(\'' + data[i].ROLE_ID +  '\');\">' + '사용자 관리</button>';
+				    		html += '         <button type="button" class="btn btn-danger" onclick=\"javascript:goNew(\'' + data[i].ROLE_ID +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
+				    		html += '         <button type="button" class="btn btn-success" onclick=\"javascript:goMenuMap(\'' + data[i].ROLE_ID +  '\');\">' + '<spring:message code="com.menu.menuManage"/></button>';
+				    		html += '         <button type="button" class="btn btn-info" onclick=\"javascript:goUserMap(\'' + data[i].ROLE_ID +  '\');\">' + '<spring:message code="com.user.userManage"/></button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -70,21 +70,21 @@ function list(){
 
 function goNew(roleId){
 	 var url    = (roleId == null || typeof roleId == 'undefined') ? "/role/roleUpdate" : "/role/roleUpdate?ROLE_ID=" + roleId ;
-	 var name   = (roleId == null || typeof roleId == 'undefined') ? '권한 등록': '권한 수정';
+	 var name   = (roleId == null || typeof roleId == 'undefined') ? '<spring:message code="com.role.insertRole"/>': '<spring:message code="com.role.updateRole"/>';
 	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
      window.open(url, name, option);
 }
 
 function goMenuMap(roleId){
 	var url    = "/role/roleMenuMap?ROLE_ID=" + roleId ;
-	var name   = "메뉴 관리"
+	var name   = '<spring:message code="com.menu.menuManage"/>';
 	var option = "width = 850, height = 500, top = 100, left = 200, location = no";
     window.open(url, name, option);
 }
 
 function goUserMap(roleId){
 	var url    = "/role/roleUserMap?ROLE_ID=" + roleId ;
-	var name   = "사용자 관리"
+	var name   = '<spring:message code="com.user.userManage"/>';
 	var option = "width = 850, height = 500, top = 100, left = 200, location = no";
     window.open(url, name, option);
 }
@@ -107,19 +107,19 @@ function enterkey(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">권한코드</div>
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.role.roleId"/></div> <!-- 권한코드 -->
     </div>
     <input type="text" class="form-control" id="ROLE_ID"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">권한명</div>
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.role.roleNm"/></div> <!-- 권한명 -->
     </div>
     <input type="text" class="form-control" id="ROLE_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
-  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button">검색</button>
+  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
   &nbsp;
 </div>
 <!-- Paging Util Parameter Start -->
@@ -129,19 +129,19 @@ function enterkey(){
 <br>
 <br>
 <div style="float: left;">
-	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success">등록</button> 
+	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success"><spring:message code="com.btn.register"/></button> <!-- 등록 -->
 </div>
 
 <div class="table table-hover">
 	<table class="table">
 	  <thead class="thead-dark" align="center">
 	    <tr>
-	      <th scope="col">No.</th>
-	      <th scope="col">권한코드</th>
-	      <th scope="col">상위권한</th>
-	      <th scope="col">권한명</th>
-	      <th scope="col">권한설명</th>
-	      <th scope="col">기능</th>
+	      <th scope="col"><spring:message code="com.txt.number"/></th>      <!-- No. -->
+	      <th scope="col"><spring:message code="com.role.roleId"/></th>     <!-- 권한코드 -->
+	      <th scope="col"><spring:message code="com.role.uppserRole"/></th> <!-- 상위권한 -->
+	      <th scope="col"><spring:message code="com.role.roleNm"/></th>     <!-- 권한명 -->
+	      <th scope="col"><spring:message code="com.role.roleDc"/></th>     <!-- 권한설명 -->
+	      <th scope="col"><spring:message code="com.txt.function"/></th>    <!-- 기능 -->
 	    </tr>
 	  </thead>
 	  <tbody id="list">

@@ -16,7 +16,6 @@ var ROLE_NM  = "${roleMap.ROLE_NM}";
 
 $(document).ready(function() {
 	
-	
 });
 
 
@@ -29,7 +28,7 @@ function addMenuMapp(){
 	var length = $('#searchUserList tr input[type="checkbox"]:checked').length;
 	
 	if(length == 0){
-		alert('선택된 사용자가 없습니다.');
+		alert('<spring:message code="com.user.noSelectedUser"/>');  // 선택된 사용자가 없습니다.
 		return;
 	}else{
 		var alreadyAddedList = new Array();
@@ -50,7 +49,7 @@ function addMenuMapp(){
 	       		 html += '	 <td>' + userInfo + '</td>';
 	       		 html += '</tr>';
 	       	 }else{
-	       		 alert('이미 추가되어 있는 사용자입니다.');
+	       		 alert('<spring:message code="com.user.alreadyAddedUser"/>');  // 이미 추가되어 있는 사용자입니다.
 	       		 return false;
 	       	 }
 	    });
@@ -63,7 +62,7 @@ function searchUser(){
 	var searchContent = $("#SEARCH_USER").val();
 	
 	if(searchContent.trim().length == 0){
-		alert('검색어를 입력해주세요.');
+		alert('<spring:message code="com.msg.enterSearchContents"/>');   // 검색어를 입력해주세요.
 		return;
 	}else{
 		var param = {
@@ -81,7 +80,7 @@ function searchUser(){
 		    		var html = "";
 		    		if(list.length == 0){
 						html +=  '<tr>';		    			
-						html +=  ' 	<td colspan="2" align="center">조회된 사용자가 없습니다.</td>';
+						html +=  ' 	<td colspan="2" align="center"><spring:message code="com.user.noResult"/></td>';
 						html +=  '</tr>';	    			
 		    		}else{
 		    			for(var i=0; i<list.length; i++){
@@ -96,7 +95,7 @@ function searchUser(){
 		    		$("#searchUserList").append(html);
 		    		
 		    	}else{
-		    		alert('로드 실패!');
+		    		alert('<spring:message code="com.msg.loadfail"/>');
 		    		return;
 		    	}
 		    },
@@ -127,11 +126,11 @@ function save(){
 	    data : param,
 	    success : function(result) { 
 	        if(result.resultCode == "success"){
-	        	alert('저장성공!');
+	        	alert('<spring:message code="com.msg.saveSuccess"/>');
 	        	opener.parent.list(); 
 	        	window.close();
 	        }else{
-	        	alert('저장실패!');
+	        	alert('<spring:message code="com.msg.saveFail"/>');
 	        }
 	    },
 	    error : function(request, status, error) { 
@@ -155,19 +154,19 @@ function save(){
 	<div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
 	  <div class="input-group">
 	    <div class="input-group-prepend">
-	      <div class="input-group-text" id="btnGroupAddon">사용자</div>
+	      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.user.user"/></div> <!-- 사용자 -->
 	    </div>
 	    <input type="text" class="form-control" id="SEARCH_USER" placeholder="사용자 ID 혹은 사용자명" style="width: 240px;">
 	  </div>
 	  &nbsp;
-	  <button type="button" class="btn btn-primary" onclick="javascript:searchUser();" type="button">검색</button>
+	  <button type="button" class="btn btn-primary" onclick="javascript:searchUser();" type="button"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
 	</div>	
 	<div class="table table-hover">	
 		<table class="table">
 		  <thead class="thead-dark" align="center">
 		    <tr>
 		      <th scope="col"></th>
-		      <th scope="col">사용자</th>
+		      <th scope="col"><spring:message code="com.user.user"/></th> <!-- 사용자 -->
 		    </tr>
 		  </thead>
 		  <tbody id="searchUserList">
@@ -185,14 +184,14 @@ function save(){
 <!-- 현재 권한에 추가되어 있는 메뉴 테이블 -->
 <div style="float:right;  width: 45%; height: 70%;">
 	<div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right; padding-right: 10px;">
-	  <button type="button" class="btn btn-success" onclick="javascript:save();" type="button">저장</button>
+	  <button type="button" class="btn btn-success" onclick="javascript:save();" type="button"><spring:message code="com.btn.save"/></button> <!-- 저장 -->
 	</div>	
 	<div class="table table-hover">
 		<table class="table">
 		  <thead class="thead-dark" align="center">
 		    <tr>
 		      <th scope="col"></th>
-		      <th scope="col">사용자</th>
+		      <th scope="col"><spring:message code="com.user.user"/></th> <!-- 사용자 -->
 		    </tr>
 		  </thead>
 		  <tbody id="addedUserList">

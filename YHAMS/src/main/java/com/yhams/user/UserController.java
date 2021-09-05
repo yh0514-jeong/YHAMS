@@ -106,6 +106,36 @@ public class UserController {
 	}
 	
 	
+	
+	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> updateUser(@RequestParam HashMap<String, Object> param, 
+			                                     HttpSession session,
+			                                     HttpServletRequest request,
+			                                     HttpServletResponse response){
+		
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		
+		int r = 0;
+		try {
+			
+			param.put("CREATE_ID", session.getAttribute("USER_SEQ"));
+			param.put("UPDATE_ID", session.getAttribute("USER_SEQ"));
+			
+			if("INSERT".equals(param.get("ACTION"))){
+				
+			}else {
+				
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", "fail");
+		}
+		result.put("result", "success");
+		return result;
+	}
+	
+	
 	@RequestMapping(value = "/getUserList", method = RequestMethod.GET)
 	@ResponseBody
 	public HashMap<String, Object> comCodeListUp(@RequestParam HashMap<String, Object> param, 

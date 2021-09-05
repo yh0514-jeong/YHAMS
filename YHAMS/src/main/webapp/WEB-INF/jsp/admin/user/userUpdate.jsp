@@ -15,42 +15,42 @@
 
 	$(document).ready(function(){
 		if(ACTION == "UPDATE"){
-			$("#btnUpdate").html('수정');
+			$("#btnUpdate").html('<spring:message code="com.txt.update"/>');
 		}else{
-			$("#btnUpdate").html('등록');
+			$("#btnUpdate").html('<spring:message code="com.txt.register"/>');
 		}
 	});
 
 	
-	function updateMenu(){
+	function updateUser(){
 		
 		var param = {
 				ACTION        : ACTION,
-				MENU_ID       : $("#MENU_ID").val(),
-				PAR_MENU_ID   : $("#PAR_MENU_ID").val(),
-				MENU_NM       : $("#MENU_NM").val(),
-				MENU_NM_EN    : $("#MENU_NM_EN").val(),
-				MENU_URL      : $("#MENU_URL").val()
+				ACT_ST        : $("#ACT_ST").val(),
+				USER_NM       : $("#USER_NM").val(),
+				USER_NM_EN    : $("#USER_NM_EN").val(),
+				USER_ADRS     : $("#USER_ADRS").val(),
+				USER_EMAIL    : $("#USER_EMAIL").val()
 		}
 		
 		$.ajax({
 		    type : 'post',
-		    url : '/menu/updateMenu', 
+		    url : '/user/updateUser', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
 		        if(result.result == "success"){
 		        	if(ACTION == "UPDATE"){
-			        	alert('수정 성공!');
+			        	alert('<spring:message code="com.msg.updateSuccess"/>');  // 수정 성공!
 		        	}else{
-			        	alert('등록 성공!');
+			        	alert('<spring:message code="com.msg.registerSuccess"/>'); // 등록 성공!
 		        	}
 		        	opener.parent.list(); 
 		        	window.close();
 		        }
 		    },
 		    error : function(request, status, error) { 
-		        alert('등록 실패!!');
+		        alert('<spring:message code="com.msg.registerFail"/>');  // 등록 실패!!
 		    }
 		});		
 	}
@@ -63,14 +63,15 @@
     <h5 class="panel-title">${nav}</h5>
   </div>
 </div>
+    <input type="hidden" id="USER_SEQ" name="USER_SEQ" value="${result.USER_SEQ}">
 	<div class="row mb-3">
-	    <label for="inputEmail3" class="col-sm-2 col-form-label">사용자ID</label>
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userId"/></label> <!-- 사용자ID -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="USER_ID"  value="${result.USER_ID}" disabled="disabled">
 	    </div>
     </div>
     <div class="row mb-3">
-	    <label for="inputPassword3" class="col-sm-2 col-form-label">활동상태</label>
+	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.user.actSt"/></label> <!-- 활동상태 -->
 	    <div class="col-sm-10">
 	      <select id="ACT_ST" class="form-select" aria-label="Default select example">
 	          		<option value="">선택</option>
@@ -81,33 +82,33 @@
 	    </div>	
     </div>
 	<div class="row mb-3">
-	    <label for="inputEmail3" class="col-sm-2 col-form-label">사용자명</label>
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userNm"/></label> <!-- 사용자명 -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="USER_NM"  value="${result.USER_NM}">
 	    </div>
     </div>
 	<div class="row mb-3">
-	    <label for="inputEmail3" class="col-sm-2 col-form-label">사용자 영문명</label>
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userNmEn"/></label> <!-- 사용자 영문명 -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="USER_NM_EN"  value="${result.USER_NM_EN}">
 	    </div>
     </div>
 	<div class="row mb-3">
-	    <label for="inputEmail3" class="col-sm-2 col-form-label">주소</label>
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userAdrs"/></label> <!-- 주소 -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="USER_ADRS"  value="${result.USER_ADRS}">
 	    </div>
     </div>
 	<div class="row mb-3">
-	    <label for="inputEmail3" class="col-sm-2 col-form-label">E-mail</label>
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userAdrs"/></label> <!-- E-mail -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="USER_EMAIL"  value="${result.USER_EMAIL}">
 	    </div>
     </div>
 <div align="center" style="padding-top: 5%;">
-	<button id="btnUpdate" onclick="javascript:updateMenu();" type="button" class="btn btn-primary">
+	<button id="btnUpdate" onclick="javascript:updateUser();" type="button" class="btn btn-primary">
 	</button> 
-	<button id="btnDel" onclick="javascript:window.close();" type="button" class="btn btn-primary">닫기</button>
+	<button id="btnDel" onclick="javascript:window.close();" type="button" class="btn btn-primary"><spring:message code="com.btn.close"/></button> <!-- 닫기 -->
 </div>
 </body>    
 </html>
