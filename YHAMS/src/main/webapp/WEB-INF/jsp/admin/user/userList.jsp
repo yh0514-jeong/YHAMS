@@ -80,6 +80,45 @@ function enterkey(){
 	if (window.event.keyCode == 13) { list(); }
 }
 
+function drawPaging(param){
+	$("#pagination").html('');
+		let pageList = new Array();
+		pageList = param.pageList;
+		var html = '<nav aria-label="Page navigation example">';
+		    html += '   <ul class="pagination" style="justify-content: center;>' ;
+		if(param.isPrevExist == true){
+		    html += '      <li class="page-item"><a class="page-link" href="javascript:setCurPage(' + parseInt(pageList[i])-1 + ')">Previous</a></li>';
+		}
+		for(var i=0; i<pageList.length; i++){
+			html += '      <li class="page-item"><a class="page-link" href="javascript:setCurPage(' + parseInt(pageList[i]) + ')">'+ pageList[i]  + '</a></li>';		
+		}	
+		if(param.isNextExist == true){
+			html += '      <li class="page-item"><a class="page-link" href="javascript:setCurPage(' + parseInt(pageList[i])+1 + ')">Next</a></li>';	
+		}
+		html += "   &nbsp;&nbsp;";
+		html += "   <select id='postPerPage' onchange='javascript:changePerPage(this.value);' style='float:center;'>";
+		html += "        <option value='10'>10</option>";
+		html += "        <option value='20'>20</option>";
+		html += "        <option value='30'>30</option>";
+		html += "        <option value='50'>50</option>";
+		html += "        <option value='100'>100</option>";
+		html += "   </select>";
+		html += "  </ul>";
+		html += "</nav>";
+	$("#pagination").html(html);
+}
+
+function changePerPage(value){
+	$("#curPage").val(1);
+	$("#cntPerPage").val(value);
+	list();
+}
+
+function setCurPage(page){
+	$("#curPage").val(page);
+	list();
+}
+
 </script>
 <body>
 <div class="panel panel-default">
@@ -114,9 +153,9 @@ function enterkey(){
 <!-- Paging Util Parameter End -->
 <br>
 <br>
-<div style="float: left;">
+<%-- <div style="float: left;">
 	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success"><spring:message code="com.btn.register"/></button>  <!-- 등록 -->
-</div>
+</div> --%>
 
 <div class="table table-hover">
 	<table class="table">
@@ -138,12 +177,5 @@ function enterkey(){
 </div>
 <!-- 페이징 처리 -->
 <div id="pagination"></div>
-<select id='postPerPage' onchange='javascript:changePerPage(this.value);' style='float:center;'>
-		<option value='10'>10</option>
-		<option value='20'>20</option>
-		<option value='30'>30</option>
-		<option value='50'>50</option>
-		<option value='100'>100</option>
-</select>     
 </body>    
 </html>

@@ -149,12 +149,5 @@ function enterkey(){
 </div>
 <!-- 페이징 처리 -->
 <div id="pagination"></div>
-<select id='postPerPage' onchange='javascript:changePerPage(this.value);' style='float:center;'>
-		<option value='10'>10</option>
-		<option value='20'>20</option>
-		<option value='30'>30</option>
-		<option value='50'>50</option>
-		<option value='100'>100</option>
-</select>                 
 </body>    
 </html>
