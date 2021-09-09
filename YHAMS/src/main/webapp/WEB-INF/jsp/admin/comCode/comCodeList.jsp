@@ -8,7 +8,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1">
    <title>YHAMS Main</title>
 </head>
-<script type="text/javascript" src='<c:url value="/js/paging.js"/>'></script>
+<%-- <script type="text/javascript" src='<c:url value="/js/paging.js"/>'></script> --%>
 <script type="text/javascript">
 
  $(document).ready(function(){
@@ -83,6 +83,7 @@
 function enterkey(){
 	if (window.event.keyCode == 13) { list(); }
 }
+
 
 </script>
 <body>

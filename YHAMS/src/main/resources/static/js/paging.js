@@ -13,13 +13,14 @@ function drawPaging(param){
 		if(param.isNextExist == true){
 			html += '      <li class="page-item"><a class="page-link" href="javascript:setCurPage(' + parseInt(pageList[i])+1 + ')">Next</a></li>';	
 		}
+		
+		var pages = [10,20,30,40,50];
+		
 		html += "   &nbsp;&nbsp;";
 		html += "   <select id='postPerPage' onchange='javascript:changePerPage(this.value);' style='float:center;'>";
-		html += "        <option value='10'>10</option>";
-		html += "        <option value='20'>20</option>";
-		html += "        <option value='30'>30</option>";
-		html += "        <option value='50'>50</option>";
-		html += "        <option value='100'>100</option>";
+		for(var i=0; i<pages.length; i++){
+			html += "        <option value='" + pages[i] + "'" + (pages[i]== param.postsPerPage ? ' selected="selected"' : '') +  ">" + pages[i] + "</option>";
+		}
 		html += "   </select>";
 		html += "  </ul>";
 		html += "</nav>";

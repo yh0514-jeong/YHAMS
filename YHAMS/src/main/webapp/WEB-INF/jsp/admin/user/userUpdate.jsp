@@ -21,7 +21,6 @@
 		}
 	});
 
-	
 	function updateUser(){
 		
 		var param = {
