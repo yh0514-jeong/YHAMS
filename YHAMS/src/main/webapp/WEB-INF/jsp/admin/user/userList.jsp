@@ -71,7 +71,7 @@ function list(){
 function goNew(userSeq){
 	 var url    = (userSeq == null || typeof userSeq == 'undefined') ? "/user/userUpdate" : "/user/userUpdate?USER_SEQ=" + userSeq;
 	 var name   = (userSeq == null || typeof userSeq == 'undefined') ? '<spring:message code="com.user.insertUser"/>': '<spring:message code="com.user.updateUser"/>';
-	 var option = "width = 500, height = 650, top = 100, left = 200, location = no";
+	 var option = "width = 700, height = 600, top = 100, left = 200, location = no";
      window.open(url, name, option);
 }
 

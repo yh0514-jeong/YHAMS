@@ -1,10 +1,7 @@
 package com.yhams.comCode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +18,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
+import com.yhams.log.LogService;
+import com.yhams.util.CommonContraint;
 import com.yhams.util.PagingUtil;
 
 import lombok.extern.log4j.Log4j2;
@@ -38,6 +37,9 @@ public class ComCodeController {
 	@Autowired
 	CommonService commonService;
 	
+	@Autowired
+	LogService logService;
+	
 	
 	@RequestMapping(value = "/comCodeManageMain")
 	public ModelAndView main() {
@@ -52,7 +54,9 @@ public class ComCodeController {
 							            HttpServletRequest request,
 							            HttpServletResponse response) {
 		
-		logger.info("/comCodeUpdate CODE_ID=>" + CODE_ID);
+		
+		logService.insertUserActLog(request, session);
+		
 		
 		ModelAndView mv           = new ModelAndView();
 		HashMap<String, Object> r = new HashMap<String, Object>();
@@ -84,6 +88,8 @@ public class ComCodeController {
 			                                     HttpServletRequest request,
 			                                     HttpServletResponse response){
 		
+		logService.insertUserActLog(request, session);
+		
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		int r = 0;
 		try {
@@ -101,9 +107,9 @@ public class ComCodeController {
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", "fail");
+			result.put("result", CommonContraint.FAIL);
 		}
-		result.put("result", "success");
+		result.put("result", CommonContraint.SUCCEESS);
 		return result;
 	}
 	
@@ -111,8 +117,11 @@ public class ComCodeController {
 	@RequestMapping(value = "/comCodeListUp", method = RequestMethod.GET)
 	@ResponseBody
 	public HashMap<String, Object> comCodeListUp(@RequestParam HashMap<String, Object> param, 
+											                   HttpSession session,
 															   HttpServletRequest  request,
 															   HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
 		
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
@@ -131,10 +140,10 @@ public class ComCodeController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  "success");
+			result.put("resultCode",  CommonContraint.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  "fail");
+			result.put("resultCode",  CommonContraint.FAIL);
 		}
 		
 		return result;

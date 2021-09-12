@@ -120,6 +120,27 @@
 			  WHERE USER_SEQ = #{USER_SEQ}
 	
 	</select>
+	
+	<update id="updateUser" parameterType="java.util.HashMap">
+	
+		UPDATE  TB_META_USER
+			SET USER_NM    = #{USER_NM},
+			    USER_NM_EN = #{USER_NM_EN},
+			    USER_EMAIL = #{USER_EMAIL},
+			    USER_ADRS  = #{USER_ADRS},
+			    USER_PHONE = #{USER_PHONE},
+			    ACT_ST     = #{ACT_ST}
+		  WHERE USER_SEQ   = #{USER_SEQ}
+	
+	</update>
+	
+	<update id="initPwd" parameterType="java.util.HashMap">
+		
+		UPDATE  TB_META_USER
+			SET USER_PW    = #{USER_PW}
+		  WHERE USER_SEQ   = #{USER_SEQ}
+		  
+	</update>
 
 
 </mapper>

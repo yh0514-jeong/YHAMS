@@ -20,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.comCode.ComCodeService;
 import com.yhams.common.CommonService;
+import com.yhams.log.LogService;
+import com.yhams.util.CommonContraint;
 import com.yhams.util.PagingUtil;
 import com.yhams.util.StringUtil;
 
@@ -38,6 +40,9 @@ public class DetailCodeController {
 	@Autowired
 	ComCodeService comCodeService;
 	
+	@Autowired
+	LogService logService;
+	
 	
 	@RequestMapping(value = "/dtlCodeManageMain")
 	public ModelAndView main() {
@@ -52,6 +57,8 @@ public class DetailCodeController {
 							            HttpSession session,
 							            HttpServletRequest request,
 							            HttpServletResponse response) {
+		
+		logService.insertUserActLog(request, session);
 		
 		ModelAndView mv               = new ModelAndView();
 		HashMap<String, Object> r     = new HashMap<String, Object>();
@@ -93,6 +100,8 @@ public class DetailCodeController {
 			                                     HttpServletRequest request,
 			                                     HttpServletResponse response){
 		
+		logService.insertUserActLog(request, session);
+		
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		
 		logger.info("/updateDtlCode, param.toString()==>" + param.toString());
@@ -109,9 +118,9 @@ public class DetailCodeController {
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", "fail");
+			result.put("result", CommonContraint.FAIL);
 		}
-		result.put("result", "success");
+		result.put("result", CommonContraint.SUCCEESS);
 		return result;
 	}
 	
@@ -120,8 +129,11 @@ public class DetailCodeController {
 	@RequestMapping(value = "/dtlCodeListUp", method = RequestMethod.GET)
 	@ResponseBody
 	public HashMap<String, Object> comCodeListUp(@RequestParam HashMap<String, Object> param, 
+			                                                   HttpSession session,
 															   HttpServletRequest  request,
 															   HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
 		
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
@@ -138,10 +150,10 @@ public class DetailCodeController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  "success");
+			result.put("resultCode",  CommonContraint.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  "fail");
+			result.put("resultCode", CommonContraint.FAIL);
 		}
 		
 		return result;

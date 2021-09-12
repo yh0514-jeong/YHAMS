@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yhams.common.CommonService;
+import com.yhams.log.LogService;
 import com.yhams.menu.MenuService;
+import com.yhams.util.CommonContraint;
 import com.yhams.util.PagingUtil;
 
 @Controller
@@ -40,6 +39,9 @@ public class RoleController {
 	@Autowired
 	MenuService menuService;
 	
+	@Autowired
+	LogService logService;
+	
 	@RequestMapping(value = "/roleManageMain")
 	public ModelAndView main() {
 		ModelAndView mv = new ModelAndView();
@@ -50,9 +52,12 @@ public class RoleController {
 	
 	@RequestMapping(value = "/roleListUp", method = RequestMethod.GET)
 	@ResponseBody
-	public HashMap<String, Object> roleListUp(@RequestParam HashMap<String, Object> param, 
+	public HashMap<String, Object> roleListUp(@RequestParam HashMap<String, Object> param,
+			                                                HttpSession session,
 														    HttpServletRequest  request,
 															HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
 		
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
@@ -71,10 +76,10 @@ public class RoleController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  "success");
+			result.put("resultCode",  CommonContraint.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  "fail");
+			result.put("resultCode",  CommonContraint.FAIL);
 		}
 		
 		return result;
@@ -86,6 +91,8 @@ public class RoleController {
 							            HttpSession session,
 							            HttpServletRequest request,
 							            HttpServletResponse response) {
+		
+		logService.insertUserActLog(request, session);
 		
 		logger.info("/roleUpdate ==> ROLE_ID " +  ROLE_ID);
 		
@@ -134,6 +141,8 @@ public class RoleController {
 			                                     HttpServletRequest request,
 			                                     HttpServletResponse response){
 		
+		logService.insertUserActLog(request, session);
+		
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		
 		int r = 0;
@@ -153,9 +162,9 @@ public class RoleController {
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", "fail");
+			result.put("result", CommonContraint.FAIL);
 		}
-		result.put("result", "success");
+		result.put("result", CommonContraint.SUCCEESS);
 		return result;
 	}
 	
@@ -166,6 +175,8 @@ public class RoleController {
 							            HttpSession session,
 							            HttpServletRequest request,
 							            HttpServletResponse response) {
+		
+		logService.insertUserActLog(request, session);
 		
 		ModelAndView mv                 = new ModelAndView();
 		HashMap<String, Object> r       = new HashMap<String, Object>();
@@ -202,6 +213,8 @@ public class RoleController {
 													  HttpServletRequest  request,
 													  HttpServletResponse response){
 		
+		logService.insertUserActLog(request, session);
+		
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		int r = 0;
 		
@@ -211,10 +224,10 @@ public class RoleController {
 			
 			r = roleservice.updateRoleMenuMap(param);
 			
-			result.put("resultCode",  "success");
+			result.put("resultCode",  CommonContraint.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  "fail");
+			result.put("resultCode",  CommonContraint.FAIL);
 		}
 		
 		return result;
@@ -227,6 +240,7 @@ public class RoleController {
 									HttpSession session,
 									HttpServletRequest request,
 									HttpServletResponse response) {
+		logService.insertUserActLog(request, session);
 		
 		ModelAndView mv               = new ModelAndView();
 		HashMap<String, Object> param = new HashMap<String, Object>();
@@ -259,6 +273,8 @@ public class RoleController {
 													  HttpServletRequest  request,
 													  HttpServletResponse response){
 		
+		logService.insertUserActLog(request, session);
+		
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		int r = 0;
 		
@@ -268,10 +284,10 @@ public class RoleController {
 			
 			r = roleservice.updateRoleUserMap(param);
 			
-			result.put("resultCode",  "success");
+			result.put("resultCode",  CommonContraint.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  "fail");
+			result.put("resultCode",  CommonContraint.FAIL);
 		}
 		
 		return result;

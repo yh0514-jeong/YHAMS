@@ -31,13 +31,15 @@ public class CommonServiceImpl implements CommonService {
 	public String getNextMenuId() throws Exception {
 		return mapper.getNextMenuId();
 	}
+	
+	@Override
+	public long getNextActLogSeq() throws Exception {
+		return mapper.getNextActLogSeq();
+	}
 
 	@Override
 	public ArrayList<HashMap<String, Object>> getCgList(String codeGrp, String useYn) throws Exception {
 		return mapper.getCgList(codeGrp, useYn);
 	}
-
-	
-	
 
 }

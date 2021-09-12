@@ -32,4 +32,14 @@ public class UserServiceImpl implements UserService{
 		return mapper.getUserInfo(param);
 	}
 
+	@Override
+	public void updateUser(HashMap<String, Object> param) throws Exception {
+		mapper.updateUser(param);
+	}
+
+	@Override
+	public void initPwd(HashMap<String, Object> param) throws Exception {
+		mapper.initPwd(param);
+	}
+
 }

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
+import com.yhams.util.CommonContraint;
+import com.yhams.util.Encryption;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -67,13 +69,13 @@ public class LoginController {
 		try {
 			String nextUserSeq = commonService.getUserNextSeq();
 			param.put("USER_SEQ", nextUserSeq);
-			param.put("USER_PW", encryptPassword(param.get("USER_PW").toString()));
+			param.put("USER_PW", Encryption.encryptPassword(param.get("USER_PW").toString()));
 			res = loginservice.insertUser(param);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println("param.toString()==>" + param.toString());
-		result.put("resultcode", "success");
+		result.put("resultcode", CommonContraint.SUCCEESS);
 		return result;
 	}
 	
@@ -92,7 +94,7 @@ public class LoginController {
 		HashMap<String, Object> userInfo            = new HashMap<String, Object>();
 		
 		try {
-			param.put("USER_PW", encryptPassword(param.get("USER_PW").toString()));
+			param.put("USER_PW", Encryption.encryptPassword(param.get("USER_PW").toString()));
 			result = loginservice.chkUserInfo(param);
 			
 			if("TRUE".equals(result)) {
@@ -140,36 +142,14 @@ public class LoginController {
 		ArrayList<HashMap<String, Object>> subMenuList = new ArrayList<HashMap<String, Object>>();
 		
 		try {
-		
 			param.put("PAR_MENU_ID", param.get("PAR_MENU_ID"));
 			param.put("USER_SEQ",    session.getAttribute("USER_SEQ"));
 			subMenuList = loginservice.getSubMenuList(param);
-			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return subMenuList;
 	}
-
-
-	private String encryptPassword(String pwd) throws Exception {
-		String encrypted = null;
-		try {
-			MessageDigest md = MessageDigest.getInstance("SHA-512");
-	        md.update(pwd.getBytes(StandardCharsets.UTF_8));
-	        byte[] bytes = md.digest(pwd.getBytes(StandardCharsets.UTF_8));
-	        StringBuilder sb = new StringBuilder();
-	        for(int i=0; i< bytes.length ;i++){
-	            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-	        }
-	        encrypted = sb.toString();
-		}catch(NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		
-		return encrypted;
-	}
-	
 	
 	
 	

@@ -14,6 +14,10 @@ public interface UserService {
 
 	ArrayList<HashMap<String, Object>> userList(HashMap<String, Object> param) throws Exception;
 
-	HashMap<String, Object> getUserInfo(String uSER_SEQ) throws Exception;
+	HashMap<String, Object> getUserInfo(String userSeq) throws Exception;
+
+	void updateUser(HashMap<String, Object> param) throws Exception;
+
+	void initPwd(HashMap<String, Object> param) throws Exception;
 
 }

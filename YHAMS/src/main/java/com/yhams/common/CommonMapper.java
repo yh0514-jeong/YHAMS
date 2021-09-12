@@ -16,7 +16,12 @@ public interface CommonMapper {
 	
 	String getNextMenuId() throws Exception;
 	
+	long getNextActLogSeq() throws Exception;
+	
 	ArrayList<HashMap<String, Object>> getCgList(String codeGrp, String useYn) throws Exception;
 
+	void insertUserActLog(HashMap<String, Object> param) throws Exception;
+
+	
 
 }

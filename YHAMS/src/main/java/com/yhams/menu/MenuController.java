@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
+import com.yhams.log.LogService;
+import com.yhams.util.CommonContraint;
 import com.yhams.util.PagingUtil;
 import com.yhams.util.StringUtil;
 
@@ -34,6 +36,9 @@ public class MenuController {
 	@Autowired
 	CommonService commonService;
 	
+	@Autowired
+	LogService logService;
+	
 	@RequestMapping(value = "/menuManageMain")
 	public ModelAndView main() {
 		ModelAndView mv = new ModelAndView();
@@ -44,8 +49,11 @@ public class MenuController {
 	@RequestMapping(value = "/menuListUp", method = RequestMethod.GET)
 	@ResponseBody
 	public HashMap<String, Object> menuListUp(@RequestParam HashMap<String, Object> param, 
+			                                                HttpSession session,
 															HttpServletRequest  request,
 															HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
 		
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
@@ -62,10 +70,10 @@ public class MenuController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  "success");
+			result.put("resultCode",  CommonContraint.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  "fail");
+			result.put("resultCode",   CommonContraint.FAIL);
 		}
 		
 		return result;
@@ -77,6 +85,8 @@ public class MenuController {
 							            HttpSession session,
 							            HttpServletRequest request,
 							            HttpServletResponse response) {
+		
+		logService.insertUserActLog(request, session);
 		
 		logger.info("/menuUpdate MENU_ID=>" + MENU_ID);
 		
@@ -117,6 +127,8 @@ public class MenuController {
 			                                     HttpServletRequest request,
 			                                     HttpServletResponse response){
 		
+		logService.insertUserActLog(request, session);
+		
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		
 		logger.info("/updateMenu, param.toString()==>" + param.toString());
@@ -135,9 +147,9 @@ public class MenuController {
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", "fail");
+			result.put("result",  CommonContraint.FAIL);
 		}
-		result.put("result", "success");
+		result.put("result", CommonContraint.SUCCEESS);
 		return result;
 	}
 	

@@ -3,6 +3,7 @@ package com.yhams.user;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
+import com.yhams.log.LogService;
+import com.yhams.util.CommonContraint;
+import com.yhams.util.Encryption;
 import com.yhams.util.PagingUtil;
 
 @Controller
@@ -32,6 +36,9 @@ public class UserController {
 	@Autowired
 	CommonService commonService;
 	
+	@Autowired
+	LogService logService;
+	
 	@RequestMapping(value = "/userManageMain")
 	public ModelAndView main() {
 		ModelAndView mv = new ModelAndView();
@@ -42,8 +49,11 @@ public class UserController {
 	@RequestMapping(value = "/userListUp", method = RequestMethod.GET)
 	@ResponseBody
 	public HashMap<String, Object> userListUp(@RequestParam HashMap<String, Object> param, 
+			                                                HttpSession session,
 															HttpServletRequest  request,
 															HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
 		
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
@@ -60,10 +70,10 @@ public class UserController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  "success");
+			result.put("resultCode",  CommonContraint.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  "fail");
+			result.put("resultCode",  CommonContraint.FAIL);
 		}
 		
 		return result;
@@ -75,6 +85,8 @@ public class UserController {
 							            HttpSession session,
 							            HttpServletRequest request,
 							            HttpServletResponse response) {
+		
+		logService.insertUserActLog(request, session);
 		
 		logger.info("/userUpdate USER_SEQ=>" + USER_SEQ);
 		
@@ -114,6 +126,8 @@ public class UserController {
 			                                     HttpServletRequest request,
 			                                     HttpServletResponse response){
 		
+		logService.insertUserActLog(request, session);
+		
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		
 		int r = 0;
@@ -124,23 +138,26 @@ public class UserController {
 			
 			if("INSERT".equals(param.get("ACTION"))){
 				
-			}else {
-				
+			}else{
+				userService.updateUser(param);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", "fail");
+			result.put("result", CommonContraint.FAIL);
 		}
-		result.put("result", "success");
+		result.put("result", CommonContraint.SUCCEESS);
 		return result;
 	}
 	
 	
 	@RequestMapping(value = "/getUserList", method = RequestMethod.GET)
 	@ResponseBody
-	public HashMap<String, Object> comCodeListUp(@RequestParam HashMap<String, Object> param, 
+	public HashMap<String, Object> getUserList(@RequestParam HashMap<String, Object> param, 
+			                                                   HttpSession session,
 															   HttpServletRequest  request,
 															   HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
 		
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
@@ -151,14 +168,43 @@ public class UserController {
 		try {
 			list  = userService.getUserList(param);
 			result.put("list",  list);
-			result.put("resultCode",  "success");
+			result.put("resultCode",  CommonContraint.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  "fail");
+			result.put("resultCode",  CommonContraint.FAIL);
 		}
 		
 		return result;
 	}
 	
+	
+	@RequestMapping(value = "/initPwd", method = RequestMethod.GET)
+	@ResponseBody
+	public HashMap<String, Object> initPwd(@RequestParam HashMap<String, Object> param, 
+		                                                 HttpSession session,
+														 HttpServletRequest  request,
+														 HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		
+		String tmpPw = null;
+		
+		try {
+			tmpPw = UUID.randomUUID().toString().split("-")[0];
+			param.put("USER_PW", Encryption.encryptPassword(tmpPw));
+			logger.info("/initPwd param.toString()==>" + param.toString());
+			userService.initPwd(param);
+			result.put("initPwd",  tmpPw);
+			result.put("resultCode",  CommonContraint.SUCCEESS);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode",  CommonContraint.FAIL);
+		}
+		
+		return result;
+	}
 
+	
+	
 }

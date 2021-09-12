@@ -16,4 +16,8 @@ public interface UserMapper {
 
 	HashMap<String, Object> getUserInfo(String param) throws Exception;
 
+	void updateUser(HashMap<String, Object> param) throws Exception;
+
+	void initPwd(HashMap<String, Object> param) throws Exception;
+
 }

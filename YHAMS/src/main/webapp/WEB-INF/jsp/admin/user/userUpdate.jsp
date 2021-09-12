@@ -29,7 +29,9 @@
 				USER_NM       : $("#USER_NM").val(),
 				USER_NM_EN    : $("#USER_NM_EN").val(),
 				USER_ADRS     : $("#USER_ADRS").val(),
-				USER_EMAIL    : $("#USER_EMAIL").val()
+				USER_EMAIL    : $("#USER_EMAIL").val(),
+				USER_PHONE    : $("#USER_PHONE").val(),
+				USER_SEQ      : USER_SEQ
 		}
 		
 		$.ajax({
@@ -54,6 +56,29 @@
 		});		
 	}
 	
+	function initPwd(){
+		
+		var param = {
+				USER_SEQ      : USER_SEQ
+		};
+		
+		$.ajax({
+		    type : 'get',
+		    url : '/user/initPwd', 
+		    dataType : 'json', 
+		    data : param,
+		    success : function(result) { 
+		        if(result.resultCode == "success"){
+		        	alert('"' + result.initPwd + '"로 초기화 되었습니다."');
+		        	window.close();
+		        }
+		    },
+		    error : function(request, status, error) {
+		    	
+		    }
+		});		
+	}
+	
 
 </script>
 <body>
@@ -67,6 +92,12 @@
 	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userId"/></label> <!-- 사용자ID -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="USER_ID"  value="${result.USER_ID}" disabled="disabled">
+	    </div>
+    </div>
+	<div class="row mb-3">
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.password"/></label><!-- 비밀번호 --> 
+	    <div class="col-sm-10">
+	    	<button id="btnPwUpdate" onclick="javascript:initPwd();" type="button" class="btn btn-primary"><spring:message code="com.user.initPassword"/></button>  <!-- 비밀번호 초기화 -->
 	    </div>
     </div>
     <div class="row mb-3">
@@ -92,6 +123,12 @@
 	      <input type="text" class="form-control" id="USER_NM_EN"  value="${result.USER_NM_EN}">
 	    </div>
     </div>
+    <div class="row mb-3">
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userPhone"/></label> <!-- 전화번호 -->
+	    <div class="col-sm-10">
+	      <input type="text" class="form-control" id="USER_PHONE"  value="${result.USER_PHONE}">
+	    </div>
+    </div>
 	<div class="row mb-3">
 	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userAdrs"/></label> <!-- 주소 -->
 	    <div class="col-sm-10">
@@ -99,7 +136,7 @@
 	    </div>
     </div>
 	<div class="row mb-3">
-	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userAdrs"/></label> <!-- E-mail -->
+	    <label for="inputEmail3" class="col-sm-2 col-form-label"><spring:message code="com.user.userEmail"/></label> <!-- E-mail -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="USER_EMAIL"  value="${result.USER_EMAIL}">
 	    </div>
