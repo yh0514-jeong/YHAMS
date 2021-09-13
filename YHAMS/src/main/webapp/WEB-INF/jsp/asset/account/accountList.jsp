@@ -19,16 +19,16 @@
  function list(){
 	 
 	 var param = {
-		CODE_ID    : $("#CODE_ID").val().trim(),
-		CODE_NM    : $("#CODE_NM").val().trim(),
-		CODE_DC    : $("#CODE_DC").val().trim(),
-		cntPerPage : $("#cntPerPage").val(),
-		curPage    : $("#curPage").val()
+	    ACCOUNT_NM    : $("#ACCOUNT_NM").val().trim(),
+	    ACCOUNT_CTG   : $("#ACCOUNT_CTG").val().trim(),
+	    ISUE_AGY      : $("#ISUE_AGY").val().trim(),
+		cntPerPage    : $("#cntPerPage").val(),
+		curPage       : $("#curPage").val()
 	 };
 	 
 	 $.ajax({
 		    type : 'get',
-		    url : '/comCode/comCodeListUp', 
+		    url : '/asset/comCodeListUp', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
@@ -47,9 +47,6 @@
 			    			html += '<tr align="center">';
 				    		html += '    <td scope="row"><input type="checkbox"></td>';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].CODE_ID + '</td>';
-				    		html += '    <td scope="row">' + data[i].CODE_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].CODE_DC + '</td>';
 				    		html += '    <td scope="row">' + data[i].USE_YN + '</td>';
 				    		html += '    <td scope="row">' + data[i].CREATE_NM + '</td>';
 				    		html += '    <td scope="row">' + data[i].CREATE_DATE + '</td>';
@@ -89,32 +86,32 @@ function enterkey(){
 <body>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5 class="panel-title">공통코드 관리</h5>
+    <h5 class="panel-title">계좌관리</h5>
   </div>
   <div class="panel-body">
-    관리자 > 공통코드 관리
+    자산관리 > 계좌관리
   </div>
 </div>
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.comCode.codeId"/></div><!-- 코드 -->
+      <div class="input-group-text" id="btnGroupAddon">계좌명</div><!-- 계좌명 -->
     </div>
-    <input type="text" class="form-control" id="CODE_ID"  onkeyup="javascript:enterkey();">
+    <input type="text" class="form-control" id="ACCOUNT_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.comCode.codeNm"/></div><!-- 코드명 -->
+      <div class="input-group-text" id="btnGroupAddon">계좌종류</div><!-- 계좌종류 -->
     </div>
-    <input type="text" class="form-control" id="CODE_NM"  onkeyup="javascript:enterkey();">
+    <input type="text" class="form-control" id="ACCOUNT_CTG"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.comCode.codeDc"/></div><!-- 코드설명 -->
+      <div class="input-group-text" id="btnGroupAddon">발급기관</div><!-- 발급기관 -->
     </div>
-    <input type="text" class="form-control" id="CODE_DC"  onkeyup="javascript:enterkey();">
+    <input type="text" class="form-control" id="ISUE_AGY"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <button type="button" class="btn btn-primary" onclick="javascript:list();"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
@@ -135,12 +132,9 @@ function enterkey(){
 	    <tr>
 	      <th scope="col"></th>
 	      <th scope="col"><spring:message code="com.txt.number"/></th><!-- No. -->
-	      <th scope="col"><spring:message code="com.comCode.codeId"/></th><!-- 코드 -->
-	      <th scope="col"><spring:message code="com.comCode.codeNm"/></th><!-- 코드명 -->
-	      <th scope="col"><spring:message code="com.comCode.codeDc"/></th><!-- 코드설명 -->
-	      <th scope="col"><spring:message code="com.comCode.useYn"/></th><!-- 사용여부 -->
-	      <th scope="col"><spring:message code="com.txt.createId"/></th><!-- 등록자 -->
-	      <th scope="col"><spring:message code="com.txt.createDtm"/></th><!-- 생성일 -->
+	      <th scope="col">계좌명</th>
+	      <th scope="col">계좌종류</th>
+	      <th scope="col">발급기관</th>
 	      <th scope="col"></th>
 	    </tr>
 	  </thead>
