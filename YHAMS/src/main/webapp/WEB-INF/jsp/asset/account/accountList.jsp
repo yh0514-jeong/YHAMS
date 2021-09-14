@@ -28,7 +28,7 @@
 	 
 	 $.ajax({
 		    type : 'get',
-		    url : '/asset/comCodeListUp', 
+		    url : '/asset/accountList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
@@ -40,17 +40,17 @@
 			    	var html = "";
 			    	if(data.length == 0){
 				    		html += '<tr align="center">';
-				    		html += '    <th scope="row" colspan="8"><spring:message code="com.txt.noresult"/></th>';
+				    		html += '    <th scope="row" colspan="6"><spring:message code="com.txt.noresult"/></th>';
 				    		html += '</tr>';
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
 			    			html += '<tr align="center">';
 				    		html += '    <td scope="row"><input type="checkbox"></td>';
-				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].USE_YN + '</td>';
-				    		html += '    <td scope="row">' + data[i].CREATE_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].CREATE_DATE + '</td>';
-				    		html += '    <td scope="row"><button type="button" class="btn btn-danger" onclick=\"javascript:goNew(\'' + data[i].CODE_ID +  '\');\">' + '<spring:message code="com.txt.update"/></button></td>';
+				    		html += '    <td scope="row">' + data[i].ACCOUNT_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].ACCOUNT_CTG + '</td>';
+				    		html += '    <td scope="row">' + data[i].ISUE_AGY + '</td>';
+				    		html += '    <td scope="row">' + data[i].ISUE_AGY + '</td>';
+				    		html += '    <td scope="row"><button type="button" class="btn btn-danger" onclick=\"javascript:goNew(\'' + data[i].ACCOUNT_CD +  '\');\">' + '<spring:message code="com.txt.update"/></button></td>';
 				    		html += '</tr>';
 				    	}
 			    	}
@@ -66,9 +66,9 @@
 	 
  }
  
- function goNew(codeId){
-	 var url    = (codeId == null || typeof codeId == 'undefined') ? "/comCode/comCodeUpdate" : "/comCode/comCodeUpdate?CODE_ID=" + codeId ;
-	 var name   = (codeId == null || typeof codeId == 'undefined') ? '<spring:message code="mnu.comCode.insert"/>': '<spring:message code="mnu.comCode.update"/>';
+ function goNew(accountCd){
+	 var url    = (codeId == null || typeof codeId == 'undefined') ? "/asset/accountUpdate" : "/asset/accountUpdate?ACCOUNT_CD=" + accountCd ;
+	 var name   = (codeId == null || typeof codeId == 'undefined') ? '계좌 등록': '계좌 수정';
 	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }

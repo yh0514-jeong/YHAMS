@@ -77,5 +77,35 @@ public class AssetController {
 		return result;
 	}
 	
+	
+	@RequestMapping(value = "/accountUpdate")
+	public ModelAndView accountUpdate(@RequestParam(required = false) String ACCOUNT_CD, 
+							            HttpSession session,
+							            HttpServletRequest request,
+							            HttpServletResponse response) {
+		
+		
+		logService.insertUserActLog(request, session);
+		
+		
+		ModelAndView mv           = new ModelAndView();
+		HashMap<String, Object> r = new HashMap<String, Object>();
+		
+		try {
+			if(ACCOUNT_CD != null &&  !"".equals(ACCOUNT_CD)){
+				r = assetService.selectAccount(ACCOUNT_CD);
+				mv.addObject("result", r);
+				mv.addObject("nav"   , "계좌 수정");
+			}else {
+				mv.addObject("nav"   , "계좌 수정");
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		mv.setViewName("admin/comCode/comCodeUpdate");
+		return mv;
+	}
 
 }

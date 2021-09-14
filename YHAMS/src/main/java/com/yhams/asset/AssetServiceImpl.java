@@ -3,8 +3,6 @@ package com.yhams.asset;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.ParagraphAction;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +20,11 @@ public class AssetServiceImpl implements AssetService {
 	@Override
 	public ArrayList<HashMap<String, Object>> accountListUp(HashMap<String, Object> param) throws Exception {
 		return mapper.accountListUp(param);
+	}
+
+	@Override
+	public HashMap<String, Object> selectAccount(String ACCOUNT_CD) throws Exception {
+		return mapper.selectAccount(ACCOUNT_CD);
 	}
 
 }

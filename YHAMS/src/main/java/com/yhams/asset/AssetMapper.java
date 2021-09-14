@@ -12,4 +12,6 @@ public interface AssetMapper {
 
 	ArrayList<HashMap<String, Object>> accountListUp(HashMap<String, Object> param) throws Exception;
 
+	HashMap<String, Object> selectAccount(String ACCOUNT_CD) throws Exception;
+
 }

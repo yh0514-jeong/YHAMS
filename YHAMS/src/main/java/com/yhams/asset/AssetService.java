@@ -9,4 +9,6 @@ public interface AssetService {
 
 	ArrayList<HashMap<String, Object>> accountListUp(HashMap<String, Object> param) throws Exception;
 
+	HashMap<String, Object> selectAccount(String aCCOUNT_CD) throws Exception;
+
 }

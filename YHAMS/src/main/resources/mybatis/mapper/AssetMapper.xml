@@ -2,19 +2,105 @@
 <mapper namespace="com.yhams.asset.AssetMapper">
 
 	<sql id="cmmAccountWhere">
-	
+		AND   USER_SEQ = #{USER_SEQ}
+		AND   USE_YN   = 'Y'
+		
+		<if test="ACCOUNT_NM != null and ACCOUNT_NM != ''">
+			AND   ACCOUNT_NM LIKE CONCAT('%',#{ACCOUNT_NM},'%')
+		</if>
+		
+		<if test="ACCOUNT_CTG != null and ACCOUNT_CTG != ''">
+			AND   ACCOUNT_CTG LIKE CONCAT('%',#{ACCOUNT_CTG},'%')
+		</if>
+		
+		<if test="ISUE_AGY != null and ISUE_AGY != ''">
+			AND   ISUE_AGY LIKE CONCAT('%',#{ISUE_AGY},'%')
+		</if>
 	</sql>
 
 	<select id="accountCount" parameterType="java.util.HashMap" resultType="long">
 	
-		<include refid="cmmAccountWhere"/>
+		SELECT COUNT(*)
+	   
+	    FROM (
+				SELECT   TMA.ACCOUNT_CD,
+				         TMA.USER_SEQ,
+				         TMA.ACCOUNT_NM,
+				         TMA.ACCOUNT_CTG,
+				         TMA.ISUE_AGY,
+				         TMA.USE_YN,
+				         TMA.CREATE_ID,
+				         TMA.CREATE_DATE,
+				         TMA.UPDATE_ID,
+				         TMA.UPDATE_DATE
+					FROM  TB_META_ACCOUNT TMA
+					
+					WHERE 1=1
+					
+					<include refid="cmmAccountWhere"/>
+			 
+			 ) T1
 	
 	</select>
 	
 	<select id="accountListUp" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	
-		<include refid="cmmAccountWhere"/>
+		SELECT  T1.RNUM,
+		        T1.ACCOUNT_CD,
+		        T1.USER_SEQ,
+		        T1.ACCOUNT_NM,
+		        T1.ACCOUNT_CTG,
+		        T1.ISUE_AGY,
+		        T1.USE_YN,
+		        T1.CREATE_ID,
+		        T1.CREATE_DATE,
+		        T1.UPDATE_ID,
+		        T1.UPDATE_DATE
+	   
+	    FROM (
+				SELECT   ROW_NUMBER() OVER (ORDER BY ACCOUNT_CD DESC) AS RNUM,
+						 TMA.ACCOUNT_CD,
+				         TMA.USER_SEQ,
+				         TMA.ACCOUNT_NM,
+				         TMA.ACCOUNT_CTG,
+				         TMA.ISUE_AGY,
+				         TMA.USE_YN,
+				         TMA.CREATE_ID,
+				         TMA.CREATE_DATE,
+				         TMA.UPDATE_ID,
+				         TMA.UPDATE_DATE
+					FROM  TB_META_ACCOUNT TMA
+					
+					WHERE 1=1
+					
+					<include refid="cmmAccountWhere"/>
+			 
+			 ) T1
+			 
+	    WHERE T1.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
+	
+		ORDER BY RNUM ASC
 	
 	</select>
 
+
+	<select id="selectAccount" parameterType="String" resultType="java.util.HashMap">
+	
+		 SELECT  	TMA.ACCOUNT_CD,
+			        TMA.USER_SEQ,
+			        TMA.ACCOUNT_NM,
+			        TMA.ACCOUNT_CTG,
+			        TMA.ISUE_AGY,
+			        TMA.USE_YN,
+			        TMA.CREATE_ID,
+			        TMA.CREATE_DATE,
+			        TMA.UPDATE_ID,
+			        TMA.UPDATE_DATE
+			  FROM  TB_META_ACCOUNT TMA
+			  
+			 WHERE  TMA.ACCOUNT_CD = #{ACCOUNT_CD}
+	
+	 </select>
+	
+	
 </mapper>
