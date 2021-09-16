@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.yhams.common.CommonService;
 import com.yhams.log.LogService;
 import com.yhams.util.CommonContraint;
 import com.yhams.util.PagingUtil;
@@ -33,6 +34,9 @@ public class AssetController {
 	
 	@Autowired
 	LogService logService;
+	
+	@Autowired
+	CommonService commonService;
 	
 	@RequestMapping(value = "/accountManageMain")
 	public ModelAndView main() {
@@ -87,24 +91,32 @@ public class AssetController {
 		
 		logService.insertUserActLog(request, session);
 		
-		
 		ModelAndView mv           = new ModelAndView();
 		HashMap<String, Object> r = new HashMap<String, Object>();
 		
+		ArrayList<HashMap<String, Object>> actTypeList = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> isuOrgList  = new ArrayList<HashMap<String,Object>>();
+		
 		try {
+			actTypeList = commonService.getCgList("CG_0005", "Y");
+			isuOrgList  = commonService.getCgList("CG_0006", "Y");
+			
 			if(ACCOUNT_CD != null &&  !"".equals(ACCOUNT_CD)){
 				r = assetService.selectAccount(ACCOUNT_CD);
 				mv.addObject("result", r);
 				mv.addObject("nav"   , "계좌 수정");
 			}else {
-				mv.addObject("nav"   , "계좌 수정");
+				mv.addObject("nav"   , "계좌 등록");
 			}
+			
+			mv.addObject("actTypeList", actTypeList);
+			mv.addObject("isuOrgList",  isuOrgList);
 			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		mv.setViewName("admin/comCode/comCodeUpdate");
+		mv.setViewName("asset/account/accountUpdate");
 		return mv;
 	}
 

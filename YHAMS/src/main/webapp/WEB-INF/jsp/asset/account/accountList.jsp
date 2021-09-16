@@ -67,8 +67,8 @@
  }
  
  function goNew(accountCd){
-	 var url    = (codeId == null || typeof codeId == 'undefined') ? "/asset/accountUpdate" : "/asset/accountUpdate?ACCOUNT_CD=" + accountCd ;
-	 var name   = (codeId == null || typeof codeId == 'undefined') ? '계좌 등록': '계좌 수정';
+	 var url    = (accountCd == null || typeof accountCd == 'undefined') ? "/asset/accountUpdate" : "/asset/accountUpdate?ACCOUNT_CD=" + accountCd ;
+	 var name   = (accountCd == null || typeof accountCd == 'undefined') ? '계좌 등록': '계좌 수정';
 	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
