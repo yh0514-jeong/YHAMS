@@ -58,11 +58,12 @@ public class AssetController {
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 		
-		logger.info("param==>" + param.toString());
-		
 		long total       = 0;
 		int cntPerPage   = param.get("cntPerPage") == null ? 10 : Integer.parseInt(param.get("cntPerPage").toString());
-		int curPage      = param.get("curPage")  == null ? 1 : Integer.parseInt(param.get("curPage").toString());
+		int curPage      = param.get("curPage")    == null ? 1 : Integer.parseInt(param.get("curPage").toString());
+		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+		
+		logger.info("param==>" + param.toString());
 		
 		try {
 			total = assetService.accountCount(param);
@@ -119,5 +120,65 @@ public class AssetController {
 		mv.setViewName("asset/account/accountUpdate");
 		return mv;
 	}
+	
+	
+	@RequestMapping(value = "/updateAccount", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> updateAccount(@RequestParam HashMap<String, Object> param, 
+			                                     HttpSession session,
+			                                     HttpServletRequest request,
+			                                     HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> result = new HashMap<String, Object>();
+
+		int r = 0;
+		try {
+			param.put("CREATE_ID", session.getAttribute("USER_SEQ"));
+			param.put("UPDATE_ID", session.getAttribute("USER_SEQ"));
+			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
+			
+			if(param.get("ACCOUNT_CD") == null || "".equals(param.get("ACCOUNT_CD"))){
+				String ACCOUNT_CD = commonService.getNextAccountCd();
+				param.put("ACCOUNT_CD", ACCOUNT_CD);
+				System.out.println("updateAccount insert param.toString()==>" + param.toString());
+				r = assetService.insertAccount(param);
+			}else {
+				System.out.println("updateAccount update param.toString()==>" + param.toString());
+				r = assetService.updateAccount(param);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", CommonContraint.FAIL);
+		}
+		result.put("result", CommonContraint.SUCCEESS);
+		return result;
+	}
+	
+	
+	@RequestMapping(value = "/deleteAccount", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> deleteAccount(@RequestParam HashMap<String, Object> param, 
+			                                     HttpSession session,
+			                                     HttpServletRequest request,
+			                                     HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> result = new HashMap<String, Object>();
+
+		int r = 0;
+		try {
+			param.put("UPDATE_ID", session.getAttribute("USER_SEQ"));
+			logger.info("deleteAccount param.toString()==>" + param.toString());
+			r = assetService.deleteAccount(param);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", CommonContraint.FAIL);
+		}
+		result.put("result", CommonContraint.SUCCEESS);
+		return result;
+	}
+	
+	
 
 }

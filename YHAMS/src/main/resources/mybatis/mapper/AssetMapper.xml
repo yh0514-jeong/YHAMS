@@ -2,19 +2,19 @@
 <mapper namespace="com.yhams.asset.AssetMapper">
 
 	<sql id="cmmAccountWhere">
-		AND   USER_SEQ = #{USER_SEQ}
-		AND   USE_YN   = 'Y'
+		AND   TMP.USER_SEQ = #{USER_SEQ}
+		AND   TMP.USE_YN   = 'Y'
 		
 		<if test="ACCOUNT_NM != null and ACCOUNT_NM != ''">
-			AND   ACCOUNT_NM LIKE CONCAT('%',#{ACCOUNT_NM},'%')
+			AND   TMP.ACCOUNT_NM LIKE CONCAT('%',#{ACCOUNT_NM},'%')
 		</if>
 		
-		<if test="ACCOUNT_CTG != null and ACCOUNT_CTG != ''">
-			AND   ACCOUNT_CTG LIKE CONCAT('%',#{ACCOUNT_CTG},'%')
+		<if test="ACCOUNT_CTG_NM != null and ACCOUNT_CTG_NM != ''">
+			AND   TMP.ACCOUNT_CTG_NM LIKE CONCAT('%',#{ACCOUNT_CTG_NM},'%')
 		</if>
 		
-		<if test="ISUE_AGY != null and ISUE_AGY != ''">
-			AND   ISUE_AGY LIKE CONCAT('%',#{ISUE_AGY},'%')
+		<if test="ISUE_AGY_NM != null and ISUE_AGY_NM != ''">
+			AND   TMP.ISUE_AGY_NM LIKE CONCAT('%',#{ISUE_AGY_NM},'%')
 		</if>
 	</sql>
 
@@ -23,19 +23,33 @@
 		SELECT COUNT(*)
 	   
 	    FROM (
-				SELECT   TMA.ACCOUNT_CD,
-				         TMA.USER_SEQ,
-				         TMA.ACCOUNT_NM,
-				         TMA.ACCOUNT_CTG,
-				         TMA.ISUE_AGY,
-				         TMA.USE_YN,
-				         TMA.CREATE_ID,
-				         TMA.CREATE_DATE,
-				         TMA.UPDATE_ID,
-				         TMA.UPDATE_DATE
-					FROM  TB_META_ACCOUNT TMA
-					
-					WHERE 1=1
+				SELECT TMP.*
+	             
+	             FROM (	SELECT   TMA.ACCOUNT_CD,
+						         TMA.USER_SEQ,
+						         TMA.ACCOUNT_NM,
+						         TMA.ACCOUNT_CTG,
+						         (SELECT CODE_NM 
+						            FROM TB_CMM_CDDTL TCC1
+						           WHERE TCC1.CODE_ID    = 'CG_0005'
+								   AND   TMA.ACCOUNT_CTG = TCC1.CODE_CD
+								 ) AS ACCOUNT_CTG_NM,
+						         TMA.ISUE_AGY,
+						         (SELECT CODE_NM 
+						            FROM TB_CMM_CDDTL TCC2
+						           WHERE TCC2.CODE_ID = 'CG_0006'
+								   AND   TMA.ISUE_AGY = TCC2.CODE_CD
+								 ) AS ISUE_AGY_NM,
+								 TMA.ACCOUNT_HRDR,
+						         TMA.USE_YN,
+						         TMA.CREATE_ID,
+						         TMA.CREATE_DATE,
+						         TMA.UPDATE_ID,
+						         TMA.UPDATE_DATE
+						             
+							FROM  TB_META_ACCOUNT TMA ) TMP
+							
+						    WHERE 1=1
 					
 					<include refid="cmmAccountWhere"/>
 			 
@@ -50,28 +64,45 @@
 		        T1.USER_SEQ,
 		        T1.ACCOUNT_NM,
 		        T1.ACCOUNT_CTG,
+		        T1.ACCOUNT_CTG_NM,
 		        T1.ISUE_AGY,
+		        T1.ISUE_AGY_NM,
+		        T1.ACCOUNT_HRDR,
 		        T1.USE_YN,
 		        T1.CREATE_ID,
-		        T1.CREATE_DATE,
+		        DATE_FORMAT(T1.CREATE_DATE, '%Y-%m-%d %H:%i:%s') AS CREATE_DATE,
 		        T1.UPDATE_ID,
-		        T1.UPDATE_DATE
+		        DATE_FORMAT(T1.UPDATE_DATE, '%Y-%m-%d %H:%i:%s') AS UPDATE_DATE
 	   
 	    FROM (
-				SELECT   ROW_NUMBER() OVER (ORDER BY ACCOUNT_CD DESC) AS RNUM,
-						 TMA.ACCOUNT_CD,
-				         TMA.USER_SEQ,
-				         TMA.ACCOUNT_NM,
-				         TMA.ACCOUNT_CTG,
-				         TMA.ISUE_AGY,
-				         TMA.USE_YN,
-				         TMA.CREATE_ID,
-				         TMA.CREATE_DATE,
-				         TMA.UPDATE_ID,
-				         TMA.UPDATE_DATE
-					FROM  TB_META_ACCOUNT TMA
-					
-					WHERE 1=1
+				SELECT ROW_NUMBER() OVER(ORDER BY TMP.ACCOUNT_CD DESC) AS RNUM,
+					   TMP.*
+	             
+	             FROM (	SELECT   TMA.ACCOUNT_CD,
+						         TMA.USER_SEQ,
+						         TMA.ACCOUNT_NM,
+						         TMA.ACCOUNT_CTG,
+						         (SELECT CODE_NM 
+						            FROM TB_CMM_CDDTL TCC1
+						           WHERE TCC1.CODE_ID    = 'CG_0005'
+								   AND   TMA.ACCOUNT_CTG = TCC1.CODE_CD
+								 ) AS ACCOUNT_CTG_NM,
+						         TMA.ISUE_AGY,
+						         (SELECT CODE_NM 
+						            FROM TB_CMM_CDDTL TCC2
+						           WHERE TCC2.CODE_ID = 'CG_0006'
+								   AND   TMA.ISUE_AGY = TCC2.CODE_CD
+								 ) AS ISUE_AGY_NM,
+								 TMA.ACCOUNT_HRDR,
+						         TMA.USE_YN,
+						         TMA.CREATE_ID,
+						         TMA.CREATE_DATE,
+						         TMA.UPDATE_ID,
+						         TMA.UPDATE_DATE
+						             
+							FROM  TB_META_ACCOUNT TMA ) TMP
+							
+							WHERE 1=1
 					
 					<include refid="cmmAccountWhere"/>
 			 
@@ -91,6 +122,7 @@
 			        TMA.ACCOUNT_NM,
 			        TMA.ACCOUNT_CTG,
 			        TMA.ISUE_AGY,
+			        TMA.ACCOUNT_HRDR,
 			        TMA.USE_YN,
 			        TMA.CREATE_ID,
 			        TMA.CREATE_DATE,
@@ -101,6 +133,70 @@
 			 WHERE  TMA.ACCOUNT_CD = #{ACCOUNT_CD}
 	
 	 </select>
+	 
+	 <insert id="insertAccount" parameterType="java.util.HashMap">
+	 
+	 	INSERT INTO TB_META_ACCOUNT
+		(
+		
+		ACCOUNT_CD,
+		USER_SEQ,
+		ACCOUNT_CTG,
+		ACCOUNT_NM,
+		ISUE_AGY,
+		ACCOUNT_HRDR,
+		USE_YN,
+		CREATE_ID,
+		CREATE_DATE,
+		UPDATE_ID,
+		UPDATE_DATE
+		
+		) VALUES (
+		
+		#{ACCOUNT_CD},
+		#{USER_SEQ},
+		#{ACCOUNT_CTG},
+		#{ACCOUNT_NM},
+		#{ISUE_AGY},
+		#{ACCOUNT_HRDR},
+		'Y',
+		#{CREATE_ID},
+		NOW(),
+		#{UPDATE_ID},
+		NOW()
+		
+		)
+	 
+	 
+	 </insert>
+	 
+	 <update id="updateAccount" parameterType="java.util.HashMap">
+	 	
+	 	UPDATE TB_META_ACCOUNT
+			
+			SET ACCOUNT_NM   = #{ACCOUNT_NM},
+			    ACCOUNT_CTG  = #{ACCOUNT_CTG},
+			    ISUE_AGY     = #{ISUE_AGY},
+			    ACCOUNT_HRDR = #{ACCOUNT_HRDR},
+			    UPDATE_ID    = #{UPDATE_ID},
+			    UPDATE_DATE  = NOW()
+		  
+		  WHERE ACCOUNT_CD   = #{ACCOUNT_CD}
+	 	
+	 </update>
+	 
+	 
+	 <update id="deleteAccount" parameterType="java.util.HashMap">
+	 	
+	 	UPDATE TB_META_ACCOUNT
+
+			SET USE_YN       = 'N',
+			    UPDATE_ID    = #{UPDATE_ID},
+			    UPDATE_DATE  = NOW()
+
+		  WHERE ACCOUNT_CD   = #{ACCOUNT_CD}
+	 
+	 </update>
 	
 	
 </mapper>

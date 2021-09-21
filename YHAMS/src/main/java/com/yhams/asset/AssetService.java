@@ -9,6 +9,12 @@ public interface AssetService {
 
 	ArrayList<HashMap<String, Object>> accountListUp(HashMap<String, Object> param) throws Exception;
 
-	HashMap<String, Object> selectAccount(String aCCOUNT_CD) throws Exception;
+	HashMap<String, Object> selectAccount(String accountCd) throws Exception;
+
+	int insertAccount(HashMap<String, Object> param) throws Exception;
+
+	int updateAccount(HashMap<String, Object> param) throws Exception;
+
+	int deleteAccount(HashMap<String, Object> param) throws Exception;
 
 }

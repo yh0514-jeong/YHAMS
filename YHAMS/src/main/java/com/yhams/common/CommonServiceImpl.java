@@ -42,4 +42,9 @@ public class CommonServiceImpl implements CommonService {
 		return mapper.getCgList(codeGrp, useYn);
 	}
 
+	@Override
+	public String getNextAccountCd() throws Exception {
+		return mapper.getNextAccountCd();
+	}
+
 }

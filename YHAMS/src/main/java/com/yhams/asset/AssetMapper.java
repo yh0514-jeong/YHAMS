@@ -14,4 +14,10 @@ public interface AssetMapper {
 
 	HashMap<String, Object> selectAccount(String ACCOUNT_CD) throws Exception;
 
+	int insertAccount(HashMap<String, Object> param) throws Exception;
+
+	int updateAccount(HashMap<String, Object> param) throws Exception;
+
+	int deleteAccount(HashMap<String, Object> param) throws Exception;
+
 }

@@ -27,4 +27,19 @@ public class AssetServiceImpl implements AssetService {
 		return mapper.selectAccount(ACCOUNT_CD);
 	}
 
+	@Override
+	public int insertAccount(HashMap<String, Object> param) throws Exception {
+		return mapper.insertAccount(param);
+	}
+
+	@Override
+	public int updateAccount(HashMap<String, Object> param) throws Exception {
+		return mapper.updateAccount(param);
+	}
+
+	@Override
+	public int deleteAccount(HashMap<String, Object> param) throws Exception {
+		return mapper.deleteAccount(param);
+	}
+
 }

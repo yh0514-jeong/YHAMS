@@ -22,6 +22,8 @@ public interface CommonMapper {
 
 	void insertUserActLog(HashMap<String, Object> param) throws Exception;
 
+	String getNextAccountCd() throws Exception;
+
 	
 
 }

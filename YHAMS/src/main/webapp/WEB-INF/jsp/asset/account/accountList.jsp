@@ -19,11 +19,11 @@
  function list(){
 	 
 	 var param = {
-	    ACCOUNT_NM    : $("#ACCOUNT_NM").val().trim(),
-	    ACCOUNT_CTG   : $("#ACCOUNT_CTG").val().trim(),
-	    ISUE_AGY      : $("#ISUE_AGY").val().trim(),
-		cntPerPage    : $("#cntPerPage").val(),
-		curPage       : $("#curPage").val()
+	    ACCOUNT_NM     : $("#ACCOUNT_NM").val().trim(),
+	    ACCOUNT_CTG_NM : $("#ACCOUNT_CTG_NM").val().trim(),
+	    ISUE_AGY_NM    : $("#ISUE_AGY_NM").val().trim(),
+		cntPerPage     : $("#cntPerPage").val(),
+		curPage        : $("#curPage").val()
 	 };
 	 
 	 $.ajax({
@@ -40,17 +40,21 @@
 			    	var html = "";
 			    	if(data.length == 0){
 				    		html += '<tr align="center">';
-				    		html += '    <th scope="row" colspan="6"><spring:message code="com.txt.noresult"/></th>';
+				    		html += '    <th scope="row" colspan="7"><spring:message code="com.txt.noresult"/></th>';
 				    		html += '</tr>';
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
 			    			html += '<tr align="center">';
 				    		html += '    <td scope="row"><input type="checkbox"></td>';
+				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
 				    		html += '    <td scope="row">' + data[i].ACCOUNT_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ACCOUNT_CTG + '</td>';
-				    		html += '    <td scope="row">' + data[i].ISUE_AGY + '</td>';
-				    		html += '    <td scope="row">' + data[i].ISUE_AGY + '</td>';
-				    		html += '    <td scope="row"><button type="button" class="btn btn-danger" onclick=\"javascript:goNew(\'' + data[i].ACCOUNT_CD +  '\');\">' + '<spring:message code="com.txt.update"/></button></td>';
+				    		html += '    <td scope="row">' + data[i].ACCOUNT_CTG_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].ISUE_AGY_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].ACCOUNT_HRDR + '</td>';
+				    		html += '    <td scope="row">';
+				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goNew(\'' + data[i].ACCOUNT_CD +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
+				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].ACCOUNT_CD +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
+				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
 			    	}
@@ -73,8 +77,31 @@
      window.open(url, name, option);
  }
  
- function goDel(){
-	alert('delete');	 
+ function goDel(accountCd){
+	 
+	 if(!confirm('<spring:message code="com.acccount.cfrmAccountDelete"/>')) return;   // 해당 계좌를 삭제하시겠습니까?
+	 
+	 var param = {
+			    ACCOUNT_CD    : accountCd
+			 };
+	 
+	 $.ajax({
+		    type : 'POST',
+		    url : '/asset/deleteAccount', 
+		    dataType : 'json', 
+		    data : param,
+		    success : function(result) { 
+		    	if(result.result == "success"){
+		    		alert('<spring:message code="com.msg.deleteSuccess"/>');  // 삭제 성공!
+		    		list();
+		    	}else{
+		    		alert('<spring:message code="com.msg.deleteFail"/>');   // 삭제 실패!
+		    	}
+		    },
+		    error : function(request, status, error) { 
+		    	alert('<spring:message code="com.msg.deleteFail"/>');   // 삭제 실패!
+		    }
+		});			 
  }
 
 function enterkey(){
@@ -95,23 +122,23 @@ function enterkey(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">계좌명</div><!-- 계좌명 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.acccount.accountNm"/></div><!-- 계좌명 -->
     </div>
     <input type="text" class="form-control" id="ACCOUNT_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">계좌종류</div><!-- 계좌종류 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.acccount.acccountCtg"/></div><!-- 계좌종류 -->
     </div>
-    <input type="text" class="form-control" id="ACCOUNT_CTG"  onkeyup="javascript:enterkey();">
+    <input type="text" class="form-control" id="ACCOUNT_CTG_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">발급기관</div><!-- 발급기관 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.acccount.isueAgy"/></div><!-- 발급기관 -->
     </div>
-    <input type="text" class="form-control" id="ISUE_AGY"  onkeyup="javascript:enterkey();">
+    <input type="text" class="form-control" id="ISUE_AGY_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <button type="button" class="btn btn-primary" onclick="javascript:list();"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
@@ -130,12 +157,13 @@ function enterkey(){
 	<table class="table">
 	  <thead align="center">
 	    <tr>
-	      <th scope="col"></th>
-	      <th scope="col"><spring:message code="com.txt.number"/></th><!-- No. -->
-	      <th scope="col">계좌명</th>
-	      <th scope="col">계좌종류</th>
-	      <th scope="col">발급기관</th>
-	      <th scope="col"></th>
+	      <th scope="col" width="5%"></th>
+	      <th scope="col" width="10%"><spring:message code="com.txt.number"/></th><!-- No. -->
+	      <th scope="col" width="15%"><spring:message code="com.acccount.accountNm"/></th><!-- 계좌명 -->
+	      <th scope="col" width="15%"><spring:message code="com.acccount.acccountCtg"/></th><!-- 계좌종류 -->
+	      <th scope="col" width="15%"><spring:message code="com.acccount.isueAgy"/></th><!-- 발급기관 -->
+	      <th scope="col" width="15%"><spring:message code="com.acccount.acccountHrdr"/></th><!-- 예금주 -->
+	      <th scope="col" width="*"></th>
 	    </tr>
 	  </thead>
 	  <tbody id="list">
