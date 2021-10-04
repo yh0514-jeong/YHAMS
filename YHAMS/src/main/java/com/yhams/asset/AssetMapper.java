@@ -20,4 +20,9 @@ public interface AssetMapper {
 
 	int deleteAccount(HashMap<String, Object> param) throws Exception;
 
+	long unearnedCount(HashMap<String, Object> param)  throws Exception;
+
+	ArrayList<HashMap<String, Object>> unearnedListUp(HashMap<String, Object> param) throws Exception;
+
+	int saveUnearned(HashMap<String, Object> param) throws Exception;
 }

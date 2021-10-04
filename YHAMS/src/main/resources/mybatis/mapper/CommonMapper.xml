@@ -24,6 +24,10 @@
 	<select id="getNextAccountCd" resultType="String">
 		SELECT CONCAT('ANT_', LPAD(NEXT VALUE FOR TB_META_ACCOUNT_SEQ, 5, 0));
 	</select>
+	
+	<select id="getNextUedSeq" resultType="String">
+		SELECT CONCAT('UED_', LPAD(NEXT VALUE FOR TB_TRAN_UNEARNED_SEQ, 6, 0));
+	</select>
 
 	<select id="getCgList" parameterType="String" resultType="java.util.HashMap">
 			

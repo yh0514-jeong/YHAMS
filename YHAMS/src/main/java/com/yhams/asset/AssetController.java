@@ -39,9 +39,25 @@ public class AssetController {
 	CommonService commonService;
 	
 	@RequestMapping(value = "/accountManageMain")
-	public ModelAndView main() {
+	public ModelAndView accountManageMain() {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("asset/account/accountList");
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/unearnedManagementMain")
+	public ModelAndView unearnedManagementMain() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("asset/unearned/unearnedList");
+		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/unearnedAdd")
+	public ModelAndView unearnedAdd() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("asset/unearned/unearnedAdd");
 		return mv;
 	}
 	
@@ -179,6 +195,78 @@ public class AssetController {
 		return result;
 	}
 	
+	
+	
+	@RequestMapping(value = "/unearnedList", method = RequestMethod.GET)
+	@ResponseBody
+	public HashMap<String, Object> unearnedList(@RequestParam   HashMap<String, Object> param, 
+											                    HttpSession session,
+															    HttpServletRequest  request,
+															    HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		
+		HashMap<String, Object> result          = new HashMap<String, Object>();
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+		
+		long total       = 0;
+		int cntPerPage   = param.get("cntPerPage") == null ? 10 : Integer.parseInt(param.get("cntPerPage").toString());
+		int curPage      = param.get("curPage")    == null ? 1 : Integer.parseInt(param.get("curPage").toString());
+		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+		
+		logger.info("param==>" + param.toString());
+		
+		try {
+			total = assetService.unearnedCount(param);
+			list  = assetService.unearnedListUp(param);
+			PagingUtil pagingUtil = new PagingUtil(10, cntPerPage, total);
+			Map<String, Object> block = pagingUtil.getFixedBlock(curPage);
+			result.put("block", block);
+			result.put("total", total);
+			result.put("list",  list);
+			result.put("resultCode",  CommonContraint.SUCCEESS);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode",  CommonContraint.FAIL);
+		}
+		
+		return result;
+	}
+	
+	
+	@RequestMapping(value = "/uedCtgList", method = RequestMethod.GET)
+	@ResponseBody
+	public ArrayList<HashMap<String, Object>> uedCtgList(HttpSession session,
+														 HttpServletRequest  request,
+														 HttpServletResponse response){
+		logService.insertUserActLog(request, session);
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+		try {
+			list  = commonService.getCgList("CG_1005", "Y");
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	
+	@RequestMapping(value = "/saveUnearnedList", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> saveUnearnedList( @RequestParam(required = true) HashMap<String, Object> param,
+												     HttpSession session,
+													 HttpServletRequest  request,
+													 HttpServletResponse response){
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> map = new HashMap<String,Object>();
+		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+		int result = 0;
+		try {
+			result = assetService.saveUnearnedList(param);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return map;
+	}
 	
 
 }

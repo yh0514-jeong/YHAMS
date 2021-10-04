@@ -47,4 +47,9 @@ public class CommonServiceImpl implements CommonService {
 		return mapper.getNextAccountCd();
 	}
 
+	@Override
+	public String getNextUedSeq() throws Exception {
+		return mapper.getNextUedSeq();
+	}
+
 }

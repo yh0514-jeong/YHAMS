@@ -8,6 +8,8 @@
 
 <!-- JQuery -->
 <script src="/js/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="/css/jquery-ui.css"> <!-- CSS -->
+<script src="/js/jquery-ui.js"></script>          <!-- jquery-ui -->
 
 <!-- Table.js -->
 <script src="/js/datatables.js"></script>

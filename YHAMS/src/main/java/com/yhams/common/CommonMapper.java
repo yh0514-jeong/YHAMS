@@ -24,6 +24,8 @@ public interface CommonMapper {
 
 	String getNextAccountCd() throws Exception;
 
+	String getNextUedSeq() throws Exception;
+
 	
 
 }
