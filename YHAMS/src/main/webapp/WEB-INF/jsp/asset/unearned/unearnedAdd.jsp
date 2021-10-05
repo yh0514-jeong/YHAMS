@@ -40,8 +40,15 @@ function goSave(){
 		    url  : '/asset/saveUnearnedList', 
 		    dataType : 'json', 
 		    data : param,
-		    success : function(result) { 
-		    	
+		    success : function(result) {
+		    	if(result.result == 'success'){
+		    		alert('<spring:message code="com.msg.registerSuccess"/>');  // 등록 성공!!
+		    		opener.parent.list(); 
+		    		window.close();
+		    	}else{
+		    	    alert('<spring:message code="com.msg.registerFail"/>'); // 등록 실패!
+		    	    return;
+		    	}
 		    },
 		    error : function(request, status, error) { 
 		        alert('<spring:message code="com.msg.registerfail"/>');  // 등록 실패
@@ -58,7 +65,7 @@ function goDel(){
 			$(this).closest('tr').remove();
 		});
 	}else{
-		alert('선택된 내역이 없습니다.');
+		alert('<spring:message code="com.msg.unselected"/>');   //  선택된 내역이 없습니다.
 	}
 	$("#chkAll").attr("checked", false);
 }
@@ -125,7 +132,7 @@ function formCheck(){
 	var chkUedCtg    = 0;
 	
 	if($("#unearedList tr").length == 0){
-		alert('추가할 내용이 없습니다.');
+		alert('<spring:message code="com.msg.chkAddList"/>');   // 추가할 내용이 없습니다.
 		return false;
 	}
 	
@@ -160,21 +167,21 @@ function formCheck(){
 	}else{
 		var mesg = '';
 		if(chkUedDate > 0){
-			mesg += '수입일';
+			mesg += '<spring:message code="com.unearned.uenDate"/>';   // 수입일
 		}
 		if(chkUedIncm > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '금액';
+			mesg += '<spring:message code="com.unearned.uenIncm"/>';   // 금액
 		}
 		if(chkUedSource > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '수입처';
+			mesg += '<spring:message code="com.unearned.uenSource"/>';  // 수입처
 		}
 		if(chkUedCtg > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '수입분류';
+			mesg += '<spring:message code="com.unearned.uenCtg"/>';  // 수입분류
 		}
-		alert(mesg + '를 확인해주세요.');
+		alert(mesg + '<spring:message code="com.msg.pleaseChk"/>');  // ..를 확인해주세요.
 		return false;
 	}
 	
@@ -190,9 +197,9 @@ function formCheck(){
 </div>
 
 <div class="panel panel-default" style="float: right;">
-	<button id="btnAdd" onclick="javascript:goAdd();" type="button" class="btn btn-success">추가</button><!-- 추가 -->
-	<button id="btnDel" onclick="javascript:goDel();" type="button" class="btn btn-danger">삭제</button><!-- 삭제 -->
-	<button id="btnSave" onclick="javascript:goSave();" type="button" class="btn btn-primary">저장</button><!-- 삭제 -->
+	<button id="btnAdd" onclick="javascript:goAdd();" type="button" class="btn btn-success"><spring:message code="com.btn.add"/></button><!-- 추가 -->
+	<button id="btnDel" onclick="javascript:goDel();" type="button" class="btn btn-danger"><spring:message code="com.btn.delete"/></button><!-- 삭제 -->
+	<button id="btnSave" onclick="javascript:goSave();" type="button" class="btn btn-primary"><spring:message code="com.btn.save"/></button><!-- 저장 -->
 </div>
 
 <!-- 전체 메뉴리스트 -->
@@ -201,10 +208,10 @@ function formCheck(){
 	  <thead class="thead-dark" align="center">
 	    <tr>
 	      <th scope="col"><input id="chkAll" type="checkbox" onchange="javascript:checkFlag(this);"></th>
-	      <th scope="col">수입일</th>    <!--  수입일 -->
-	      <th scope="col">금액</th>     <!--  금액 -->
-	      <th scope="col">수입처</th>    <!--  수입처 -->
-	      <th scope="col">수입분류</th>   <!--  수입분류 -->
+	      <th scope="col"><spring:message code="com.unearned.uenDate"/></th>      <!--  수입일 -->
+	      <th scope="col"><spring:message code="com.unearned.uenIncm"/></th>      <!--  금액 -->
+	      <th scope="col"><spring:message code="com.unearned.uenSource"/></th>    <!--  수입처 -->
+	      <th scope="col"><spring:message code="com.unearned.uenCtg"/></th>       <!--  수입분류 -->
 	    </tr>
 	  </thead>
 	  <tbody id="unearedList">

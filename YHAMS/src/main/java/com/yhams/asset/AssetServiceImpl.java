@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yhams.common.CommonMapper;
-import com.yhams.common.CommonService;
 
 @Service
 public class AssetServiceImpl implements AssetService {

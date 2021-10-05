@@ -262,8 +262,14 @@ public class AssetController {
 		int result = 0;
 		try {
 			result = assetService.saveUnearnedList(param);
+			if(result >= 0) {
+				map.put("result", "success");
+			}else {
+				map.put("result", "fail");
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
+			map.put("result", "fail");
 		}
 		return map;
 	}

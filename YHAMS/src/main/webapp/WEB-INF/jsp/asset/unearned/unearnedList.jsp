@@ -126,7 +126,7 @@ function initDatePicker(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">기간</div><!--기간 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.period"/></div><!--기간 -->
     </div>
     <input type="text" class="form-control" id="START_DATE" style="width: 150px;">&nbsp;~&nbsp;
     <input type="text" class="form-control" id="END_DATE"   style="width: 150px;">
@@ -134,14 +134,14 @@ function initDatePicker(){
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">수입처</div><!-- 수입처 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.uenSource"/></div><!-- 수입처 -->
     </div>
     <input type="text" class="form-control" id="UEN_SOURCE"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">수입분류</div><!-- 수입분류 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.uenCtg"/></div><!-- 수입분류 -->
     </div>
     <input type="text" class="form-control" id="UEN_CTG"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
