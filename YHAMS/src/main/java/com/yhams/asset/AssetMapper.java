@@ -25,4 +25,8 @@ public interface AssetMapper {
 	ArrayList<HashMap<String, Object>> unearnedListUp(HashMap<String, Object> param) throws Exception;
 
 	int saveUnearned(HashMap<String, Object> param) throws Exception;
+
+	HashMap<String, Object> selectUnearned(String param) throws Exception;
+
+	int updateUnearned(HashMap<String, Object> param) throws Exception;
 }

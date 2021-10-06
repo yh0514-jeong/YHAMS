@@ -17,6 +17,28 @@
 			AND   TMP.ISUE_AGY_NM LIKE CONCAT('%',#{ISUE_AGY_NM},'%')
 		</if>
 	</sql>
+	
+	
+	<sql id="cmmUnearnedWhere">
+			AND   A.USER_SEQ = #{USER_SEQ}
+			
+			<if test="START_DATE != null and START_DATE != ''">
+			AND   A.UED_DATE   <![CDATA[ >= ]]> STR_TO_DATE(#{START_DATE},'%Y-%m-%d')
+		    </if>
+		    
+		    <if test="END_DATE != null and END_DATE != ''">
+		    AND   A.UED_DATE   <![CDATA[ <= ]]> STR_TO_DATE(#{END_DATE},'%Y-%m-%d')
+		    </if>
+		    
+		    <if test="UED_SOURCE != null and UED_SOURCE != ''">
+		    AND   A.UED_SOURCE LIKE CONCAT('%', #{UED_SOURCE}, '%')
+		    </if>
+		    
+		    <if test="UED_CTG_NM != null and UED_CTG_NM != ''">
+		    AND   A.UED_CTG_NM LIKE CONCAT('%', #{UED_CTG_NM}, '%')
+		    </if>
+	</sql>
+	 
 
 	<select id="accountCount" parameterType="java.util.HashMap" resultType="long">
 	
@@ -202,27 +224,97 @@
 	 <select id="unearnedCount" parameterType="java.util.HashMap" resultType="long">
 	 
 	 	SELECT  COUNT(*)
-        
-	       FROM TB_TRAN_UNEARNED
+	  
+	     FROM (
+	         
+		         SELECT  A.*
+			       
+			       FROM (
+			       	     
+			       	     SELECT  TTU.UED_SEQ,
+							     TTU.USER_SEQ,
+							     TTU.UED_DATE,
+							     TTU.UED_INCM,
+							     TTU.UED_SOURCE,
+							     TTU.UED_CTG,
+							     (SELECT TCC.CODE_NM
+						           FROM TB_CMM_CDDTL TCC
+							       WHERE TCC.CODE_ID = 'CG_1005'
+									 AND   TTU.UED_CTG = TCC.CODE_CD
+								  ) AS UED_CTG_NM,
+							     TTU.CREATE_ID,
+							     TTU.CREATE_DATE,
+							     TTU.UPDATE_ID,
+							     TTU.UPDATE_DATE
+					        
+						     FROM TB_TRAN_UNEARNED TTU 
+						     
+						  )  A
+						     
+						 WHERE 1=1
+						 
+						 <include refid="cmmUnearnedWhere"/>
+	     
+		  	  ) T1
 	 
 	 </select>
 	 
 	 <select id="unearnedListUp" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	 	
-	 	SELECT  UED_SEQ,
-		        USER_SEQ,
-		        UED_DATE,
-		        UED_INCM,
-		        UED_SOURCE,
-		        UED_CTG,
-		        CREATE_ID,
-		        CREATE_DATE,
-		        UPDATE_ID,
-		        UPDATE_DATE
-        
-	       FROM TB_TRAN_UNEARNED
-	       
+	 	SELECT  T1.RNUM,
+                T1.UED_SEQ,
+		        T1.USER_SEQ,
+                DATE_FORMAT(T1.UED_DATE, '%Y-%m-%d') AS UED_DATE,
+                FORMAT(T1.UED_INCM, 0) AS UED_INCM,
+                T1.UED_SOURCE,
+                T1.UED_CTG,
+                T1.UED_CTG_NM,
+                T1.CREATE_ID,
+                T1.CREATE_DATE,
+                T1.UPDATE_ID,
+                T1.UPDATE_DATE
+	  
+	     FROM (
+	         
+		         SELECT  A.*
+			       
+			       FROM (
+			       	     
+			       	     SELECT  ROW_NUMBER() OVER(ORDER BY DATE_FORMAT(TTU.UED_DATE, '%Y-%m-%d') ASC) AS RNUM,
+					             TTU.UED_SEQ,
+							     TTU.USER_SEQ,
+							     TTU.UED_DATE,
+							     TTU.UED_INCM,
+							     TTU.UED_SOURCE,
+							     TTU.UED_CTG,
+							     (SELECT TCC.CODE_NM
+						           FROM TB_CMM_CDDTL TCC
+							       WHERE TCC.CODE_ID = 'CG_1005'
+									 AND   TTU.UED_CTG = TCC.CODE_CD
+								  ) AS UED_CTG_NM,
+							     TTU.CREATE_ID,
+							     TTU.CREATE_DATE,
+							     TTU.UPDATE_ID,
+							     TTU.UPDATE_DATE
+					        
+						     FROM TB_TRAN_UNEARNED TTU 
+						     
+						  )  A
+						     
+						 WHERE 1=1
+						 
+						 <include refid="cmmUnearnedWhere"/>
+	     
+		  	  ) T1
+		  	  
+		  	  
+		  	 WHERE T1.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
+	
+		     ORDER BY RNUM ASC
+		  	
 	 </select>
+	 
+	 
 	 
 	 <insert id="saveUnearned" parameterType="java.util.HashMap">
 	 
@@ -256,6 +348,38 @@
 		)
 	 
 	 </insert>
+	 
+	 <select id="selectUnearned" parameterType="String" resultType="java.util.HashMap">
+	 
+	 		SELECT  UED_SEQ,   
+				    USER_SEQ,     
+					DATE_FORMAT(UED_DATE, '%Y-%m-%d') AS UED_DATE,      
+					FORMAT(UED_INCM, 0) AS UED_INCM,    
+					UED_SOURCE,   
+					UED_CTG,      
+					CREATE_ID,    
+					CREATE_DATE,  
+					UPDATE_ID,    
+					UPDATE_DATE
+					 	
+			   FROM TB_TRAN_UNEARNED
+			   
+			   WHERE UED_SEQ = #{UED_SEQ}
+	 
+	 </select>
 	
+		
+	 <update id="updateUnearned" parameterType="java.util.HashMap">
+	 
+	 	 UPDATE TB_TRAN_UNEARNED
+	 	 
+			SET UED_DATE   = #{UED_DATE},
+			    UED_INCM   = #{UED_INCM},
+			    UED_SOURCE = #{UED_SOURCE},
+			    UED_CTG    = #{UED_CTG}
+			
+			WHERE UED_SEQ  = #{UED_SEQ}
+	 
+	 </update>
 	
 </mapper>

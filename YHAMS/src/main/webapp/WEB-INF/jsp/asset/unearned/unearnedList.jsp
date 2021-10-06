@@ -22,8 +22,8 @@
 	 var param = {
 	    START_DATE    : $("#START_DATE").val().trim(),
 	    END_DATE      : $("#END_DATE").val().trim(),
-	    UEN_SOURCE    : $("#UEN_SOURCE").val().trim(),
-	    UEN_CTG       : $("#UEN_CTG").val().trim(),
+	    UED_SOURCE    : $("#UEN_SOURCE").val().trim(),
+	    UED_CTG_NM    : $("#UED_CTG_NM").val().trim(),
 		cntPerPage    : $("#cntPerPage").val(),
 		curPage       : $("#curPage").val()
 	 };
@@ -48,13 +48,13 @@
 			    			html += '<tr align="center">';
 				    		html += '    <td scope="row"><input type="checkbox"></td>';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ACCOUNT_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ACCOUNT_CTG_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ISUE_AGY_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ACCOUNT_HRDR + '</td>';
+				    		html += '    <td scope="row">' + data[i].UED_DATE + '</td>';
+				    		html += '    <td scope="row">' + data[i].UED_INCM + '</td>';
+				    		html += '    <td scope="row">' + data[i].UED_SOURCE + '</td>';
+				    		html += '    <td scope="row">' + data[i].UED_CTG_NM + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goNew(\'' + data[i].ACCOUNT_CD +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
-				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].ACCOUNT_CD +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
+				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goUpdate(\'' + data[i].UED_SEQ +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
+				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].UED_SEQ +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -77,17 +77,26 @@
      window.open(url, name, option);
  }
  
- function goDel(accountCd){
+ function goUpdate(UED_SEQ){
+	 var url    = "/asset/unearnedUpdate?UED_SEQ=" + UED_SEQ;
+	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
+     window.open(url, name, option);
+ }
+ 
+ 
+ function goDel(uedSeq){
 	 
-	 if(!confirm('<spring:message code="com.acccount.cfrmAccountDelete"/>')) return;   // 해당 계좌를 삭제하시겠습니까?
+	 if(!confirm('해당 내역을 삭제하시겠습니까?')) return;   // 해당 내역을 삭제하시겠습니까?
 	 
 	 var param = {
-			    ACCOUNT_CD    : accountCd
-			 };
+	    'UED_SEQ' : uedSeq
+	 };
 	 
-	 $.ajax({
+	 console.log(JSON.stringify(param));
+	 
+	 /* $.ajax({
 		    type : 'POST',
-		    url : '/asset/deleteAccount', 
+		    url : '/asset/deleteUnearedList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
@@ -101,7 +110,7 @@
 		    error : function(request, status, error) { 
 		    	alert('<spring:message code="com.msg.deleteFail"/>');   // 삭제 실패!
 		    }
-		});			 
+		});		 */	 
  }
 
 function enterkey(){
@@ -110,7 +119,11 @@ function enterkey(){
 
 function initDatePicker(){
 	$("#START_DATE,#END_DATE").datepicker("destroy");
-	$("#START_DATE,#END_DATE").datepicker();
+	$("#START_DATE,#END_DATE").datepicker({dateFormat: 'yy-mm-dd'});
+}
+
+function goStringifyDelTarget(){
+	alert('Delete!');	
 }
 
 </script>
@@ -143,7 +156,7 @@ function initDatePicker(){
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.uenCtg"/></div><!-- 수입분류 -->
     </div>
-    <input type="text" class="form-control" id="UEN_CTG"  onkeyup="javascript:enterkey();" style="width: 150px;">
+    <input type="text" class="form-control" id="UED_CTG_NM"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
   &nbsp;
   <button type="button" class="btn btn-primary" onclick="javascript:list();"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
@@ -156,7 +169,8 @@ function initDatePicker(){
 <br>
 <br>
 <div style="float: left;">
-	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success"><spring:message code="com.btn.register"/></button><!-- 등록 -->
+	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-primary"><spring:message code="com.btn.register"/></button><!-- 등록 -->
+	<button id="btnDel" onclick="javascript:goStringifyDelTarget();" type="button" class="btn btn-danger"><spring:message code="com.btn.delete"/></button><!-- 삭제 -->
 </div>
 <div class="table table-hover">
 	<table class="table">
@@ -172,7 +186,7 @@ function initDatePicker(){
 	    </tr>
 	  </thead>
 	  <tbody id="list">
-	   </tbody>
+	  </tbody>
 	</table>
 </div>
 <!-- 페이징 처리 -->

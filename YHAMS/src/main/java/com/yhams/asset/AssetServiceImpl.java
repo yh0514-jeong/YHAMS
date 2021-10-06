@@ -88,4 +88,14 @@ public class AssetServiceImpl implements AssetService {
 		return r;
 	}
 
+	@Override
+	public HashMap<String, Object> selectUnearned(String param) throws Exception {
+		return mapper.selectUnearned(param);
+	}
+
+	@Override
+	public int updateUnearned(HashMap<String, Object> param) throws Exception {
+		return mapper.updateUnearned(param);
+	}
+
 }

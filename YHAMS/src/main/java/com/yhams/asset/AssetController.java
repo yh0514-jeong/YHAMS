@@ -45,7 +45,6 @@ public class AssetController {
 		return mv;
 	}
 	
-	
 	@RequestMapping(value = "/unearnedManagementMain")
 	public ModelAndView unearnedManagementMain() {
 		ModelAndView mv = new ModelAndView();
@@ -53,14 +52,12 @@ public class AssetController {
 		return mv;
 	}
 	
-	
 	@RequestMapping(value = "/unearnedAdd")
 	public ModelAndView unearnedAdd() {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("asset/unearned/unearnedAdd");
 		return mv;
 	}
-	
 	
 	@RequestMapping(value = "/accountList", method = RequestMethod.GET)
 	@ResponseBody
@@ -263,9 +260,9 @@ public class AssetController {
 		try {
 			result = assetService.saveUnearnedList(param);
 			if(result >= 0) {
-				map.put("result", "success");
+				map.put("result", CommonContraint.SUCCEESS);
 			}else {
-				map.put("result", "fail");
+				map.put("result", CommonContraint.FAIL);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -274,5 +271,55 @@ public class AssetController {
 		return map;
 	}
 	
+	
+	@RequestMapping(value = "/unearnedUpdate")
+	public ModelAndView unearnedUpdate(@RequestParam String UED_SEQ,
+							            HttpSession session,
+							            HttpServletRequest request,
+							            HttpServletResponse response) {
+		
+		
+		logService.insertUserActLog(request, session);
+		
+		ModelAndView mv           = new ModelAndView();
+		HashMap<String, Object> r = new HashMap<String, Object>();
+		
+		ArrayList<HashMap<String, Object>> uedCtgList  = new ArrayList<HashMap<String,Object>>();
+		
+		try {
+			uedCtgList = commonService.getCgList("CG_1005", "Y") ;
+			r = assetService.selectUnearned(UED_SEQ);
+			mv.addObject("result"    , r               );
+			mv.addObject("nav"       , "불로소득 내역 수정" );
+			mv.addObject("uedCtgList", uedCtgList      );
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		mv.setViewName("asset/unearned/unearnedUpdate");
+		return mv;
+	}
 
+	
+	
+	@RequestMapping(value = "/updateUnearned", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> updateUnearned(@RequestParam HashMap<String, Object> param, 
+			                                      HttpSession session,
+			                                      HttpServletRequest request,
+			                                      HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		int r = 0;
+		try {
+			r = assetService.updateUnearned(param);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", CommonContraint.FAIL);
+		}
+		result.put("result", CommonContraint.SUCCEESS);
+		return result;
+	}
+	
 }

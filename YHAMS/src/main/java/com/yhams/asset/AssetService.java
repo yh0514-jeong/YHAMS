@@ -21,6 +21,11 @@ public interface AssetService {
 
 	ArrayList<HashMap<String, Object>> unearnedListUp(HashMap<String, Object> param) throws Exception;
 
-	int saveUnearnedList(HashMap<String, Object> param)  throws Exception;
+	int saveUnearnedList(HashMap<String, Object> param) throws Exception;
+
+	HashMap<String, Object> selectUnearned(String param) throws Exception;
+
+	int updateUnearned(HashMap<String, Object> param) throws Exception;
+
 
 }
