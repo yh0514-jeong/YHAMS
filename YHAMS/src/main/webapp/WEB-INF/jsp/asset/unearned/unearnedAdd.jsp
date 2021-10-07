@@ -43,7 +43,7 @@ function goSave(){
 		    success : function(result) {
 		    	if(result.result == 'success'){
 		    		alert('<spring:message code="com.msg.registerSuccess"/>');  // 등록 성공!!
-		    		opener.parent.list(); 
+		    		opener.parent.list(1); 
 		    		window.close();
 		    	}else{
 		    	    alert('<spring:message code="com.msg.registerFail"/>'); // 등록 실패!
