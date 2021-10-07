@@ -13,11 +13,15 @@
 
   $(function() {
 	 initDatePicker();
-	 list();
+	 list(1);
   });
 
  
- function list(){
+ function list(targetPage){
+	 
+	 if(targetPage!=null){
+		 $("#curPage").val(1);
+	 }
 	 
 	 var param = {
 	    START_DATE    : $("#START_DATE").val().trim(),
@@ -46,7 +50,7 @@
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
 			    			html += '<tr align="center">';
-				    		html += '    <td scope="row"><input type="checkbox"></td>';
+				    		html += '    <td scope="row"><input type="checkbox" value="' + data[i].UED_SEQ + '"></td>';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
 				    		html += '    <td scope="row">' + data[i].UED_DATE + '</td>';
 				    		html += '    <td scope="row">' + data[i].UED_INCM + '</td>';
@@ -84,25 +88,23 @@
  }
  
  
- function goDel(uedSeq){
+ function goDel(uedSeqs){
 	 
-	 if(!confirm('해당 내역을 삭제하시겠습니까?')) return;   // 해당 내역을 삭제하시겠습니까?
+	 if(!confirm('<spring:message code="com.msg.chkSelectedDelete"/>')) return;   // 선택된 항목을 삭제하시겠습니까?
 	 
 	 var param = {
-	    'UED_SEQ' : uedSeq
+	    'UED_SEQS' : uedSeqs
 	 };
 	 
-	 console.log(JSON.stringify(param));
-	 
-	 /* $.ajax({
+	 $.ajax({
 		    type : 'POST',
 		    url : '/asset/deleteUnearedList', 
-		    dataType : 'json', 
+		    dataType : 'json',
 		    data : param,
 		    success : function(result) { 
 		    	if(result.result == "success"){
 		    		alert('<spring:message code="com.msg.deleteSuccess"/>');  // 삭제 성공!
-		    		list();
+		    		list(1);
 		    	}else{
 		    		alert('<spring:message code="com.msg.deleteFail"/>');   // 삭제 실패!
 		    	}
@@ -110,11 +112,11 @@
 		    error : function(request, status, error) { 
 		    	alert('<spring:message code="com.msg.deleteFail"/>');   // 삭제 실패!
 		    }
-		});		 */	 
+		});
  }
 
 function enterkey(){
-	if (window.event.keyCode == 13) { list(); }
+	if (window.event.keyCode == 13) { list(1); }
 }
 
 function initDatePicker(){
@@ -123,7 +125,20 @@ function initDatePicker(){
 }
 
 function goStringifyDelTarget(){
-	alert('Delete!');	
+	var delTargets = '';
+	$("#list").children().find("input[type='checkbox']:checked").each(function(i, val){
+		if(delTargets == ''){
+			delTargets += $(this).val();
+		}else{
+			delTargets += ',' + $(this).val();
+		}
+	});
+	if(delTargets == ''){
+		alert('<spring:message code="com.msg.unselected"/>');   // 선택된 내역이 없습니다.
+		return;
+	}else{
+		goDel(delTargets);
+	}
 }
 
 </script>
@@ -159,7 +174,7 @@ function goStringifyDelTarget(){
     <input type="text" class="form-control" id="UED_CTG_NM"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
   &nbsp;
-  <button type="button" class="btn btn-primary" onclick="javascript:list();"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
+  <button type="button" class="btn btn-primary" onclick="javascript:list(1);"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
   &nbsp;
 </div>
 <!-- Paging Util Parameter Start -->
@@ -178,10 +193,10 @@ function goStringifyDelTarget(){
 	    <tr>
 	      <th scope="col" width="5%"></th>
 	      <th scope="col" width="10%"><spring:message code="com.txt.number"/></th><!-- No. -->
-	      <th scope="col" width="15%">수입일</th><!-- 수입일 -->
-	      <th scope="col" width="15%">금액</th><!-- 금액 -->
-	      <th scope="col" width="15%">수입처</th><!-- 수입처 -->
-	      <th scope="col" width="15%">수입분류</th><!-- 수입분류 -->
+	      <th scope="col" width="15%"><spring:message code="com.unearned.uenDate"/></th><!-- 수입일 -->
+	      <th scope="col" width="15%"><spring:message code="com.unearned.uenIncm"/></th><!-- 금액 -->
+	      <th scope="col" width="15%"><spring:message code="com.unearned.uenSource"/></th><!-- 수입처 -->
+	      <th scope="col" width="15%"><spring:message code="com.unearned.uenCtg"/></th><!-- 수입분류 -->
 	      <th scope="col" width="*"></th>
 	    </tr>
 	  </thead>

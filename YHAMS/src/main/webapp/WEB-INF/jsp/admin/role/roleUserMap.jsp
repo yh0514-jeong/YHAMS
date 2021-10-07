@@ -127,7 +127,7 @@ function save(){
 	    success : function(result) { 
 	        if(result.resultCode == "success"){
 	        	alert('<spring:message code="com.msg.saveSuccess"/>');
-	        	opener.parent.list(); 
+	        	opener.parent.list(1); 
 	        	window.close();
 	        }else{
 	        	alert('<spring:message code="com.msg.saveFail"/>');

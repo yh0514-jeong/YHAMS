@@ -98,4 +98,9 @@ public class AssetServiceImpl implements AssetService {
 		return mapper.updateUnearned(param);
 	}
 
+	@Override
+	public int deleteUnearedList(HashMap<String, Object> param) throws Exception {
+		return mapper.deleteUnearedList(param);
+	}
+
 }

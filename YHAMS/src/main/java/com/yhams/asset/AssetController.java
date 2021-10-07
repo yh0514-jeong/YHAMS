@@ -322,4 +322,28 @@ public class AssetController {
 		return result;
 	}
 	
+	
+	@RequestMapping(value = "/deleteUnearedList", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> deleteUnearedList(@RequestParam HashMap<String, Object> param, 
+			                                      HttpSession session,
+			                                      HttpServletRequest request,
+			                                      HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		int r = 0;
+		try {
+			String[] uedSeqs = param.get("UED_SEQS").toString().split(",");
+			logger.info("uedSeqs==>" + uedSeqs);
+			param.put("uedSeqs", uedSeqs);
+			r = assetService.deleteUnearedList(param);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", CommonContraint.FAIL);
+		}
+		result.put("result", CommonContraint.SUCCEESS);
+		return result;
+	}
+	
 }

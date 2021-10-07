@@ -83,7 +83,7 @@ function save(){
 	    success : function(result) { 
 	        if(result.resultCode == "success"){
 	        	alert('<spring:message code="com.msg.saveSuccess"/>');  // 저장성공!
-	        	opener.parent.list(); 
+	        	opener.parent.list(1); 
 	        	window.close();
 	        }else{
 	        	alert('<spring:message code="com.msg.saveFail"/>');  // 저장실패!
@@ -116,7 +116,7 @@ function save(){
 	    <input type="text" class="form-control" id="ROLE_NM"  onkeyup="javascript:enterkey();">
 	  </div>
 	  &nbsp;
-	  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
+	  <button type="button" class="btn btn-primary" onclick="javascript:list(1);" type="button"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
 	</div>	
 	<div class="table table-hover">	
 		<table class="table">

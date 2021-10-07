@@ -12,11 +12,15 @@
 <script type="text/javascript">
 
 $(document).ready(function() {
-	list();
+	list(1);
 });
 
 
-function list(){
+function list(targetPage){
+	
+	 if(targetPage!=null){
+		 $("#curPage").val(1);
+	 }
 	
 	 var param = {
 		ROLE_ID    : $("#ROLE_ID").val().trim(),
@@ -91,7 +95,7 @@ function goUserMap(roleId){
 
 
 function enterkey(){
-	if (window.event.keyCode == 13) { list(); }
+	if (window.event.keyCode == 13) { list(1); }
 }
 
 </script>
@@ -119,7 +123,7 @@ function enterkey(){
     <input type="text" class="form-control" id="ROLE_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
-  <button type="button" class="btn btn-primary" onclick="javascript:list();" type="button"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
+  <button type="button" class="btn btn-primary" onclick="javascript:list(1);" type="button"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
   &nbsp;
 </div>
 <!-- Paging Util Parameter Start -->

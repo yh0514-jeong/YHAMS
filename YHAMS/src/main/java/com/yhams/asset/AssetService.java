@@ -27,5 +27,7 @@ public interface AssetService {
 
 	int updateUnearned(HashMap<String, Object> param) throws Exception;
 
+	int deleteUnearedList(HashMap<String, Object> param) throws Exception;
+
 
 }

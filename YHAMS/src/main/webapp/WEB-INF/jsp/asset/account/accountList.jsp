@@ -12,11 +12,15 @@
 <script type="text/javascript">
 
  $(document).ready(function(){
-	 list();
+	 list(1);
  });
  
  
- function list(){
+function list(targetPage){
+	 
+	 if(targetPage!=null){
+		 $("#curPage").val(1);
+	 }
 	 
 	 var param = {
 	    ACCOUNT_NM     : $("#ACCOUNT_NM").val().trim(),
@@ -35,7 +39,6 @@
 		    	if(result.resultCode == "success"){
 		    		$("#list").empty();
 		    		var data = result.list;
-		    		console.log(JSON.stringify(result.block));
 		    		drawPaging(result.block);
 			    	var html = "";
 			    	if(data.length == 0){
@@ -93,7 +96,7 @@
 		    success : function(result) { 
 		    	if(result.result == "success"){
 		    		alert('<spring:message code="com.msg.deleteSuccess"/>');  // 삭제 성공!
-		    		list();
+		    		list(1);
 		    	}else{
 		    		alert('<spring:message code="com.msg.deleteFail"/>');   // 삭제 실패!
 		    	}
@@ -105,7 +108,7 @@
  }
 
 function enterkey(){
-	if (window.event.keyCode == 13) { list(); }
+	if (window.event.keyCode == 13) { list(1); }
 }
 
 
@@ -141,7 +144,7 @@ function enterkey(){
     <input type="text" class="form-control" id="ISUE_AGY_NM"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
-  <button type="button" class="btn btn-primary" onclick="javascript:list();"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
+  <button type="button" class="btn btn-primary" onclick="javascript:list(1);"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
   &nbsp;
 </div>
 <!-- Paging Util Parameter Start -->

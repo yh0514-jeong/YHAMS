@@ -62,7 +62,7 @@
 		    success : function(result) { 
 		        if(result.result == "success"){
 			        alert('<spring:message code="com.msg.updateSuccess"/>');    // 수정 성공!
-			        opener.parent.list(); 
+			        opener.parent.list(1); 
 			        window.close();
 		        }else{
 		        	alert('<spring:message code="com.msg.updatefail"/>');  // 수정 실패!

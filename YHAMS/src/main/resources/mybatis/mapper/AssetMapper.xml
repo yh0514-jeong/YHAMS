@@ -382,4 +382,13 @@
 	 
 	 </update>
 	
+	 <delete id="deleteUnearedList" parameterType="java.util.HashMap">
+	 
+	 	DELETE FROM	TB_TRAN_UNEARNED
+	 	WHERE UED_SEQ IN 
+	 	<foreach collection="uedSeqs" item="item" separator="," open="(" close=")">
+            #{item}
+    	</foreach>
+	 
+	 </delete>
 </mapper>
