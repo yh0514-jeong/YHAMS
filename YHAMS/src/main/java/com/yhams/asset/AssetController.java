@@ -59,6 +59,15 @@ public class AssetController {
 		return mv;
 	}
 	
+	
+	@RequestMapping(value = "/salaryManageMain")
+	public ModelAndView payrollManageMain() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("asset/salary/salaryList");
+		return mv;
+	}
+	
+	
 	@RequestMapping(value = "/accountList", method = RequestMethod.GET)
 	@ResponseBody
 	public HashMap<String, Object> accountList(@RequestParam   HashMap<String, Object> param, 
@@ -345,5 +354,37 @@ public class AssetController {
 		result.put("result", CommonContraint.SUCCEESS);
 		return result;
 	}
+	
+	
+	
+	@RequestMapping(value = "/salaryUpdate")
+	public ModelAndView salaryUpdate(@RequestParam(required = false) String SAL_SEQ,
+									 HttpSession session,
+									 HttpServletRequest request,
+									 HttpServletResponse response) {
+		
+		logService.insertUserActLog(request, session);
+		
+		ModelAndView mv           = new ModelAndView();
+		HashMap<String, Object> r = new HashMap<String, Object>();
+		
+		ArrayList<HashMap<String, Object>> payList = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> dedList = new ArrayList<HashMap<String,Object>>();
+		
+		try {
+			payList = commonService.getCgList("CG_1007", "Y");
+			dedList = commonService.getCgList("CG_1008", "Y");
+			
+			r.put("payList", payList);
+			r.put("dedList", dedList);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		mv.setViewName("asset/salary/salaryUpdate");
+		return mv;
+	}
+
 	
 }
