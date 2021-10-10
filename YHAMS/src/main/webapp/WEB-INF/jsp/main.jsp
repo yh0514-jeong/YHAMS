@@ -62,16 +62,37 @@
       float: none;
     }
   }
-  </style>
+  
+   #charts1{
+       width: 48%;
+       height: 48%;
+       float: left;
+   }
+   #charts2{
+       width: 48%;
+       height: 48%;
+       float: left;
+   }
+   #charts3{
+       width: 48%;
+       height: 48%;
+       float: left;
+   }
+   #charts4{
+       width: 48%;
+       height: 48%;
+       float: left;
+   }
+</style>
 </head>
 <script type="text/javascript">
 
     var menu = '${menuList}';
 
 	$(document).ready(function(){
-		
+		$("#mainArea").show();
+		$("#menuArea").hide();
 		$("#subMenu").hide();
-		
 	});
 	
 	function drawTopMenu(){
@@ -88,6 +109,9 @@
 	}
 	
 	function drawLeftMenu(parMenuId){
+		
+		$("#menuArea").show();
+		$("#mainArea").hide();
 		
 		$("#pageload").empty();
 		if(parMenuId != null && typeof parMenuId != 'undefined'){
@@ -120,11 +144,15 @@
 		var url = $(selectedMenu).attr("url");
 		 $("#pageload").load(url);
 	}
-
+	
+	function goMain(){
+		$("#menuArea").hide();
+		$("#mainArea").show();
+	}
 </script>
 <body>
        <nav class="navbar navbar-expand-xl navbar-dark bg-success fixed-top" style="background-color: blueviolet;">
-           <a class="navbar-brand" href="#"><img src="img/logo.png" style="width: 30%; margin-left: 15px;"></a>
+           <a class="navbar-brand" href="#"><img src="img/logo.png" style="width: 30%; margin-left: 15px;" onclick="goMain();"></a>
            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menues" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                <span class="navbar-toggler-icon"></span>
            </button>
@@ -138,11 +166,203 @@
                </ul>
              </div>
        </nav>
-
-       <div id="subMenu" class="sidebar" style="padding-top: 71px;">
-       </div>
+ 
+	   <div id="mainArea"  style="padding-top: 73px;"> <!-- Main Chart List -->
+		    <div id="charts1">
+	            <canvas id="myChart"></canvas>
+	        </div>
+	        <div id="charts2">
+	            <canvas id="myChart2"></canvas>
+	        </div>
+	        <div id="charts3">
+	            <canvas id="myChart3"></canvas>
+	        </div>
+	        <div id="charts4">
+	            <canvas id="myChart4"></canvas>
+	        </div>
+	   </div>
+	   
+	   <div id="menuArea"  style="padding-top: 73px;"> <!-- Menu List -->
+	   	  <div id="subMenu" class="sidebar"> <!--  style="padding-top: 71px;" -->
+       	  </div>
         
-       <div id="pageload" class="content" style="padding-top: 84px;">
-       </div>
+	       <div id="pageload" class="content"> <!--  style="padding-top: 84px;" -->
+	       </div>
+	   </div>
+	   
+	   
+	   <script>
+	   var ctx = document.getElementById('myChart').getContext('2d');
+	    var myChart = new Chart(ctx, {
+	        type: 'bar',
+	        data: {
+	            labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
+	            datasets: [{
+	                label: '금액',
+	                data: [12, 19, 3, 5, 2, 3],
+	                backgroundColor: [
+	                    'rgba(255, 99, 132, 0.2)',
+	                    'rgba(54, 162, 235, 0.2)',
+	                    'rgba(255, 206, 86, 0.2)',
+	                    'rgba(75, 192, 192, 0.2)',
+	                    'rgba(153, 102, 255, 0.2)',
+	                    'rgba(255, 159, 64, 0.2)'
+	                ],
+	                borderColor: [
+	                    'rgba(255, 99, 132, 1)',
+	                    'rgba(54, 162, 235, 1)',
+	                    'rgba(255, 206, 86, 1)',
+	                    'rgba(75, 192, 192, 1)',
+	                    'rgba(153, 102, 255, 1)',
+	                    'rgba(255, 159, 64, 1)'
+	                ],
+	                borderWidth: 1
+	            }]
+	        },
+	        options: {
+	            scales: {
+	                y: {
+	                    beginAtZero: true
+	                }
+	            },
+	            animations: {
+	                tension: {
+	                    duration: 1000,
+	                    easing: 'linear',
+	                    from: 1,
+	                    to: 0,
+	                    loop: true
+	                }
+	            }
+	        }
+	    });
+
+		var ctx1 = document.getElementById('myChart2').getContext('2d');
+		var myChart = new Chart(ctx1, {
+		    type: 'line',
+		    data: {
+		        labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
+		        datasets: [{
+		            label: '지출현황',
+		            data: [12, 19, 3, 5, 2, 3],
+		            backgroundColor: [
+		                'rgba(255, 99, 132, 0.2)',
+		                'rgba(54, 162, 235, 0.2)',
+		                'rgba(255, 206, 86, 0.2)',
+		                'rgba(75, 192, 192, 0.2)',
+		                'rgba(153, 102, 255, 0.2)',
+		                'rgba(255, 159, 64, 0.2)'
+		            ],
+		            borderColor: [
+		                'rgba(255, 99, 132, 1)',
+		                'rgba(54, 162, 235, 1)',
+		                'rgba(255, 206, 86, 1)',
+		                'rgba(75, 192, 192, 1)',
+		                'rgba(153, 102, 255, 1)',
+		                'rgba(255, 159, 64, 1)'
+		            ],
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            y: {
+		                beginAtZero: true
+		            }
+		        }
+		    }
+		});
+
+	    var ctx2 = document.getElementById('myChart3').getContext('2d');
+	    var myChart = new Chart(ctx2, {
+	        type: 'line',
+	        data: {
+	            labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
+	            datasets: [{
+	                label: '금액',
+	                data: [12, 19, 3, 5, 2, 3],
+	                backgroundColor: [
+	                    'rgba(255, 99, 132, 0.2)',
+	                    'rgba(54, 162, 235, 0.2)',
+	                    'rgba(255, 206, 86, 0.2)',
+	                    'rgba(75, 192, 192, 0.2)',
+	                    'rgba(153, 102, 255, 0.2)',
+	                    'rgba(255, 159, 64, 0.2)'
+	                ],
+	                borderColor: [
+	                    'rgba(255, 99, 132, 1)',
+	                    'rgba(54, 162, 235, 1)',
+	                    'rgba(255, 206, 86, 1)',
+	                    'rgba(75, 192, 192, 1)',
+	                    'rgba(153, 102, 255, 1)',
+	                    'rgba(255, 159, 64, 1)'
+	                ],
+	                borderWidth: 1
+	            }]
+	        },
+	        options: {
+	            scales: {
+	                y: {
+	                    beginAtZero: true
+	                }
+	            },
+	            animations: {
+	                tension: {
+	                    duration: 1000,
+	                    easing: 'linear',
+	                    from: 1,
+	                    to: 0,
+	                    loop: true
+	                }
+	            }
+	        }
+	    });
+
+		var ctx3 = document.getElementById('myChart4').getContext('2d');
+		var myChart = new Chart(ctx3, {
+		    type: 'bar',
+		    data: {
+		        labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
+		        datasets: [{
+		            label: '금액',
+		            data: [12, 19, 3, 5, 2, 3],
+		            backgroundColor: [
+		                'rgba(255, 99, 132, 0.2)',
+		                'rgba(54, 162, 235, 0.2)',
+		                'rgba(255, 206, 86, 0.2)',
+		                'rgba(75, 192, 192, 0.2)',
+		                'rgba(153, 102, 255, 0.2)',
+		                'rgba(255, 159, 64, 0.2)'
+		            ],
+		            borderColor: [
+		                'rgba(255, 99, 132, 1)',
+		                'rgba(54, 162, 235, 1)',
+		                'rgba(255, 206, 86, 1)',
+		                'rgba(75, 192, 192, 1)',
+		                'rgba(153, 102, 255, 1)',
+		                'rgba(255, 159, 64, 1)'
+		            ],
+		            borderWidth: 1
+		        }]
+		    },
+		    options: {
+		        scales: {
+		            y: {
+		                beginAtZero: true
+		            }
+		        },
+		        animations: {
+		            tension: {
+		                duration: 1000,
+		                easing: 'linear',
+		                from: 1,
+		                to: 0,
+		                loop: true
+		            }
+		        }
+		    }
+		});
+	   </script>
+	   
 </body>    
 </html>
