@@ -76,7 +76,7 @@ function list(targetPage){
  function goNew(salSeq){
 	 var url    = (salSeq == null || typeof salSeq == 'undefined') ? "/asset/salaryUpdate" : "/asset/salaryUpdate?SAL_SEQ=" + salSeq ;
 	 var name   = (salSeq == null || typeof salSeq == 'undefined') ? '급여 내역 등록': '급여 내역 수정';
-	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
+	 var option = "width = 1100, height = 700, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
  

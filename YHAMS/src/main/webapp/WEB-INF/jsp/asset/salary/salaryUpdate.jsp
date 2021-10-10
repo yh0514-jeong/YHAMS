@@ -14,7 +14,16 @@
 var trCnt = 0; 
 
 $(document).ready(function() {
-	
+	$("#SAL_DATE").datepicker({
+		changeMonth: true,
+        changeYear: true,
+        changeDate : false,
+        showButtonPanel: true,
+        dateFormat: 'yy년 mm월',
+        onClose: function(dateText, inst) { 
+            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+        }
+	});		
 });
 
 
@@ -70,28 +79,33 @@ function goDel(){
 	$("#chkAll").attr("checked", false);
 }
 
-function goAdd(){
+function goAdd(type){
+	
+    let targetElement = '';	
+	 
+	if(type ==  'pay'){
+		targetElement = 'pay_list';
+	}else{
+		targetElement = 'ded_list';
+	}
 	
 	var html = "";
-	    html += '<tr id="UED_SEQ_' + trCnt + '">';
-	    html += '	<td scope="col"><input id="CHKUEDSEQ_' +  trCnt + '"  type="checkbox"></td>';
-	    html += '	<td scope="col"><input id="UED_DATE_' +  trCnt + '"   type="text"></td>';   
-	    html += '	<td scope="col"><input id="UED_INCM_' +  trCnt + '"   onChange="numberCheck(this.id, this.value);" type="text"></td>';    
-	    html += '	<td scope="col"><input id="UED_SOURCE_' +  trCnt + '" type="text"></td>';   
-	    html += '	<td scope="col">'
-	    html += '        <select id="UED_CTG_' +  trCnt + '">';
-	    var codeList = getUedCtgList();
+	    html += '<tr>';
+	    html += '	<td scope="col" align="center"><input type="checkbox"></td>';
+	    html += '	<td scope="col" align="center">';
+	    html += '        <select id="UED_CTG_' +  trCnt + '" style="width:150px;">';
+	    var codeList = getPayDeducDtlList(type);
     	for(var i=0; i<codeList.length; i++){
 		html += '             <option value="' + codeList[i].CODE_CD + '">' + codeList[i].CODE_NM + '</option>';
     	}
 	    html += '        </select>'; 
 	    html += '   </td>'; 
+	    html += '   <td scope="col" align="center"><input id="AMOUNT_' + trCnt + '" onChange="numberCheck(this.id, this.value);" type="text"></td>';    
 	    html += '</tr>';
 	    
-    $("#unearedList").append(html);
-	$("#UED_DATE_" + trCnt).datepicker({dateFormat: 'yy-mm-dd'});
-	trCnt = trCnt+1;
-	$("#chkAll").attr("checked", false);
+	trCnt++;
+	$("#" + targetElement).append(html);
+	    
 }
 
 function numberCheck(id, value){
@@ -100,11 +114,15 @@ function numberCheck(id, value){
 }
 
 
-function getUedCtgList(){
+function getPayDeducDtlList(type){
 	var l;
+	var param = {
+	   
+	};
 	$.ajax({
 	    type : 'get',
 	    url : '/asset/uedCtgList', 
+	    data : param,
 	    dataType : 'json', 
 	    async: false,
 	    success : function(result) { 
@@ -196,39 +214,59 @@ function formCheck(){
   </div>
 </div>
 
-<div class="panel panel-default" style="float: right;">
-	<button id="btnAdd" onclick="javascript:goAdd();" type="button" class="btn btn-success"><spring:message code="com.btn.add"/></button><!-- 추가 -->
-	<button id="btnDel" onclick="javascript:goDel();" type="button" class="btn btn-danger"><spring:message code="com.btn.delete"/></button><!-- 삭제 -->
-	<button id="btnSave" onclick="javascript:goSave();" type="button" class="btn btn-primary"><spring:message code="com.btn.save"/></button><!-- 저장 -->
-</div>
-
-<!-- 공제 -->
-<div class="table table-hover" style="width:48%;">	
-	<table id="pay_table" class="table">
-	  <thead class="thead-dark" align="center">
-	    <tr>
-	      <th scope="col">지급항목</th>   <!--  지급항목 -->
-	    </tr>
-	  </thead>
-	  <tbody id="pay_list">
-	    
-	  </tbody>
-	</table>
+<div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <div class="input-group-text" id="btnGroupAddon">급여연월</div><!-- 급여연월 -->
+    </div>
+    <input type="text" class="form-control" id="SAL_DATE">
+  </div>
 </div>
 
 
-<div class="table table-hover">	
-	<table id="ded_table" class="table" style="width:48%;">
+<!-- 급여관리  -->
+<div class="panel panel-default" style="width: 100%; float:none;">
+	<div class="table table-hover" style="width:48%; float: left;">	
+		 <div class="panel panel-default" style="width: 100%; height: 8%;">
+			<button id="btnAdd" onclick="javascript:goAdd('pay');" type="button" class="btn btn-success" style="float: right;">지급항목 추가</button><!-- 지급항목 추가 -->
+		</div>
+		<table id="pay_table" class="table">
 		  <thead class="thead-dark" align="center">
+		  	<tr>
+		      <th scope="col" colspan="3">지급항목</th>
+		    </tr>
 		    <tr>
-		      <th scope="col">공제항목</th>
+		      <th width="10%"><input type="checkbox"></th>
+		      <th width="45%">항목</th>
+		      <th width="45%">금액</th>
 		    </tr>
 		  </thead>
-		  <tbody id="ded_list">
+		  <tbody id="pay_list">
 		    
 		  </tbody>
-	</table>
+		</table>
+	</div>
+	
+	<div class="table table-hover" style="width:48%; float: left; padding-left: 15px;">	
+		<div class="panel panel-default" style="width: 100%; height: 8%;">
+			<button id="btnAdd" onclick="javascript:goAdd('ded');" type="button" class="btn btn-danger" style="float: right;">공제항목 추가</button><!-- 공제항목 추가 -->
+		</div>
+		<table id="ded_table" class="table">
+			  <thead class="thead-dark" align="center">
+			    <tr>
+			      <th colspan="3">공제항목</th>
+			    </tr>
+			    <tr>
+			      <th width="10%"><input type="checkbox"></th>
+			      <th width="45%">항목</th>
+			      <th width="45%">금액</th>
+			    </tr>
+			  </thead>
+			  <tbody id="ded_list">
+			    
+			  </tbody>
+		</table>
+	</div>
 </div>
-
 </body>    
 </html>

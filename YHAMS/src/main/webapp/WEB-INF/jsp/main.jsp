@@ -198,7 +198,6 @@
 	        data: {
 	            labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
 	            datasets: [{
-	                label: '금액',
 	                data: [12, 19, 3, 5, 2, 3],
 	                backgroundColor: [
 	                    'rgba(255, 99, 132, 0.2)',
@@ -233,6 +232,15 @@
 	                    to: 0,
 	                    loop: true
 	                }
+	            },
+	            plugins: {
+	                title: {
+	                    display: true,
+	                    text: '급여 추이'
+	                }
+	            },
+	            legend : {
+	            	display : false
 	            }
 	        }
 	    });
@@ -243,7 +251,6 @@
 		    data: {
 		        labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
 		        datasets: [{
-		            label: '지출현황',
 		            data: [12, 19, 3, 5, 2, 3],
 		            backgroundColor: [
 		                'rgba(255, 99, 132, 0.2)',
@@ -269,7 +276,23 @@
 		            y: {
 		                beginAtZero: true
 		            }
-		        }
+		        },
+			    plugins: {
+	                title: {
+	                    display: true,
+	                    text: '자산 변화'
+	                }
+	            },
+	            legend: {
+	                display: false
+	            },
+	            tooltips: {
+	                callbacks: {
+	                   label: function(tooltipItem) {
+	                          return tooltipItem.yLabel;
+	                   }
+	                }
+	            }
 		    }
 		});
 
@@ -279,7 +302,6 @@
 	        data: {
 	            labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
 	            datasets: [{
-	                label: '금액',
 	                data: [12, 19, 3, 5, 2, 3],
 	                backgroundColor: [
 	                    'rgba(255, 99, 132, 0.2)',
@@ -313,6 +335,22 @@
 	                    from: 1,
 	                    to: 0,
 	                    loop: true
+	                }
+	            },
+			    plugins: {
+	                title: {
+	                    display: true,
+	                    text: '지출 추이'
+	                }
+	            },
+	            legend: {
+	                display: false
+	            },
+	            tooltips: {
+	                callbacks: {
+	                   label: function(tooltipItem) {
+	                          return tooltipItem.yLabel;
+	                   }
 	                }
 	            }
 	        }
