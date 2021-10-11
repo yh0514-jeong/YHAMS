@@ -17,9 +17,8 @@ $(document).ready(function() {
 	$("#SAL_DATE").datepicker({
 		changeMonth: true,
         changeYear: true,
-        changeDate : false,
         showButtonPanel: true,
-        dateFormat: 'yy년 mm월',
+        dateFormat: 'yy-mm',
         onClose: function(dateText, inst) { 
             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
         }
@@ -28,25 +27,39 @@ $(document).ready(function() {
 
 
 function goSave(){
+	
 	if(formCheck()){
-		var list = new Array();
-		$("#unearedList > tr").each(function(i, value){
+		
+		var list = new Array();  // 지급항목 리스트
+		
+		$("#pay_list tr").each(function(i, value){
 			var map = {
-				UED_DATE   : $(this).children().find("input[id^=UED_DATE_]").val(),
-			    UED_INCM   : $(this).children().find("input[id^=UED_INCM_]").val().replace(/,/g, ""),
-			    UED_SOURCE : $(this).children().find("input[id^=UED_SOURCE_]").val(),
-			    UED_CTG	   : $(this).children().find("select[id^=UED_CTG_]").val()
+				SAL_DATE      : $("#SAL_DATE").val().trim(),
+			    AMOUNT        : $(this).find('input[id^=AMOUNT_]').val().replace(/,/g, ""),
+			    PAY_DEDUC     : 'PAY',
+			    PAY_DEDUC_DTL : $(this).find('select[id^=pay]').val()
+			};
+			list.push(map);
+		});
+		
+		
+		$("#ded_list tr").each(function(i, value){
+			var map = {
+				SAL_DATE      : $("#SAL_DATE").val().trim(),
+			    AMOUNT        : $(this).find('input[id^=AMOUNT_]').val().replace(/,/g, ""),
+			    PAY_DEDUC     : 'DED',
+			    PAY_DEDUC_DTL : $(this).find('select[id^=ded]').val()
 			};
 			list.push(map);
 		});
 		
 		var param = {
-		    'list' : JSON.stringify(list)		
+		    'list' : JSON.stringify(list)
 		}
 		
-		$.ajax({
+ 		$.ajax({
 		    type : 'post',
-		    url  : '/asset/saveUnearnedList', 
+		    url  : '/asset/saveSalaryList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) {
@@ -67,17 +80,20 @@ function goSave(){
 }
 
 
-function goDel(){
-	var len = $("#unearedList").children().find("input[type='checkbox']:checked").length;
+
+function goDel(type){
+    let target = type == 'pay' ? 'pay_list' : 'ded_list';
+	var len = $("#" + target).children().find("input[type='checkbox']:checked").length;
 	if(len > 0){
-		$("#unearedList").children().find("input[type='checkbox']:checked").each(function(i, val){
+		$("#" + target).children().find("input[type='checkbox']:checked").each(function(i, val){
 			$(this).closest('tr').remove();
 		});
 	}else{
 		alert('<spring:message code="com.msg.unselected"/>');   //  선택된 내역이 없습니다.
 	}
-	$("#chkAll").attr("checked", false);
+	calTotal(type);
 }
+
 
 function goAdd(type){
 	
@@ -93,14 +109,15 @@ function goAdd(type){
 	    html += '<tr>';
 	    html += '	<td scope="col" align="center"><input type="checkbox"></td>';
 	    html += '	<td scope="col" align="center">';
-	    html += '        <select id="UED_CTG_' +  trCnt + '" style="width:150px;">';
+	    html += '        <select id="' + type + '_' +  trCnt + '" style="width:150px;">';
 	    var codeList = getPayDeducDtlList(type);
+	    html += '             <option value=""><spring:message code="com.txt.optionSelect"/></option>';
     	for(var i=0; i<codeList.length; i++){
 		html += '             <option value="' + codeList[i].CODE_CD + '">' + codeList[i].CODE_NM + '</option>';
     	}
 	    html += '        </select>'; 
 	    html += '   </td>'; 
-	    html += '   <td scope="col" align="center"><input id="AMOUNT_' + trCnt + '" onChange="numberCheck(this.id, this.value);" type="text"></td>';    
+	    html += '   <td scope="col" align="center"><input id="AMOUNT_' + type + '_' + trCnt + '" onChange="numberCheck(this.id, this.value);" type="text"></td>';    
 	    html += '</tr>';
 	    
 	trCnt++;
@@ -111,17 +128,19 @@ function goAdd(type){
 function numberCheck(id, value){
 	value = value.replace(/[^0-9]/g, "").replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 	$("#" + id ).val(value);
+	var type = id.split('_')[1];
+	calTotal(type);
 }
 
 
 function getPayDeducDtlList(type){
 	var l;
 	var param = {
-	   
+	   'type' : type
 	};
 	$.ajax({
 	    type : 'get',
-	    url : '/asset/uedCtgList', 
+	    url : '/asset/payDeducDtlList', 
 	    data : param,
 	    dataType : 'json', 
 	    async: false,
@@ -144,67 +163,92 @@ function checkFlag(t){
 
 function formCheck(){
 	
-	var chkUedDate   = 0;
-	var chkUedIncm   = 0;
-	var chkUedSource = 0;
-	var chkUedCtg    = 0;
+	var chkPayDtl      = 0;
+	var chkPayAmount   = 0;
+	var chkDedDtl      = 0;
+	var chkDedAmount   = 0;
+
 	
-	if($("#unearedList tr").length == 0){
+    if($("#SAL_DATE").val().trim().length == 0 || $("#SAL_DATE").val() == null){
+    	alert('급여연월을 확인해주세요.');
+    	return false;
+    }
+	
+	if($("#pay_list tr").length == 0 && $("#ded_list tr").length == 0){
 		alert('<spring:message code="com.msg.chkAddList"/>');   // 추가할 내용이 없습니다.
 		return false;
 	}
 	
-	
-	$("#unearedList").children().find("input[id^=UED_DATE_]").each(function(i, value){
-		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedDate++;
+	$("#pay_list tr").each(function(i, value){
+		if($(this).find('select[id^=pay]').val().trim().length == 0 || $(this).find('select[id^=pay]').val() == null){
+			chkPayDtl++;
 		}
 	});
 	
-	$("#unearedList").children().find("input[id^=UED_INCM_]").each(function(i, value){
-		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedIncm++;
+	$("#pay_list tr").each(function(i, value){
+		if($(this).find('input[id^=AMOUNT_]').val().trim().length == 0 || $(this).find('input[id^=AMOUNT_]').val() == null){
+			chkPayAmount++;
 		}
 	});
 	
-	$("#unearedList").children().find("input[id^=UED_SOURCE_]").each(function(i, value){
-		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedSource++;
+	$("#ded_list tr").each(function(i, value){
+		if($(this).find('select[id^=ded]').val().trim().length == 0 || $(this).find('select[id^=ded]').val() == null){
+			chkDedDtl++;
 		}
 	});
 	
-	$("#unearedList").children().find("input[id^=UED_CTG_]").each(function(i, value){
-		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedCtg++;
+	$("#ded_list tr").each(function(i, value){
+		if($(this).find('input[id^=AMOUNT_]').val().trim().length == 0 || $(this).find('input[id^=AMOUNT_]').val() == null){
+			chkDedAmount++;
 		}
 	});
 	
 	
-	if(chkUedDate + chkUedIncm + chkUedSource + chkUedCtg == 0){
+	if(chkPayDtl + chkPayAmount + chkDedDtl + chkDedAmount == 0){
 		return true;
 	}else{
 		var mesg = '';
-		if(chkUedDate > 0){
-			mesg += '<spring:message code="com.unearned.uenDate"/>';   // 수입일
+		if(chkPayDtl > 0){
+			mesg += '지급항목';       // 지급항목
 		}
-		if(chkUedIncm > 0){
+		if(chkPayAmount > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.unearned.uenIncm"/>';   // 금액
+			mesg += '지급항목 금액';   // 지급항목 금액
 		}
-		if(chkUedSource > 0){
+		if(chkDedDtl > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.unearned.uenSource"/>';  // 수입처
+			mesg += '공제항목';       // 공제항목
 		}
-		if(chkUedCtg > 0){
+		if(chkDedAmount > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.unearned.uenCtg"/>';  // 수입분류
+			mesg += '공제항목 금액';   // 공제항목 금액
 		}
 		alert(mesg + '<spring:message code="com.msg.pleaseChk"/>');  // ..를 확인해주세요.
 		return false;
-	}
+	} 
 	
 }
-	
+
+function callLastMonthSalary(){
+	alert('지난달 급여 가져오기');
+}
+
+function calTotal(type){
+	let target = type == 'pay' ? 'pay_list' : 'ded_list';
+	let total  = 0;
+	$("#" + target).find("tr").each(function(i, val){
+		total += Number($(this).find('input[id^=AMOUNT_]').val().replace(/,/g, ""));
+	});
+	total = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); 
+	if(type == 'pay'){
+		$("#payTotalText").html('총 지급액 : ' + total);
+	}else{
+		$("#dedTotalText").html('총 공제액 : ' + total);
+	}
+}
+
+
+
 </script>
 <body>
 
@@ -220,6 +264,8 @@ function formCheck(){
       <div class="input-group-text" id="btnGroupAddon">급여연월</div><!-- 급여연월 -->
     </div>
     <input type="text" class="form-control" id="SAL_DATE">
+    <button onclick="javascript:callLastMonthSalary();" type="button" class="btn btn-info" style="float: right; margin-left: 5px;">지난달 급여항목 가져오기</button><!-- 지난달 급여항목 가져오기 -->
+    <button onclick="javascript:goSave();" type="button" class="btn btn-primary" style="float: right; margin-left: 5px;">저장</button><!--저장 -->
   </div>
 </div>
 
@@ -228,7 +274,9 @@ function formCheck(){
 <div class="panel panel-default" style="width: 100%; float:none;">
 	<div class="table table-hover" style="width:48%; float: left;">	
 		 <div class="panel panel-default" style="width: 100%; height: 8%;">
-			<button id="btnAdd" onclick="javascript:goAdd('pay');" type="button" class="btn btn-success" style="float: right;">지급항목 추가</button><!-- 지급항목 추가 -->
+		 	<p id="payTotalText">총 지급액 : 0</p> <!-- 지급항목 총액 -->
+			<button onclick="javascript:goAdd('pay');" type="button" class="btn btn-success" style="float: right;  margin-left: 5px;">지급항목 추가</button><!-- 지급항목 추가 -->
+			<button onclick="javascript:goDel('pay');" type="button" class="btn btn-danger" style="float: right;">지급항목 삭제</button><!-- 지급항목 삭제 -->
 		</div>
 		<table id="pay_table" class="table">
 		  <thead class="thead-dark" align="center">
@@ -236,7 +284,7 @@ function formCheck(){
 		      <th scope="col" colspan="3">지급항목</th>
 		    </tr>
 		    <tr>
-		      <th width="10%"><input type="checkbox"></th>
+		      <th width="10%"><input type="checkbox" onclick="javascript:chkAll('pay');"></th>
 		      <th width="45%">항목</th>
 		      <th width="45%">금액</th>
 		    </tr>
@@ -249,7 +297,9 @@ function formCheck(){
 	
 	<div class="table table-hover" style="width:48%; float: left; padding-left: 15px;">	
 		<div class="panel panel-default" style="width: 100%; height: 8%;">
-			<button id="btnAdd" onclick="javascript:goAdd('ded');" type="button" class="btn btn-danger" style="float: right;">공제항목 추가</button><!-- 공제항목 추가 -->
+			<p id="dedTotalText">총 공제액 : 0</p><!-- 공제항목 총액 -->
+			<button onclick="javascript:goAdd('ded');" type="button" class="btn btn-success" style="float: right; margin-left: 5px;">공제항목 추가</button><!-- 공제항목 추가 -->
+			<button onclick="javascript:goDel('ded');" type="button" class="btn btn-danger" style="float: right;">공제항목 삭제</button><!-- 공제항목 삭제 -->
 		</div>
 		<table id="ded_table" class="table">
 			  <thead class="thead-dark" align="center">
@@ -257,7 +307,7 @@ function formCheck(){
 			      <th colspan="3">공제항목</th>
 			    </tr>
 			    <tr>
-			      <th width="10%"><input type="checkbox"></th>
+			      <th width="10%"><input type="checkbox" onclick="javascript:chkAll('ded');"></th>
 			      <th width="45%">항목</th>
 			      <th width="45%">금액</th>
 			    </tr>

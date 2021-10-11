@@ -16,16 +16,16 @@ public interface CommonMapper {
 	
 	String getNextMenuId() throws Exception;
 	
+	String getNextAccountCd() throws Exception;
+
+	String getNextUedSeq() throws Exception;
+
+	String getNextSalSeq() throws Exception;
+	
 	long getNextActLogSeq() throws Exception;
 	
 	ArrayList<HashMap<String, Object>> getCgList(String codeGrp, String useYn) throws Exception;
 
 	void insertUserActLog(HashMap<String, Object> param) throws Exception;
-
-	String getNextAccountCd() throws Exception;
-
-	String getNextUedSeq() throws Exception;
-
-	
 
 }

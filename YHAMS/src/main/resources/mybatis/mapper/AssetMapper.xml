@@ -38,6 +38,12 @@
 		    AND   A.UED_CTG_NM LIKE CONCAT('%', #{UED_CTG_NM}, '%')
 		    </if>
 	</sql>
+	
+	
+	<sql id="cmmSalaryWhere">
+			AND   T1.USER_SEQ = #{USER_SEQ}
+	</sql>
+	 
 	 
 
 	<select id="accountCount" parameterType="java.util.HashMap" resultType="long">
@@ -389,6 +395,143 @@
 	 	<foreach collection="uedSeqs" item="item" separator="," open="(" close=")">
             #{item}
     	</foreach>
-	 
+    	
 	 </delete>
+	 
+	 
+	 <delete id="deleteSalSeq" parameterType="java.util.HashMap">
+	 
+	 	DELETE FROM TB_TRAN_SALARY
+		WHERE  SAL_SEQ = #{SAL_SEQ}
+		
+	 </delete>
+	 
+	 
+	 <insert id="saveSalaryList" parameterType="java.util.HashMap">
+	 	
+	 	INSERT INTO TB_TRAN_SALARY (
+		
+			SAL_SEQ,
+			SAL_DTL_SEQ,
+			USER_SEQ,
+			SAL_DATE,
+			AMOUNT,
+			PAY_DEDUC,
+			PAY_DEDUC_DTL,
+			CREATE_ID,
+			CREATE_DATE,
+			UPDATE_ID,
+			UPDATE_DATE
+		
+		
+		) VALUES (
+		
+			#{SAL_SEQ},
+			#{SAL_DTL_SEQ},
+			#{USER_SEQ},
+			#{SAL_DATE},
+			#{AMOUNT},
+			#{PAY_DEDUC},
+			#{PAY_DEDUC_DTL},
+			#{CREATE_ID},
+			NOW(),
+			#{UPDATE_ID},
+			NOW()
+				
+		)
+	 	
+	 </insert>
+	 
+	 <select id="salaryCount" parameterType="java.util.HashMap" resultType="long">
+	 
+	 	SELECT  COUNT(*)
+  
+        FROM (
+			    SELECT  T1.SAL_SEQ, 
+				        T1.USER_SEQ,
+				        T1.SAL_DATE,
+				        T2.PAY_AMOUNT, 
+					    T3.DED_AMOUNT, 
+					    T2.PAY_AMOUNT-T3.DED_AMOUNT AS NET_AMOUNT
+					  
+				FROM (SELECT DISTINCT SAL_SEQ, 
+				                      USER_SEQ, 
+									  SAL_DATE
+						  FROM TB_TRAN_SALARY)  T1
+				
+				LEFT OUTER JOIN
+				(SELECT  SAL_SEQ,
+				         SUM(AMOUNT) AS PAY_AMOUNT
+					FROM TB_TRAN_SALARY
+				  WHERE  PAY_DEDUC = 'PAY'
+				  GROUP BY SAL_SEQ) T2
+				ON T1.SAL_SEQ = T2.SAL_SEQ
+				
+				LEFT OUTER JOIN
+				(SELECT  SAL_SEQ,
+				         SUM(AMOUNT) AS DED_AMOUNT
+				   FROM TB_TRAN_SALARY
+				  WHERE PAY_DEDUC = 'DED'
+				  GROUP BY SAL_SEQ) T3
+				 ON T1.SAL_SEQ = T2.SAL_SEQ
+				 
+				 <include refid="cmmSalaryWhere"/> 
+	 
+	 		 ) X
+	 
+	 </select>
+	 
+	 
+	 
+	 <select id="salaryListUp" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	 
+	 	SELECT  X.RNUM,
+		        X.SAL_SEQ,
+		        X.USER_SEQ,
+		        X.SAL_DATE,
+		        FORMAT(X.PAY_AMOUNT, 0) AS PAY_AMOUNT,
+		        FORMAT(X.DED_AMOUNT, 0) AS DED_AMOUNT,
+		        FORMAT(X.NET_AMOUNT, 0) AS NET_AMOUNT
+  
+        FROM (
+			    SELECT  ROW_NUMBER() OVER (ORDER BY T1.SAL_DATE DESC) AS RNUM,
+				        T1.SAL_SEQ, 
+				        T1.USER_SEQ,
+				        T1.SAL_DATE,
+				        T2.PAY_AMOUNT, 
+					    T3.DED_AMOUNT, 
+					    T2.PAY_AMOUNT-T3.DED_AMOUNT AS NET_AMOUNT
+					  
+				FROM (SELECT DISTINCT SAL_SEQ, 
+				                      USER_SEQ, 
+									  SAL_DATE
+						  FROM TB_TRAN_SALARY)  T1
+				
+				LEFT OUTER JOIN
+				(SELECT  SAL_SEQ,
+				         SUM(AMOUNT) AS PAY_AMOUNT
+					FROM TB_TRAN_SALARY
+				  WHERE  PAY_DEDUC = 'PAY'
+				  GROUP BY SAL_SEQ) T2
+				ON T1.SAL_SEQ = T2.SAL_SEQ
+				
+				LEFT OUTER JOIN
+				(SELECT  SAL_SEQ,
+				         SUM(AMOUNT) AS DED_AMOUNT
+				   FROM TB_TRAN_SALARY
+				  WHERE PAY_DEDUC = 'DED'
+				  GROUP BY SAL_SEQ) T3
+				 ON T1.SAL_SEQ = T2.SAL_SEQ
+				 
+				 <include refid="cmmSalaryWhere"/>
+	 
+	 		 ) X
+	 		 
+	 		 WHERE X.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
+	
+		     ORDER BY X.RNUM ASC
+	 
+	 </select>
+	 
+	 
 </mapper>

@@ -31,4 +31,12 @@ public interface AssetMapper {
 	int updateUnearned(HashMap<String, Object> param) throws Exception;
 
 	int deleteUnearedList(HashMap<String, Object> param) throws Exception;
+
+	int deleteSalSeq(HashMap<String, Object> param) throws Exception;
+
+	int saveSalaryList(HashMap<String, Object> map) throws Exception;
+
+	long salaryCount(HashMap<String, Object> param) throws Exception;
+
+	ArrayList<HashMap<String, Object>> salaryListUp(HashMap<String, Object> param) throws Exception;
 }

@@ -28,6 +28,10 @@
 	<select id="getNextUedSeq" resultType="String">
 		SELECT CONCAT('UED_', LPAD(NEXT VALUE FOR TB_TRAN_UNEARNED_SEQ, 6, 0));
 	</select>
+	
+	<select id="getNextSalSeq" resultType="String">
+		SELECT CONCAT('SAL_', LPAD(NEXT VALUE FOR TB_TRAN_SALARY_SEQ , 6, 0));
+	</select>
 
 	<select id="getCgList" parameterType="String" resultType="java.util.HashMap">
 			

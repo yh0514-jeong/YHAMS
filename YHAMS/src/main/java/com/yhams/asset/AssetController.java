@@ -368,15 +368,20 @@ public class AssetController {
 		ModelAndView mv           = new ModelAndView();
 		HashMap<String, Object> r = new HashMap<String, Object>();
 		
-		ArrayList<HashMap<String, Object>> payList = new ArrayList<HashMap<String,Object>>();
-		ArrayList<HashMap<String, Object>> dedList = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> paySelectList = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> dedSelectList = new ArrayList<HashMap<String,Object>>();
 		
 		try {
-			payList = commonService.getCgList("CG_1007", "Y");
-			dedList = commonService.getCgList("CG_1008", "Y");
-			
-			r.put("payList", payList);
-			r.put("dedList", dedList);
+
+			if(!"".equals(SAL_SEQ) && SAL_SEQ != null) {
+				paySelectList = commonService.getCgList("CG_1007", "Y");
+				dedSelectList = commonService.getCgList("CG_1008", "Y");
+				mv.addObject("paySelectList", paySelectList);
+				mv.addObject("dedSelectList", dedSelectList);
+			}else {
+				
+				
+			}
 			
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -384,6 +389,93 @@ public class AssetController {
 		
 		mv.setViewName("asset/salary/salaryUpdate");
 		return mv;
+	}
+	
+	
+	@RequestMapping(value = "/payDeducDtlList", method = RequestMethod.GET)
+	@ResponseBody
+	public ArrayList<HashMap<String, Object>> payDeducDtlList(@RequestParam(required = true) HashMap<String, Object> param,
+													          HttpSession session,
+															  HttpServletRequest  request,
+															  HttpServletResponse response){
+		logService.insertUserActLog(request, session);
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+		String type = null;
+		try {
+			type = param.get("type").toString();
+			if("pay".equals(type)) {
+				list  = commonService.getCgList("CG_1007", "Y");
+			}else if("ded".equals(type)){
+				list  = commonService.getCgList("CG_1008", "Y");
+			}else {
+				list = null;
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			list = null;
+		}
+		return list;
+	}
+	
+	
+	@RequestMapping(value = "/saveSalaryList", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> saveSalaryList( @RequestParam(required = true) HashMap<String, Object> param,
+												   HttpSession session,
+												   HttpServletRequest  request,
+												   HttpServletResponse response){
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> map = new HashMap<String,Object>();
+		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+		int result = 0;
+		try {
+			result = assetService.saveSalaryList(param);
+			if(result >= 0) {
+				map.put("result", CommonContraint.SUCCEESS);
+			}else {
+				map.put("result", CommonContraint.FAIL);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			map.put("result", "fail");
+		}
+		return map;
+	}
+	
+	
+	@RequestMapping(value = "/salaryList", method = RequestMethod.GET)
+	@ResponseBody
+	public HashMap<String, Object> salaryList(@RequestParam    HashMap<String, Object> param, 
+											                   HttpSession session,
+															   HttpServletRequest  request,
+															   HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		
+		HashMap<String, Object> result          = new HashMap<String, Object>();
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+		
+		long total       = 0;
+		int cntPerPage   = param.get("cntPerPage") == null ? 10 : Integer.parseInt(param.get("cntPerPage").toString());
+		int curPage      = param.get("curPage")    == null ? 1 : Integer.parseInt(param.get("curPage").toString());
+		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+		
+		logger.info("param==>" + param.toString());
+		
+		try {
+			total = assetService.salaryCount(param);
+			list  = assetService.salaryListUp(param);
+			PagingUtil pagingUtil = new PagingUtil(10, cntPerPage, total);
+			Map<String, Object> block = pagingUtil.getFixedBlock(curPage);
+			result.put("block", block);
+			result.put("total", total);
+			result.put("list",  list);
+			result.put("resultCode",  CommonContraint.SUCCEESS);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode",  CommonContraint.FAIL);
+		}
+		return result;
 	}
 
 	

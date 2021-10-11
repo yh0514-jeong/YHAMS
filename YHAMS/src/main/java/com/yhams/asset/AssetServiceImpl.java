@@ -103,4 +103,62 @@ public class AssetServiceImpl implements AssetService {
 		return mapper.deleteUnearedList(param);
 	}
 
+	
+	
+	@Override
+	@SuppressWarnings("all")
+	@Transactional(rollbackFor = Exception.class)
+	public int saveSalaryList(HashMap<String, Object> param) throws Exception {
+		
+		String SAL_SEQ = null;
+		int result     = 0;
+		
+		try{
+			SAL_SEQ = param.get("SAL_SEQ").toString();
+		}catch (NullPointerException ne) {
+			SAL_SEQ = null;
+		}
+		
+		ArrayList<HashMap<String, Object>> list  = new ArrayList<HashMap<String,Object>>();
+		ObjectMapper mpr = new ObjectMapper();
+		
+		try {
+			list = mpr.readValue(param.get("list").toString(), ArrayList.class);
+			
+			// insert
+			if(SAL_SEQ == null) {
+				SAL_SEQ = commonMapper.getNextSalSeq();
+			// update
+			}else{
+				int delResult = mapper.deleteSalSeq(param);
+			}
+			
+			for(int i=0; i<list.size(); i++) {
+			   HashMap<String, Object> map = list.get(i);
+			   map.put("SAL_SEQ"     ,  SAL_SEQ);
+			   map.put("SAL_DTL_SEQ" ,  i+1);
+			   map.put("USER_SEQ"    ,  param.get("USER_SEQ"));
+			   map.put("CREATE_ID"   ,  param.get("USER_SEQ"));
+			   map.put("UPDATE_ID"   ,  param.get("USER_SEQ"));
+			   logger.info("map.toString()==>" + map.toString());
+			   result = result + mapper.saveSalaryList(map);
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			result = -1;
+		}
+		return result;
+	}
+
+	@Override
+	public long salaryCount(HashMap<String, Object> param) throws Exception {
+		return mapper.salaryCount(param);
+	}
+
+	@Override
+	public ArrayList<HashMap<String, Object>> salaryListUp(HashMap<String, Object> param) throws Exception {
+		return mapper.salaryListUp(param);
+	}
+
 }

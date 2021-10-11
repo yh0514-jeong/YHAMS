@@ -23,16 +23,14 @@ function list(targetPage){
 	 }
 	 
 	 var param = {
-	    ACCOUNT_NM     : $("#ACCOUNT_NM").val().trim(),
-	    ACCOUNT_CTG_NM : $("#ACCOUNT_CTG_NM").val().trim(),
-	    ISUE_AGY_NM    : $("#ISUE_AGY_NM").val().trim(),
+		SAL_DATE       : $("#SAL_DATE").val().trim(),
 		cntPerPage     : $("#cntPerPage").val(),
 		curPage        : $("#curPage").val()
 	 };
 	 
 	 $.ajax({
 		    type : 'get',
-		    url : '/asset/accountList', 
+		    url : '/asset/salaryList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
@@ -43,20 +41,18 @@ function list(targetPage){
 			    	var html = "";
 			    	if(data.length == 0){
 				    		html += '<tr align="center">';
-				    		html += '    <th scope="row" colspan="7"><spring:message code="com.txt.noresult"/></th>';
+				    		html += '    <th scope="row" colspan="6"><spring:message code="com.txt.noresult"/></th>';
 				    		html += '</tr>';
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
 			    			html += '<tr align="center">';
-				    		html += '    <td scope="row"><input type="checkbox"></td>';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ACCOUNT_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ACCOUNT_CTG_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ISUE_AGY_NM + '</td>';
-				    		html += '    <td scope="row">' + data[i].ACCOUNT_HRDR + '</td>';
+				    		html += '    <td scope="row">' + data[i].SAL_DATE + '</td>';
+				    		html += '    <td scope="row">' + data[i].PAY_AMOUNT + '</td>';
+				    		html += '    <td scope="row">' + data[i].DED_AMOUNT + '</td>';
+				    		html += '    <td scope="row">' + data[i].NET_AMOUNT + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goNew(\'' + data[i].ACCOUNT_CD +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
-				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].ACCOUNT_CD +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
+				    		html += '       <button type="button" class="btn btn-danger" onclick=\"javascript:goNew(\'' + data[i].SAL_SEQ +  '\');\">' + '상세보기/수정</button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -127,7 +123,7 @@ function enterkey(){
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon">급여연월</div><!-- 급여연월 -->
     </div>
-    <input type="text" class="form-control" id="ACCOUNT_NM"  onkeyup="javascript:enterkey();">
+    <input type="text" class="form-control" id="SAL_DATE"  onkeyup="javascript:enterkey();">
   </div>
   &nbsp;
   <button type="button" class="btn btn-primary" onclick="javascript:list(1);"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
@@ -146,12 +142,11 @@ function enterkey(){
 	<table class="table">
 	  <thead align="center">
 	    <tr>
-	      <th scope="col" width="5%"></th>
 	      <th scope="col" width="10%"><spring:message code="com.txt.number"/></th><!-- No. -->
-	      <th scope="col" width="15%"><spring:message code="com.acccount.accountNm"/></th><!-- 계좌명 -->
-	      <th scope="col" width="15%"><spring:message code="com.acccount.acccountCtg"/></th><!-- 계좌종류 -->
-	      <th scope="col" width="15%"><spring:message code="com.acccount.isueAgy"/></th><!-- 발급기관 -->
-	      <th scope="col" width="15%"><spring:message code="com.acccount.acccountHrdr"/></th><!-- 예금주 -->
+	      <th scope="col" width="15%">급여연월</th><!-- 급여연월 -->
+	      <th scope="col" width="15%">지급총액</th><!-- 지급총액 -->
+	      <th scope="col" width="15%">공제총액</th><!-- 공제총액 -->
+	      <th scope="col" width="15%">실수령액</th><!-- 실수령액 -->
 	      <th scope="col" width="*"></th>
 	    </tr>
 	  </thead>

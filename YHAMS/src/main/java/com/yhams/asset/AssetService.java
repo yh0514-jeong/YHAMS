@@ -29,5 +29,10 @@ public interface AssetService {
 
 	int deleteUnearedList(HashMap<String, Object> param) throws Exception;
 
+	int saveSalaryList(HashMap<String, Object> param) throws Exception;
+
+	long salaryCount(HashMap<String, Object> param)  throws Exception;
+
+	ArrayList<HashMap<String, Object>> salaryListUp(HashMap<String, Object> param) throws Exception;
 
 }
