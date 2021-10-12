@@ -534,4 +534,25 @@
 	 </select>
 	 
 	 
+	 <select id="getPayDedList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	 
+	 	SELECT   PAY_DEDUC_DTL,
+		         AMOUNT
+		   FROM  TB_TRAN_SALARY
+		   WHERE SAL_SEQ   = #{SAL_SEQ}
+		   AND   PAY_DEDUC = #{PAY_DEDUC}
+		  
+		ORDER BY SAL_DTL_SEQ ASC
+
+	 </select>
+	 
+	 
+	 <select id="getSalSeqDate" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	 
+	 	SELECT  DISTINCT SAL_SEQ, SAL_DATE
+	      FROM  TB_TRAN_SALARY
+	      WHERE SAL_SEQ  = #{SAL_SEQ}
+	 
+	 </select>
+	 
 </mapper>

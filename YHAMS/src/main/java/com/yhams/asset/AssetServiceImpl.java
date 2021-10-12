@@ -161,4 +161,14 @@ public class AssetServiceImpl implements AssetService {
 		return mapper.salaryListUp(param);
 	}
 
+	@Override
+	public ArrayList<HashMap<String, Object>> getPayDedList(HashMap<String, Object> param) throws Exception {
+		return mapper.getPayDedList(param);
+	}
+
+	@Override
+	public HashMap<String, Object> getSalSeqDate(HashMap<String, Object> param) throws Exception {
+		return mapper.getSalSeqDate(param);
+	}
+
 }

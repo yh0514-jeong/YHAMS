@@ -371,16 +371,34 @@ public class AssetController {
 		ArrayList<HashMap<String, Object>> paySelectList = new ArrayList<HashMap<String,Object>>();
 		ArrayList<HashMap<String, Object>> dedSelectList = new ArrayList<HashMap<String,Object>>();
 		
+		
+		
 		try {
 
 			if(!"".equals(SAL_SEQ) && SAL_SEQ != null) {
+				
 				paySelectList = commonService.getCgList("CG_1007", "Y");
 				dedSelectList = commonService.getCgList("CG_1008", "Y");
+				
+				HashMap<String, Object> param = new HashMap<String, Object>();
+				param.put("SAL_SEQ"  , SAL_SEQ);
+				param.put("PAY_DEDUC", "PAY");
+				
+				ArrayList<HashMap<String, Object>> payList = assetService.getPayDedList(param);
+				param.put("PAY_DEDUC", "DED");
+				ArrayList<HashMap<String, Object>> dedList = assetService.getPayDedList(param);
+                
+				HashMap<String, Object> result = assetService.getSalSeqDate(param);
+				
 				mv.addObject("paySelectList", paySelectList);
 				mv.addObject("dedSelectList", dedSelectList);
+				mv.addObject("payList"      , payList);
+				mv.addObject("dedList"      , dedList);
+				mv.addObject("result"       , result);
+				mv.addObject("nav"   , "급여 내역 수정");
+				
 			}else {
-				
-				
+				mv.addObject("nav"   , "급여 내역 등록");
 			}
 			
 		}catch (Exception e) {

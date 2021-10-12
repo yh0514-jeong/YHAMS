@@ -1,5 +1,6 @@
 <%@ include file="../../../include/include-header.jspf" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,9 +12,12 @@
 <script type="text/javascript" src='<c:url value="/js/paging.js"/>'></script>
 <script type="text/javascript">
 
-var trCnt = 0; 
+const SAL_SEQ  = '${result.SAL_SEQ}';
+const SAL_DATE = '${result.SAL_DATE}';
+var trCnt = SAL_SEQ == null || SAL_SEQ == '' ? 0 : ('${payList}').length + ('${dedList}').length; 
 
 $(document).ready(function() {
+	
 	$("#SAL_DATE").datepicker({
 		changeMonth: true,
         changeYear: true,
@@ -22,7 +26,15 @@ $(document).ready(function() {
         onClose: function(dateText, inst) { 
             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
         }
-	});		
+	});
+	
+	if(SAL_SEQ != null && typeof SAL_SEQ != 'undefined' && SAL_SEQ.trim().length > 0){
+		$("#SAL_DATE").datepicker('option','disabled', true);
+		$("#SAL_DATE").datepicker().datepicker("setDate", new Date(SAL_DATE.split('-')[0], SAL_DATE.split('-')[1], '01'));
+		calTotal('pay');
+		calTotal('DED');
+	}
+	
 });
 
 
@@ -247,14 +259,12 @@ function calTotal(type){
 	}
 }
 
-
-
 </script>
 <body>
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5 class="panel-title">급여내역 등록</h5>
+    <h5 class="panel-title">${nav}</h5>
   </div>
 </div>
 
@@ -290,7 +300,22 @@ function calTotal(type){
 		    </tr>
 		  </thead>
 		  <tbody id="pay_list">
-		    
+		  	   <c:if test="${payList != null && payList != ''}">
+		  	   		<c:forEach items="${payList}" var="item">
+		  	   			<tr>
+		  	   				<td scope="col" align="center"><input type="checkbox"></td>
+		  	   				<td scope="col" align="center">
+		  	   					<select id="PAY_" style="width:150px;">
+		  	   							<option value=""><spring:message code="com.txt.optionSelect"/></option>
+		  	   						<c:forEach items="${paySelectList}" var="paySelectList">
+		  	   							<option value="${paySelectList.CODE_CD}" <c:if test="${item.PAY_DEDUC_DTL == paySelectList.CODE_CD}">selected="selected"</c:if>>${paySelectList.CODE_NM}</option>
+		  	   						</c:forEach>
+		  	   					</select>
+		  	   				</td>
+		  	   				<td scope="col" align="center"><input id="AMOUNT_PAY_" onChange="numberCheck(this.id, this.value);" type="text" value="<fmt:formatNumber value="${item.AMOUNT}" pattern="#,##0"/>"></td>
+		  	   		    </tr>
+		  	   		</c:forEach>
+		  	   </c:if>
 		  </tbody>
 		</table>
 	</div>
@@ -313,7 +338,22 @@ function calTotal(type){
 			    </tr>
 			  </thead>
 			  <tbody id="ded_list">
-			    
+			  	<c:if test="${dedList != null && dedList != ''}">
+		  	   		<c:forEach items="${dedList}" var="item">
+		  	   			<tr>
+		  	   				<td scope="col" align="center"><input type="checkbox"></td>
+		  	   				<td scope="col" align="center">
+		  	   					<select id="PAY_" style="width:150px;">
+		  	   							<option value=""><spring:message code="com.txt.optionSelect"/></option>
+		  	   						<c:forEach items="${dedSelectList}" var="dedSelectList">
+		  	   							<option value="${dedSelectList.CODE_CD}" <c:if test="${item.PAY_DEDUC_DTL == dedSelectList.CODE_CD}">selected="selected"</c:if>>${dedSelectList.CODE_NM}</option>
+		  	   						</c:forEach>
+		  	   					</select>
+		  	   				</td>
+		  	   				<td scope="col" align="center"><input id="AMOUNT_PAY_" onChange="numberCheck(this.id, this.value);" type="text" value="<fmt:formatNumber value="${item.AMOUNT}" pattern="#,##0"/>"></td>
+		  	   		    </tr>
+		  	   		</c:forEach>
+		  	  	 </c:if>
 			  </tbody>
 		</table>
 	</div>

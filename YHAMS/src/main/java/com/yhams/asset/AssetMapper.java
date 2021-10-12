@@ -39,4 +39,8 @@ public interface AssetMapper {
 	long salaryCount(HashMap<String, Object> param) throws Exception;
 
 	ArrayList<HashMap<String, Object>> salaryListUp(HashMap<String, Object> param) throws Exception;
+
+	ArrayList<HashMap<String, Object>> getPayDedList(HashMap<String, Object> param) throws Exception;
+
+	HashMap<String, Object> getSalSeqDate(HashMap<String, Object> param) throws Exception;
 }
