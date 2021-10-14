@@ -421,9 +421,9 @@ public class AssetController {
 		String type = null;
 		try {
 			type = param.get("type").toString();
-			if("pay".equals(type)) {
+			if("PAY".equals(type)) {
 				list  = commonService.getCgList("CG_1007", "Y");
-			}else if("ded".equals(type)){
+			}else if("DED".equals(type)){
 				list  = commonService.getCgList("CG_1008", "Y");
 			}else {
 				list = null;

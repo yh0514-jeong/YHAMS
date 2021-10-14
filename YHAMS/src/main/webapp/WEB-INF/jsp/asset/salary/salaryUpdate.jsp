@@ -1,6 +1,7 @@
 <%@ include file="../../../include/include-header.jspf" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -31,7 +32,7 @@ $(document).ready(function() {
 	if(SAL_SEQ != null && typeof SAL_SEQ != 'undefined' && SAL_SEQ.trim().length > 0){
 		$("#SAL_DATE").datepicker('option','disabled', true);
 		$("#SAL_DATE").datepicker().datepicker("setDate", new Date(SAL_DATE.split('-')[0], SAL_DATE.split('-')[1], '01'));
-		calTotal('pay');
+		calTotal('PAY');
 		calTotal('DED');
 	}
 	
@@ -49,7 +50,7 @@ function goSave(){
 				SAL_DATE      : $("#SAL_DATE").val().trim(),
 			    AMOUNT        : $(this).find('input[id^=AMOUNT_]').val().replace(/,/g, ""),
 			    PAY_DEDUC     : 'PAY',
-			    PAY_DEDUC_DTL : $(this).find('select[id^=pay]').val()
+			    PAY_DEDUC_DTL : $(this).find('select[id^=PAY]').val()
 			};
 			list.push(map);
 		});
@@ -60,13 +61,17 @@ function goSave(){
 				SAL_DATE      : $("#SAL_DATE").val().trim(),
 			    AMOUNT        : $(this).find('input[id^=AMOUNT_]').val().replace(/,/g, ""),
 			    PAY_DEDUC     : 'DED',
-			    PAY_DEDUC_DTL : $(this).find('select[id^=ded]').val()
+			    PAY_DEDUC_DTL : $(this).find('select[id^=DED]').val()
 			};
 			list.push(map);
 		});
 		
 		var param = {
 		    'list' : JSON.stringify(list)
+		}
+		
+		if(SAL_SEQ != null && typeof SAL_SEQ != 'undefined' && SAL_SEQ.trim().length != 0){
+			param.SAL_SEQ =  SAL_SEQ;
 		}
 		
  		$.ajax({
@@ -94,7 +99,7 @@ function goSave(){
 
 
 function goDel(type){
-    let target = type == 'pay' ? 'pay_list' : 'ded_list';
+    let target = type == 'PAY' ? 'pay_list' : 'ded_list';
 	var len = $("#" + target).children().find("input[type='checkbox']:checked").length;
 	if(len > 0){
 		$("#" + target).children().find("input[type='checkbox']:checked").each(function(i, val){
@@ -111,7 +116,7 @@ function goAdd(type){
 	
     let targetElement = '';	
 	 
-	if(type ==  'pay'){
+	if(type ==  'PAY'){
 		targetElement = 'pay_list';
 	}else{
 		targetElement = 'ded_list';
@@ -192,7 +197,7 @@ function formCheck(){
 	}
 	
 	$("#pay_list tr").each(function(i, value){
-		if($(this).find('select[id^=pay]').val().trim().length == 0 || $(this).find('select[id^=pay]').val() == null){
+		if($(this).find('select[id^=PAY]').val().trim().length == 0 || $(this).find('select[id^=PAY]').val() == null){
 			chkPayDtl++;
 		}
 	});
@@ -204,7 +209,7 @@ function formCheck(){
 	});
 	
 	$("#ded_list tr").each(function(i, value){
-		if($(this).find('select[id^=ded]').val().trim().length == 0 || $(this).find('select[id^=ded]').val() == null){
+		if($(this).find('select[id^=DED]').val().trim().length == 0 || $(this).find('select[id^=DED]').val() == null){
 			chkDedDtl++;
 		}
 	});
@@ -246,13 +251,13 @@ function callLastMonthSalary(){
 }
 
 function calTotal(type){
-	let target = type == 'pay' ? 'pay_list' : 'ded_list';
+	let target = type == 'PAY' ? 'pay_list' : 'ded_list';
 	let total  = 0;
 	$("#" + target).find("tr").each(function(i, val){
 		total += Number($(this).find('input[id^=AMOUNT_]').val().replace(/,/g, ""));
 	});
 	total = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); 
-	if(type == 'pay'){
+	if(type == 'PAY'){
 		$("#payTotalText").html('총 지급액 : ' + total);
 	}else{
 		$("#dedTotalText").html('총 공제액 : ' + total);
@@ -285,8 +290,8 @@ function calTotal(type){
 	<div class="table table-hover" style="width:48%; float: left;">	
 		 <div class="panel panel-default" style="width: 100%; height: 8%;">
 		 	<p id="payTotalText">총 지급액 : 0</p> <!-- 지급항목 총액 -->
-			<button onclick="javascript:goAdd('pay');" type="button" class="btn btn-success" style="float: right;  margin-left: 5px;">지급항목 추가</button><!-- 지급항목 추가 -->
-			<button onclick="javascript:goDel('pay');" type="button" class="btn btn-danger" style="float: right;">지급항목 삭제</button><!-- 지급항목 삭제 -->
+			<button onclick="javascript:goAdd('PAY');" type="button" class="btn btn-success" style="float: right;  margin-left: 5px;">지급항목 추가</button><!-- 지급항목 추가 -->
+			<button onclick="javascript:goDel('PAY');" type="button" class="btn btn-danger" style="float: right;">지급항목 삭제</button><!-- 지급항목 삭제 -->
 		</div>
 		<table id="pay_table" class="table">
 		  <thead class="thead-dark" align="center">
@@ -294,14 +299,14 @@ function calTotal(type){
 		      <th scope="col" colspan="3">지급항목</th>
 		    </tr>
 		    <tr>
-		      <th width="10%"><input type="checkbox" onclick="javascript:chkAll('pay');"></th>
+		      <th width="10%"><input type="checkbox" onclick="javascript:chkAll('PAY');"></th>
 		      <th width="45%">항목</th>
 		      <th width="45%">금액</th>
 		    </tr>
 		  </thead>
 		  <tbody id="pay_list">
 		  	   <c:if test="${payList != null && payList != ''}">
-		  	   		<c:forEach items="${payList}" var="item">
+		  	   		<c:forEach items="${payList}" var="item" varStatus="status">
 		  	   			<tr>
 		  	   				<td scope="col" align="center"><input type="checkbox"></td>
 		  	   				<td scope="col" align="center">
@@ -312,7 +317,7 @@ function calTotal(type){
 		  	   						</c:forEach>
 		  	   					</select>
 		  	   				</td>
-		  	   				<td scope="col" align="center"><input id="AMOUNT_PAY_" onChange="numberCheck(this.id, this.value);" type="text" value="<fmt:formatNumber value="${item.AMOUNT}" pattern="#,##0"/>"></td>
+		  	   				<td scope="col" align="center"><input id="AMOUNT_PAY_${status.count}" onChange="numberCheck(this.id, this.value);" type="text" value="<fmt:formatNumber value="${item.AMOUNT}" pattern="#,##0"/>"></td>
 		  	   		    </tr>
 		  	   		</c:forEach>
 		  	   </c:if>
@@ -323,8 +328,8 @@ function calTotal(type){
 	<div class="table table-hover" style="width:48%; float: left; padding-left: 15px;">	
 		<div class="panel panel-default" style="width: 100%; height: 8%;">
 			<p id="dedTotalText">총 공제액 : 0</p><!-- 공제항목 총액 -->
-			<button onclick="javascript:goAdd('ded');" type="button" class="btn btn-success" style="float: right; margin-left: 5px;">공제항목 추가</button><!-- 공제항목 추가 -->
-			<button onclick="javascript:goDel('ded');" type="button" class="btn btn-danger" style="float: right;">공제항목 삭제</button><!-- 공제항목 삭제 -->
+			<button onclick="javascript:goAdd('DED');" type="button" class="btn btn-success" style="float: right; margin-left: 5px;">공제항목 추가</button><!-- 공제항목 추가 -->
+			<button onclick="javascript:goDel('DED');" type="button" class="btn btn-danger" style="float: right;">공제항목 삭제</button><!-- 공제항목 삭제 -->
 		</div>
 		<table id="ded_table" class="table">
 			  <thead class="thead-dark" align="center">
@@ -332,25 +337,25 @@ function calTotal(type){
 			      <th colspan="3">공제항목</th>
 			    </tr>
 			    <tr>
-			      <th width="10%"><input type="checkbox" onclick="javascript:chkAll('ded');"></th>
+			      <th width="10%"><input type="checkbox" onclick="javascript:chkAll('DED');"></th>
 			      <th width="45%">항목</th>
 			      <th width="45%">금액</th>
 			    </tr>
 			  </thead>
 			  <tbody id="ded_list">
 			  	<c:if test="${dedList != null && dedList != ''}">
-		  	   		<c:forEach items="${dedList}" var="item">
+		  	   		<c:forEach items="${dedList}" var="item" varStatus="status">
 		  	   			<tr>
 		  	   				<td scope="col" align="center"><input type="checkbox"></td>
 		  	   				<td scope="col" align="center">
-		  	   					<select id="PAY_" style="width:150px;">
+		  	   					<select id="DED_" style="width:150px;">
 		  	   							<option value=""><spring:message code="com.txt.optionSelect"/></option>
 		  	   						<c:forEach items="${dedSelectList}" var="dedSelectList">
 		  	   							<option value="${dedSelectList.CODE_CD}" <c:if test="${item.PAY_DEDUC_DTL == dedSelectList.CODE_CD}">selected="selected"</c:if>>${dedSelectList.CODE_NM}</option>
 		  	   						</c:forEach>
 		  	   					</select>
 		  	   				</td>
-		  	   				<td scope="col" align="center"><input id="AMOUNT_PAY_" onChange="numberCheck(this.id, this.value);" type="text" value="<fmt:formatNumber value="${item.AMOUNT}" pattern="#,##0"/>"></td>
+		  	   				<td scope="col" align="center"><input id="AMOUNT_DED_${status.count}" onChange="numberCheck(this.id, this.value);" type="text" value="<fmt:formatNumber value="${item.AMOUNT}" pattern="#,##0"/>"></td>
 		  	   		    </tr>
 		  	   		</c:forEach>
 		  	  	 </c:if>
