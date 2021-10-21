@@ -71,7 +71,7 @@ function list(targetPage){
  
  function goNew(salSeq){
 	 var url    = (salSeq == null || typeof salSeq == 'undefined') ? "/asset/salaryUpdate" : "/asset/salaryUpdate?SAL_SEQ=" + salSeq ;
-	 var name   = (salSeq == null || typeof salSeq == 'undefined') ? '급여 내역 등록': '급여 내역 수정';
+	 var name   = (salSeq == null || typeof salSeq == 'undefined') ? '<spring:message code="com.salary.registerSalary"/>': '<spring:message code="com.salary.updateSalary"/>';
 	 var option = "width = 1100, height = 700, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
@@ -121,7 +121,7 @@ function enterkey(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">급여연월</div><!-- 급여연월 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.salary.salDate"/></div><!-- 급여연월 -->
     </div>
     <input type="text" class="form-control" id="SAL_DATE"  onkeyup="javascript:enterkey();">
   </div>
@@ -143,10 +143,10 @@ function enterkey(){
 	  <thead align="center">
 	    <tr>
 	      <th scope="col" width="10%"><spring:message code="com.txt.number"/></th><!-- No. -->
-	      <th scope="col" width="15%">급여연월</th><!-- 급여연월 -->
-	      <th scope="col" width="15%">지급총액</th><!-- 지급총액 -->
-	      <th scope="col" width="15%">공제총액</th><!-- 공제총액 -->
-	      <th scope="col" width="15%">실수령액</th><!-- 실수령액 -->
+	      <th scope="col" width="15%"><spring:message code="com.salary.salDate"/></th><!-- 급여연월 -->
+	      <th scope="col" width="15%"><spring:message code="com.salary.payAmount"/></th><!-- 지급총액 -->
+	      <th scope="col" width="15%"><spring:message code="com.salary.dedAmount"/></th><!-- 공제총액 -->
+	      <th scope="col" width="15%"><spring:message code="com.salary.realAmount"/></th><!-- 실수령액 -->
 	      <th scope="col" width="*"></th>
 	    </tr>
 	  </thead>

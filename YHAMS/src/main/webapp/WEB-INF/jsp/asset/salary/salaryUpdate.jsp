@@ -30,8 +30,12 @@ $(document).ready(function() {
 	});
 	
 	if(SAL_SEQ != null && typeof SAL_SEQ != 'undefined' && SAL_SEQ.trim().length > 0){
+		let set_date = new Date();
+		set_date.setFullYear(Number(SAL_DATE.split('-')[0]));
+		set_date.setMonth(Number(SAL_DATE.split('-')[1])-1);
+		set_date.setDate(1);
 		$("#SAL_DATE").datepicker('option','disabled', true);
-		$("#SAL_DATE").datepicker().datepicker("setDate", new Date(SAL_DATE.split('-')[0], SAL_DATE.split('-')[1], '01'));
+		$("#SAL_DATE").datepicker().datepicker("setDate", set_date);
 		calTotal('PAY');
 		calTotal('DED');
 	}
@@ -187,7 +191,7 @@ function formCheck(){
 
 	
     if($("#SAL_DATE").val().trim().length == 0 || $("#SAL_DATE").val() == null){
-    	alert('급여연월을 확인해주세요.');
+    	alert('<spring:message code="com.salary.chkSalDate"/>');  // 급여연월을 확인해주세요.
     	return false;
     }
 	
@@ -226,21 +230,21 @@ function formCheck(){
 	}else{
 		var mesg = '';
 		if(chkPayDtl > 0){
-			mesg += '지급항목';       // 지급항목
+			mesg += '<spring:message code="com.salary.payCtg"/>';          // 지급항목
 		}
 		if(chkPayAmount > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '지급항목 금액';   // 지급항목 금액
+			mesg += '<spring:message code="com.salary.payCtgAmount"/>';    // 지급항목 금액
 		}
 		if(chkDedDtl > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '공제항목';       // 공제항목
+			mesg += '<spring:message code="com.salary.dedCtg"/>';          // 공제항목
 		}
 		if(chkDedAmount > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '공제항목 금액';   // 공제항목 금액
+			mesg += '<spring:message code="com.salary.dedCtgAmount"/>';   // 공제항목 금액
 		}
-		alert(mesg + '<spring:message code="com.msg.pleaseChk"/>');  // ..를 확인해주세요.
+		alert(mesg + '<spring:message code="com.msg.pleaseChk"/>');       // ..를 확인해주세요.
 		return false;
 	} 
 	
@@ -258,9 +262,9 @@ function calTotal(type){
 	});
 	total = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); 
 	if(type == 'PAY'){
-		$("#payTotalText").html('총 지급액 : ' + total);
+		$("#payTotalText").html('<spring:message code="com.salary.totalPayAmount"/>' + total);
 	}else{
-		$("#dedTotalText").html('총 공제액 : ' + total);
+		$("#dedTotalText").html('<spring:message code="com.salary.totalDedAmount"/>' + total);
 	}
 }
 
@@ -276,11 +280,11 @@ function calTotal(type){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">급여연월</div><!-- 급여연월 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.salary.salDate"/></div><!-- 급여연월 -->
     </div>
     <input type="text" class="form-control" id="SAL_DATE">
-    <button onclick="javascript:callLastMonthSalary();" type="button" class="btn btn-info" style="float: right; margin-left: 5px;">지난달 급여항목 가져오기</button><!-- 지난달 급여항목 가져오기 -->
-    <button onclick="javascript:goSave();" type="button" class="btn btn-primary" style="float: right; margin-left: 5px;">저장</button><!--저장 -->
+    <button onclick="javascript:callLastMonthSalary();" type="button" class="btn btn-info" style="float: right; margin-left: 5px;"><spring:message code="com.salary.callLateMonthSalary"/></button><!-- 지난달 급여항목 가져오기 -->
+    <button onclick="javascript:goSave();" type="button" class="btn btn-primary" style="float: right; margin-left: 5px;"><spring:message code="com.btn.save"/></button><!--저장 -->
   </div>
 </div>
 
@@ -289,19 +293,19 @@ function calTotal(type){
 <div class="panel panel-default" style="width: 100%; float:none;">
 	<div class="table table-hover" style="width:48%; float: left;">	
 		 <div class="panel panel-default" style="width: 100%; height: 8%;">
-		 	<p id="payTotalText">총 지급액 : 0</p> <!-- 지급항목 총액 -->
-			<button onclick="javascript:goAdd('PAY');" type="button" class="btn btn-success" style="float: right;  margin-left: 5px;">지급항목 추가</button><!-- 지급항목 추가 -->
-			<button onclick="javascript:goDel('PAY');" type="button" class="btn btn-danger" style="float: right;">지급항목 삭제</button><!-- 지급항목 삭제 -->
+		 	<p id="payTotalText"><spring:message code="com.salary.totalPayAmount"/> 0</p> <!-- 총 지급액 : -->
+			<button onclick="javascript:goAdd('PAY');" type="button" class="btn btn-success" style="float: right;  margin-left: 5px;"><spring:message code="com.salary.payCtgAdd"/></button><!-- 지급항목 추가 -->
+			<button onclick="javascript:goDel('PAY');" type="button" class="btn btn-danger" style="float: right;"><spring:message code="com.salary.payCtgDel"/></button><!-- 지급항목 삭제 -->
 		</div>
 		<table id="pay_table" class="table">
 		  <thead class="thead-dark" align="center">
 		  	<tr>
-		      <th scope="col" colspan="3">지급항목</th>
+		      <th scope="col" colspan="3"><spring:message code="com.salary.payCtg"/></th> <!-- 지급항목 -->
 		    </tr>
 		    <tr>
 		      <th width="10%"><input type="checkbox" onclick="javascript:chkAll('PAY');"></th>
-		      <th width="45%">항목</th>
-		      <th width="45%">금액</th>
+		      <th width="45%"><spring:message code="com.salary.ctg"/></th> <!-- 항목 -->
+		      <th width="45%"><spring:message code="com.salary.amount"/></th> <!-- 금액 -->
 		    </tr>
 		  </thead>
 		  <tbody id="pay_list">
@@ -327,19 +331,19 @@ function calTotal(type){
 	
 	<div class="table table-hover" style="width:48%; float: left; padding-left: 15px;">	
 		<div class="panel panel-default" style="width: 100%; height: 8%;">
-			<p id="dedTotalText">총 공제액 : 0</p><!-- 공제항목 총액 -->
-			<button onclick="javascript:goAdd('DED');" type="button" class="btn btn-success" style="float: right; margin-left: 5px;">공제항목 추가</button><!-- 공제항목 추가 -->
-			<button onclick="javascript:goDel('DED');" type="button" class="btn btn-danger" style="float: right;">공제항목 삭제</button><!-- 공제항목 삭제 -->
+			<p id="dedTotalText"><spring:message code="com.salary.totalDedAmount"/> 0</p><!-- 총 공제액 : -->
+			<button onclick="javascript:goAdd('DED');" type="button" class="btn btn-success" style="float: right; margin-left: 5px;"><spring:message code="com.salary.dedCtgAdd"/></button><!-- 공제항목 추가 -->
+			<button onclick="javascript:goDel('DED');" type="button" class="btn btn-danger" style="float: right;"><spring:message code="com.salary.dedCtgDel"/></button><!-- 공제항목 삭제 -->
 		</div>
 		<table id="ded_table" class="table">
 			  <thead class="thead-dark" align="center">
 			    <tr>
-			      <th colspan="3">공제항목</th>
+			      <th colspan="3"><spring:message code="com.salary.dedCtg"/></th>  <!-- 공제항목 -->
 			    </tr>
 			    <tr>
 			      <th width="10%"><input type="checkbox" onclick="javascript:chkAll('DED');"></th>
-			      <th width="45%">항목</th>
-			      <th width="45%">금액</th>
+			      <th width="45%"><spring:message code="com.salary.ctg"/></th>    <!-- 항목 -->
+			      <th width="45%"><spring:message code="com.salary.amount"/></th> <!-- 금액 -->
 			    </tr>
 			  </thead>
 			  <tbody id="ded_list">
