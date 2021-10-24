@@ -498,9 +498,9 @@
 				        T1.SAL_SEQ, 
 				        T1.USER_SEQ,
 				        T1.SAL_DATE,
-				        T2.PAY_AMOUNT, 
-					    T3.DED_AMOUNT, 
-					    T2.PAY_AMOUNT-T3.DED_AMOUNT AS NET_AMOUNT
+				        IFNULL(T2.PAY_AMOUNT,0) PAY_AMOUNT, 
+					    IFNULL(T3.DED_AMOUNT,0) DED_AMOUNT,
+					    IFNULL(T2.PAY_AMOUNT,0)-IFNULL(T3.DED_AMOUNT,0) AS NET_AMOUNT
 					  
 				FROM (SELECT DISTINCT SAL_SEQ, 
 				                      USER_SEQ, 
@@ -509,7 +509,7 @@
 				
 				LEFT OUTER JOIN
 				(SELECT  SAL_SEQ,
-				         SUM(AMOUNT) AS PAY_AMOUNT
+				         IFNULL(SUM(AMOUNT),0) AS PAY_AMOUNT
 					FROM TB_TRAN_SALARY
 				  WHERE  PAY_DEDUC = 'PAY'
 				  GROUP BY SAL_SEQ) T2
@@ -517,11 +517,11 @@
 				
 				LEFT OUTER JOIN
 				(SELECT  SAL_SEQ,
-				         SUM(AMOUNT) AS DED_AMOUNT
+				         IFNULL(SUM(AMOUNT),0) AS DED_AMOUNT
 				   FROM TB_TRAN_SALARY
 				  WHERE PAY_DEDUC = 'DED'
 				  GROUP BY SAL_SEQ) T3
-				 ON T1.SAL_SEQ = T2.SAL_SEQ
+				 ON T1.SAL_SEQ = T3.SAL_SEQ
 				 
 				 <include refid="cmmSalaryWhere"/>
 	 
@@ -552,6 +552,33 @@
 	 	SELECT  DISTINCT SAL_SEQ, SAL_DATE
 	      FROM  TB_TRAN_SALARY
 	      WHERE SAL_SEQ  = #{SAL_SEQ}
+	 
+	 </select>
+	 
+	 
+	 <select id="getLastSalary" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	 
+	 	 SELECT  SAL_DATE,
+                 FORMAT(AMOUNT, 0) AMOUNT,
+                 PAY_DEDUC,
+                 PAY_DEDUC_DTL
+	       
+	       FROM  TB_TRAN_SALARY
+	      
+	      WHERE  SAL_SEQ = (SELECT  DISTINCT MAX(SAL_SEQ) OVER (ORDER BY SAL_DATE DESC) AS SAL_SEQ
+						      FROM  TB_TRAN_SALARY
+						      WHERE USER_SEQ = #{USER_SEQ}
+						    )
+		ORDER BY SAL_DTL_SEQ ASC
+	 
+	 </select>
+	 
+	 <select id="dupChkSalMonth" parameterType="java.util.HashMap" resultType="int">
+	 	
+	 	SELECT  COUNT(*)
+		FROM TB_TRAN_SALARY
+		WHERE   USER_SEQ = #{USER_SEQ}
+		AND     SAL_DATE = #{SAL_DATE}
 	 
 	 </select>
 	 

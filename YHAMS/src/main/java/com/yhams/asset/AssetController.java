@@ -3,6 +3,7 @@ package com.yhams.asset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
+import com.fasterxml.jackson.databind.util.ObjectBuffer;
 import com.yhams.common.CommonService;
 import com.yhams.log.LogService;
 import com.yhams.util.CommonContraint;
@@ -478,8 +482,6 @@ public class AssetController {
 		int curPage      = param.get("curPage")    == null ? 1 : Integer.parseInt(param.get("curPage").toString());
 		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
 		
-		logger.info("param==>" + param.toString());
-		
 		try {
 			total = assetService.salaryCount(param);
 			list  = assetService.salaryListUp(param);
@@ -495,6 +497,82 @@ public class AssetController {
 		}
 		return result;
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/callLastSalary", method = RequestMethod.GET)
+	@SuppressWarnings("all")
+	@ResponseBody
+	public HashMap<String, Object> callLastSalary(HttpSession session,
+			                                     HttpServletRequest request,
+			                                     HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		HashMap<String, Object> param  = new HashMap<String, Object>();
+		
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> paySelectList = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> dedSelectList = new ArrayList<HashMap<String,Object>>();
+
+		try {
+			
+			paySelectList = commonService.getCgList("CG_1007", "Y");
+			dedSelectList = commonService.getCgList("CG_1008", "Y");
+			
+			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
+			list = assetService.getLastSalary(param);
+			
+			if(list.size() > 0) {
+				result.put("result", CommonContraint.SUCCEESS);
+				result.put("paySelectList", paySelectList);
+				result.put("dedSelectList", dedSelectList);
+				result.put("list", list);
+			}else {
+				result.put("result", CommonContraint.FAIL);
+				result.put("list", list);
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", CommonContraint.FAIL);
+		}
+		
+		return result;
+	}
+	
+	
+	@RequestMapping(value = "/dupChkSalMonth", method = RequestMethod.GET)
+	@SuppressWarnings("all")
+	@ResponseBody
+	public HashMap<String, Object> dupChkSalMonth(@RequestParam(required = true) HashMap<String, Object> param,
+												HttpSession session,
+			                                    HttpServletRequest request,
+			                                    HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		int res = 0;
+
+		try {
+			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
+			res = assetService.dupChkSalMonth(param);
+			if(res <= 0) {
+				result.put("result", CommonContraint.SUCCEESS);
+			}else {
+				result.put("result", CommonContraint.FAIL);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", CommonContraint.FAIL);
+		}
+		
+		return result;
+	}
+
 
 	
 }

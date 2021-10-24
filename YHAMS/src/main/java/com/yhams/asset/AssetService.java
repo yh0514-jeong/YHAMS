@@ -39,4 +39,8 @@ public interface AssetService {
 
 	HashMap<String, Object> getSalSeqDate(HashMap<String, Object> param) throws Exception;
 
+	ArrayList<HashMap<String, Object>> getLastSalary(HashMap<String, Object> param) throws Exception;
+
+	int dupChkSalMonth(HashMap<String, Object> param) throws Exception;
+
 }

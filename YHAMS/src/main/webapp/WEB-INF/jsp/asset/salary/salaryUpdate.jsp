@@ -26,10 +26,14 @@ $(document).ready(function() {
         dateFormat: 'yy-mm',
         onClose: function(dateText, inst) { 
             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+        },
+        onSelect: function(dateText) {
+        	dupChkSalMonth(dateText);
         }
 	});
 	
 	if(SAL_SEQ != null && typeof SAL_SEQ != 'undefined' && SAL_SEQ.trim().length > 0){
+		$("#lastMonthSal").hide();
 		let set_date = new Date();
 		set_date.setFullYear(Number(SAL_DATE.split('-')[0]));
 		set_date.setMonth(Number(SAL_DATE.split('-')[1])-1);
@@ -250,8 +254,27 @@ function formCheck(){
 	
 }
 
-function callLastMonthSalary(){
-	alert('지난달 급여 가져오기');
+function callLastSalary(){
+	$.ajax({
+	    type : 'get',
+	    url  : '/asset/callLastSalary', 
+	    dataType : 'json', 
+	    success : function(result) {
+	    	if(result.result == 'success'){
+				drawLastSaraly(result);	    		
+	    	}else{
+	    		if(result.list.length == 0){
+	    			alert('<spring:message code="com.salary.alertNoLastSalary"/>');   // 가져올 수 있는 최근 급여내역이 없습니다.
+	 	    		return;
+	    		}else{
+	    			alert('<spring:message code="com.msg.failToLoadList"/>');  // 목록을 가져오는데 실패하였습니다.
+	 	    		return;
+	    		}
+	    	}
+	    },
+	    error : function(request, status, error) { 
+	    }
+	});
 }
 
 function calTotal(type){
@@ -262,10 +285,70 @@ function calTotal(type){
 	});
 	total = total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); 
 	if(type == 'PAY'){
-		$("#payTotalText").html('<spring:message code="com.salary.totalPayAmount"/>' + total);
+		$("#payTotalText").html('<spring:message code="com.salary.totalPayAmount"/>&nbsp;' + total);
 	}else{
-		$("#dedTotalText").html('<spring:message code="com.salary.totalDedAmount"/>' + total);
+		$("#dedTotalText").html('<spring:message code="com.salary.totalDedAmount"/>&nbsp;' + total);
 	}
+}
+
+function drawLastSaraly(result){
+	
+	$("#pay_list,#ded_list").empty();
+	
+	let pay_html  = '';
+	let ded_html  = '';
+	let list      = result.list;
+	
+	for(let i=0; i<list.length; i++){
+		let text  = '';
+            text += '<tr>';		
+            text += '    <td scope="col" align="center"><input type="checkbox"></td>';		
+            text += '    <td scope="col" align="center">';		
+            text += '        <select id="' + list[i].PAY_DEDUC + '_" style="width:150px;">';		
+			text += '    		<option value=""><spring:message code="com.txt.optionSelect"/></option>';
+		    
+			let optionList = list[i].PAY_DEDUC == 'PAY' ? result.paySelectList : result.dedSelectList;
+			
+			for(let j=0; j<optionList.length; j++){
+		    text += '           <option value="' +  optionList[j].CODE_CD + '" ' + ( list[i].PAY_DEDUC_DTL == optionList[j].CODE_CD ? ' selected="selected">' : '>') +  optionList[j].CODE_NM + '</option>';
+			}
+		    text += '         </select>';
+		    text += '   </td>';
+		    text += '   <td scope="col" align="center"><input id="AMOUNT_' + list[i].PAY_DEDUC + '_' + ++trCnt + '" onChange="numberCheck(this.id, this.value);" type="text" value="' + list[i].AMOUNT + '"></td>';
+		    text += '</tr>';
+		    
+		    if(list[i].PAY_DEDUC == 'PAY'){
+		    	pay_html += text;
+		    }else{
+		    	ded_html += text;
+		    }
+	}
+	
+	$("#pay_list").append(pay_html);
+	$("#ded_list").append(ded_html);
+	
+	calTotal('PAY');
+	calTotal('DED');
+}
+
+
+function dupChkSalMonth(dateText){
+	$.ajax({
+	    type : 'get',
+	    url  : '/asset/dupChkSalMonth', 
+	    data : {
+	    	SAL_DATE : dateText
+	    },
+	    dataType : 'json', 
+	    success : function(result) {
+	    	if(result.result == 'fail'){
+	    		alert('<spring:message code="com.salary.alertAlreadyRegSalary"/>');  // 해당월에 등록된 급여내역이 이미 존재합니다.
+	    		$("#SAL_DATE").val('');
+	    	}
+	    },
+	    error : function(request, status, error) { 
+	    }
+	});
 }
 
 </script>
@@ -283,7 +366,7 @@ function calTotal(type){
       <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.salary.salDate"/></div><!-- 급여연월 -->
     </div>
     <input type="text" class="form-control" id="SAL_DATE">
-    <button onclick="javascript:callLastMonthSalary();" type="button" class="btn btn-info" style="float: right; margin-left: 5px;"><spring:message code="com.salary.callLateMonthSalary"/></button><!-- 지난달 급여항목 가져오기 -->
+    <button id="lastMonthSal" onclick="javascript:callLastSalary();" type="button" class="btn btn-info" style="float: right; margin-left: 5px;"><spring:message code="com.salary.callLateMonthSalary"/></button><!-- 지난달 급여항목 가져오기 -->
     <button onclick="javascript:goSave();" type="button" class="btn btn-primary" style="float: right; margin-left: 5px;"><spring:message code="com.btn.save"/></button><!--저장 -->
   </div>
 </div>

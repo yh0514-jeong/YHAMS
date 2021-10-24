@@ -171,4 +171,14 @@ public class AssetServiceImpl implements AssetService {
 		return mapper.getSalSeqDate(param);
 	}
 
+	@Override
+	public ArrayList<HashMap<String, Object>> getLastSalary(HashMap<String, Object> param) throws Exception {
+		return mapper.getLastSalary(param);
+	}
+
+	@Override
+	public int dupChkSalMonth(HashMap<String, Object> param) throws Exception {
+		return mapper.dupChkSalMonth(param);
+	}
+
 }
