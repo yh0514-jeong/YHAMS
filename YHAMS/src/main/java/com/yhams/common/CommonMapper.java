@@ -28,4 +28,6 @@ public interface CommonMapper {
 
 	void insertUserActLog(HashMap<String, Object> param) throws Exception;
 
+	ArrayList<HashMap<String, Object>> getCgListByParCode(String codeGrp, String parCode, String useYn) throws Exception;
+
 }

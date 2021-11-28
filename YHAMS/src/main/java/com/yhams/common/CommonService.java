@@ -19,15 +19,8 @@ public interface CommonService {
 	
 	String getNextUedSeq() throws Exception;
 	
-	/*
-	 * @Description 코드그룹 리스트 가져오기
-	 * @Param codeGrp : 코드그룹,
-	 *        useYn   : 사용여부  - ALL(y,n 상관없이 모두 다), Y(y만), N(n만) 
-	 * 
-	 */
 	ArrayList<HashMap<String, Object>> getCgList(String codeGrp, String useYn) throws Exception;
 
-
-	
+	ArrayList<HashMap<String, Object>> getCgListByParCode(String codeGrp, String parCode, String useYn) throws Exception;
 
 }

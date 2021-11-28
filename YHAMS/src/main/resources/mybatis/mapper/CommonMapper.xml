@@ -48,9 +48,38 @@
 				
 				WHERE CODE_ID = #{codeGrp}
 				
-				<if test="USE_YN = 'N' or USE_YN = 'Y'">
+				<if test="useYn = 'N' or useYn = 'Y'">
 					AND   USE_YN  = #{useYn}
 				</if>
+				
+				ORDER BY CODE_CD ASC
+	</select>
+	
+	
+	<select id="getCgListByParCode" parameterType="String" resultType="java.util.HashMap">
+			
+			SELECT  CODE_ID, 
+			        CODE_CD,
+			        CODE_NM,
+			        USE_YN,
+			        CODE_ORDR,
+			        CREATE_ID,
+			        CREATE_DATE,
+			        UPDATE_ID,
+			        UPDATE_DATE
+				FROM TB_CMM_CDDTL
+				
+				WHERE CODE_ID = #{codeGrp}
+				
+				<if test="parCode != NULL and parCode != ''">
+					AND   PAR_CODE_CD  = #{parCode}
+				</if>
+				
+				<if test="useYn = 'N' or useYn = 'Y'">
+					AND   USE_YN  = #{useYn}
+				</if>
+				
+				ORDER BY CODE_CD ASC
 	</select>
 	
 </mapper>	

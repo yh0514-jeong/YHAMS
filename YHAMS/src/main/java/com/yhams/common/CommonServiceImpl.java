@@ -52,4 +52,9 @@ public class CommonServiceImpl implements CommonService {
 		return mapper.getNextUedSeq();
 	}
 
+	@Override
+	public ArrayList<HashMap<String, Object>> getCgListByParCode(String codeGrp, String parCode, String useYn) throws Exception {
+		return mapper.getCgListByParCode(codeGrp, parCode, useYn);
+	}
+
 }
