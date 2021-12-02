@@ -61,6 +61,7 @@ public class ComCodeController {
 		ModelAndView mv           = new ModelAndView();
 		HashMap<String, Object> r = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> useYnCodeList = new ArrayList<HashMap<String,Object>>();
+		HashMap<String, Object> cdListParam = new HashMap<String, Object>();
 		
 		try {
 			useYnCodeList = commonService.getCgList("CG_0003", "Y");

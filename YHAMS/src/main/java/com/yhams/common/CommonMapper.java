@@ -24,10 +24,10 @@ public interface CommonMapper {
 	
 	long getNextActLogSeq() throws Exception;
 	
-	ArrayList<HashMap<String, Object>> getCgList(String codeGrp, String useYn) throws Exception;
+	ArrayList<HashMap<String, Object>> getCgList(HashMap<String, Object> param) throws Exception;
 
 	void insertUserActLog(HashMap<String, Object> param) throws Exception;
 
-	ArrayList<HashMap<String, Object>> getCgListByParCode(String codeGrp, String parCode, String useYn) throws Exception;
+	ArrayList<HashMap<String, Object>> getCgListByParCode(HashMap<String, Object> param) throws Exception;
 
 }

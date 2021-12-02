@@ -68,11 +68,14 @@ public class ExpendController {
 															 HttpServletResponse response){
 		logService.insertUserActLog(request, session);
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
-		Optional<Object> parCode = Optional.empty();
+		Optional<Object> parCode;
 		
 		try {
+			logger.info("param.get('parCode') : {}", param.get("parCode"));
+			logger.info("param.get('parCode') instanceof String : {}", param.get("parCode") instanceof String);
 			parCode = Optional.ofNullable(param.get("parCode"));
-			if(parCode.isPresent()) {
+			logger.info("parCode : {}, parCode.isPresent() : {}", parCode, parCode.isPresent());
+			if(!parCode.isEmpty()) {
 				list = commonService.getCgListByParCode("CG_2006", parCode.get().toString(), "Y");
 			}else{
 				list  = commonService.getCgList("CG_2005", "Y");

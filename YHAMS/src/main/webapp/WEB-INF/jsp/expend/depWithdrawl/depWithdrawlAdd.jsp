@@ -79,10 +79,9 @@ function goAdd(){
 	    html += '	<td scope="col"><input id="DEPOSIT_TOTAL_' +  trCnt + '"   onChange="numberCheck(this.id, this.value);" type="text"></td>';    
 	    html += '	<td scope="col"><input id="WITHDRL_TOTAL_' +  trCnt + '"  onChange="numberCheck(this.id, this.value);"  type="text"></td>';   
 	    html += '	<td scope="col"><input id="DESCRIPTION_' +  trCnt + '"  type="text"></td>';  
-	    html += '	<td scope="col">'
-	    html += '        <select id="DW_CATE_1_' +  trCnt +  '" onChange="setDwCate2("DW_CATE_2_' + trCnt + '", this.value);">';
-	    
-	    
+	    html += '	<td scope="col">';
+	    let tmpId = 'DW_CATE_2_' + trCnt;
+	    html += "        <select id='DW_CATE_1_" +  trCnt +  "' onChange='setDwCate2(\"" + tmpId + "\", this.value);'>";
 	    var codeList = getDwCateList(null);
     	for(var i=0; i<codeList.length; i++){
 		html += '             <option value="' + codeList[i].CODE_CD + '">' + codeList[i].CODE_NM + '</option>';
@@ -90,7 +89,7 @@ function goAdd(){
 	    html += '        </select>';
 	    html += '   </td>'; 
 	    html += '	<td scope="col">'
-	    html += '        <select id="DW_CATE_2_' +  trCnt + '">';
+	    html += '        <select id="'+ tmpId + '">';
 	    html += '        </select>'; 
 	    html += '   </td>'; 
 	    html += '</tr>';
@@ -108,12 +107,14 @@ function numberCheck(id, value){
 
 
 function getDwCateList(parCode){
-	var param = {parCode : parCode};
+	var param = {};
+	param.parCode = parCode;
+	console.log('param==>' + JSON.stringify(param));
 	var l;
 	$.ajax({
 	    type : 'get',
 	    url : '/expend/getDwCateList',
-	    param : param,
+	    data : param,
 	    dataType : 'json', 
 	    async: false,
 	    success : function(result) { 
@@ -123,14 +124,17 @@ function getDwCateList(parCode){
 	return l;
 }
 
-function setDwCate2(targetId, value){
-	console.log('setDwCate2 called... targetId : {}, value : {}', targetId, value);
-	var list = getDwCateList(value);
+function setDwCate2(targetId, parCode){
+	console.log('setDwCate2 called... targetId : {}, parCode : {}', targetId, parCode);
+	var list = getDwCateList(parCode);
+	console.log('setDwCate2 list==>' + JSON.stringify(list));
 	var html = '';
 	for(var i=0; i<list.length; i++){
 		html += '<option value="' + list[i].CODE_CD + '">' + list[i].CODE_NM + '</option>';
    	}
-	$("#" + targetId).empty().append(html);
+	
+	$("#" + targetId).empty();
+	$("#" + targetId).append(html);
 }
 
 

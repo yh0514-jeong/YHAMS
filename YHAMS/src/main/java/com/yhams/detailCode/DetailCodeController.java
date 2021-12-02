@@ -67,6 +67,7 @@ public class DetailCodeController {
 		ArrayList<HashMap<String, Object>> comCodeList = new ArrayList<HashMap<String,Object>>();
 		
 		HashMap<String, Object> param = new HashMap<String, Object>();
+		HashMap<String, Object> cdListParam = new HashMap<String, Object>();
 		
 		
 		try {

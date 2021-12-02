@@ -3,12 +3,16 @@ package com.yhams.common;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommonServiceImpl implements CommonService {
 	
+	private static final Logger log = LoggerFactory.getLogger(CommonServiceImpl.class);
+
 	@Autowired
 	CommonMapper mapper;
 
@@ -39,7 +43,11 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public ArrayList<HashMap<String, Object>> getCgList(String codeGrp, String useYn) throws Exception {
-		return mapper.getCgList(codeGrp, useYn);
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		param.put("codeGrp", codeGrp);
+		param.put("useYn", useYn);
+		log.info("getCgList param : {}", param.toString());
+		return mapper.getCgList(param);
 	}
 
 	@Override
@@ -54,7 +62,12 @@ public class CommonServiceImpl implements CommonService {
 
 	@Override
 	public ArrayList<HashMap<String, Object>> getCgListByParCode(String codeGrp, String parCode, String useYn) throws Exception {
-		return mapper.getCgListByParCode(codeGrp, parCode, useYn);
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		param.put("codeGrp", codeGrp);
+		param.put("parCode", parCode);
+		param.put("useYn", useYn);
+		log.info("getCgListByParCode param : {}", param.toString());
+		return mapper.getCgListByParCode(param);
 	}
 
 }

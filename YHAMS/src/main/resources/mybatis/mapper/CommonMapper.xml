@@ -33,7 +33,7 @@
 		SELECT CONCAT('SAL_', LPAD(NEXT VALUE FOR TB_TRAN_SALARY_SEQ , 6, 0));
 	</select>
 
-	<select id="getCgList" parameterType="String" resultType="java.util.HashMap">
+	<select id="getCgList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 			
 			SELECT  CODE_ID, 
 			        CODE_CD,
@@ -56,7 +56,7 @@
 	</select>
 	
 	
-	<select id="getCgListByParCode" parameterType="String" resultType="java.util.HashMap">
+	<select id="getCgListByParCode" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 			
 			SELECT  CODE_ID, 
 			        CODE_CD,
