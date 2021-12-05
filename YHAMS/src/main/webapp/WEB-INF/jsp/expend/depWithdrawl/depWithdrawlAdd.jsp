@@ -23,10 +23,12 @@ function goSave(){
 		var list = new Array();
 		$("#depWithDrawlList > tr").each(function(i, value){
 			var map = {
-				UED_DATE   : $(this).children().find("input[id^=UED_DATE_]").val(),
-			    UED_INCM   : $(this).children().find("input[id^=UED_INCM_]").val().replace(/,/g, ""),
-			    UED_SOURCE : $(this).children().find("input[id^=UED_SOURCE_]").val(),
-			    UED_CTG	   : $(this).children().find("select[id^=UED_CTG_]").val()
+				ACT_DATE      : $(this).children().find("input[id^=ACT_DATE_]").val(),
+				DEPOSIT_TOTAL : $(this).children().find("input[id^=DEPOSIT_TOTAL_]").val().replace(/,/g, ""),
+			    WITHDRL_TOTAL : $(this).children().find("input[id^=WITHDRL_TOTAL_]").val().replace(/,/g, ""),
+			    DESCRIPTION   : $(this).children().find("input[id^=DESCRIPTION_]").val(),
+			    DW_CATE_1	  : $(this).children().find("select[id^=DW_CATE_1_]").val(),
+			    DW_CATE_2	  : $(this).children().find("select[id^=DW_CATE_2_]").val()
 			};
 			list.push(map);
 		});
@@ -37,7 +39,7 @@ function goSave(){
 		
 		$.ajax({
 		    type : 'post',
-		    url  : '/asset/saveUnearnedList', 
+		    url  : '/expend/saveDepWithdralList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) {
@@ -82,7 +84,7 @@ function goAdd(){
 	    html += '	<td scope="col">';
 	    let tmpId = 'DW_CATE_2_' + trCnt;
 	    html += "        <select id='DW_CATE_1_" +  trCnt +  "' onChange='setDwCate2(\"" + tmpId + "\", this.value);'>";
-	    var codeList = getDwCateList(null);
+	    var codeList = getDwCateList();
     	for(var i=0; i<codeList.length; i++){
 		html += '             <option value="' + codeList[i].CODE_CD + '">' + codeList[i].CODE_NM + '</option>';
     	}
@@ -109,7 +111,6 @@ function numberCheck(id, value){
 function getDwCateList(parCode){
 	var param = {};
 	param.parCode = parCode;
-	console.log('param==>' + JSON.stringify(param));
 	var l;
 	$.ajax({
 	    type : 'get',
@@ -125,9 +126,7 @@ function getDwCateList(parCode){
 }
 
 function setDwCate2(targetId, parCode){
-	console.log('setDwCate2 called... targetId : {}, parCode : {}', targetId, parCode);
 	var list = getDwCateList(parCode);
-	console.log('setDwCate2 list==>' + JSON.stringify(list));
 	var html = '';
 	for(var i=0; i<list.length; i++){
 		html += '<option value="' + list[i].CODE_CD + '">' + list[i].CODE_NM + '</option>';
@@ -150,61 +149,84 @@ function checkFlag(t){
 
 function formCheck(){
 	
-	var chkUedDate   = 0;
-	var chkUedIncm   = 0;
-	var chkUedSource = 0;
-	var chkUedCtg    = 0;
+	let chkActDate     = 0;
+	let chkDepTotal    = 0;
+	let chkWithTotal   = 0;
+	let chkDescription = 0;
+	let chkDwCate1     = 0;
+	let chkDwCate2     = 0;
 	
-	if($("#unearedList tr").length == 0){
+	if($("#depWithDrawlList tr").length == 0){
 		alert('<spring:message code="com.msg.chkAddList"/>');   // 추가할 내용이 없습니다.
 		return false;
 	}
 	
 	
-	$("#depWithDrawlList").children().find("input[id^=UED_DATE_]").each(function(i, value){
+	$("#depWithDrawlList").children().find("input[id^=ACT_DATE_]").each(function(i, value){
 		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedDate++;
+			chkActDate++;
 		}
 	});
 	
-	$("#depWithDrawlList").children().find("input[id^=UED_INCM_]").each(function(i, value){
+	$("#depWithDrawlList").children().find("input[id^=DEPOSIT_TOTAL_]").each(function(i, value){
 		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedIncm++;
+			chkDepTotal++;
 		}
 	});
 	
-	$("#depWithDrawlList").children().find("input[id^=UED_SOURCE_]").each(function(i, value){
+	$("#depWithDrawlList").children().find("input[id^=WITHDRL_TOTAL_]").each(function(i, value){
 		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedSource++;
+			chkWithTotal++;
 		}
 	});
 	
-	$("#depWithDrawlList").children().find("input[id^=UED_CTG_]").each(function(i, value){
+	$("#depWithDrawlList").children().find("input[id^=DESCRIPTION_]").each(function(i, value){
 		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedCtg++;
+			chkDescription++;
+		}
+	});
+	
+	$("#depWithDrawlList").children().find("select[id^=DW_CATE_1_]").each(function(i, value){
+		if($(this).val() == null){
+			chkDwCate1++;
+		}
+	});
+	
+	$("#depWithDrawlList").children().find("select[id^=DW_CATE_2_]").each(function(i, value){
+		if($(this).val() == null){
+			chkDwCate2++;
 		}
 	});
 	
 	
-	if(chkUedDate + chkUedIncm + chkUedSource + chkUedCtg == 0){
+	if(chkActDate + chkDepTotal + chkWithTotal + chkDescription + chkDwCate1 + chkDwCate2 == 0){
 		return true;
 	}else{
 		var mesg = '';
-		if(chkUedDate > 0){
-			mesg += '<spring:message code="com.unearned.uenDate"/>';   // 수입일
+		if(chkActDate > 0){
+			mesg += '<spring:message code="com.depwithdral.actDate"/>';   // 날짜
 		}
-		if(chkUedIncm > 0){
+		if(chkDepTotal > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.unearned.uenIncm"/>';   // 금액
+			mesg += '<spring:message code="com.depwithdral.depTotal"/>';   // 입금액
 		}
-		if(chkUedSource > 0){
+		if(chkWithTotal > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.unearned.uenSource"/>';  // 수입처
+			mesg += '<spring:message code="com.depwithdral.withTotal"/>';  // 지출액
 		}
-		if(chkUedCtg > 0){
+		if(chkDescription > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.unearned.uenCtg"/>';  // 수입분류
+			mesg += '<spring:message code="com.depwithdral.description"/>';  // 입출금사유
 		}
+		if(chkDwCate1 > 0){
+			mesg == '' ? mesg += '' :  mesg += ',';
+			mesg += '<spring:message code="com.depwithdral.dwCate1"/>';  // 대분류
+		}
+		if(chkDwCate2 > 0){
+			mesg == '' ? mesg += '' :  mesg += ',';
+			mesg += '<spring:message code="com.depwithdral.dwCate2"/>';  // 소분류
+		}
+		
 		alert(mesg + '<spring:message code="com.msg.pleaseChk"/>');  // ..를 확인해주세요.
 		return false;
 	}
@@ -232,12 +254,12 @@ function formCheck(){
 	  <thead class="thead-dark" align="center">
 	    <tr>
 	      <th scope="col"><input id="chkAll" type="checkbox" onchange="javascript:checkFlag(this);"></th>
-	      <th scope="col">일자</th>      <!--  일자 -->
-	      <th scope="col">입금액</th>     <!--  입금액 -->
-	      <th scope="col">지출액</th>     <!--  지출액 -->
-	      <th scope="col">입출금사유</th>  <!--  입출금사유 -->
-	      <th scope="col">대분류</th>      <!--  대분류 -->
-	      <th scope="col">소분류</th>      <!--  소분류 -->
+	      <th scope="col"><spring:message code="com.depwithdral.actDate"/></th>      <!--  날짜 -->
+	      <th scope="col"><spring:message code="com.depwithdral.depTotal"/></th>     <!--  입금액 -->
+	      <th scope="col"><spring:message code="com.depwithdral.withTotal"/></th>    <!--  지출액 -->
+	      <th scope="col"><spring:message code="com.depwithdral.description"/></th>  <!--  입출금사유 -->
+	      <th scope="col"><spring:message code="com.depwithdral.dwCate1"/></th>      <!--  대분류 -->
+	      <th scope="col"><spring:message code="com.depwithdral.dwCate2"/></th>      <!--  소분류 -->
 	    </tr>
 	  </thead>
 	  <tbody id="depWithDrawlList">

@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
 import com.yhams.log.LogService;
+import com.yhams.util.CommonContraint;
 
 @Controller
 @RequestMapping("/expend")
@@ -28,7 +29,7 @@ public class ExpendController {
 	private static final Logger logger = LoggerFactory.getLogger(ExpendController.class);
 	
 	@Autowired
-	ExpendService service;
+	ExpendService expendService;
 	
 	@Autowired
 	LogService logService;
@@ -71,11 +72,8 @@ public class ExpendController {
 		Optional<Object> parCode;
 		
 		try {
-			logger.info("param.get('parCode') : {}", param.get("parCode"));
-			logger.info("param.get('parCode') instanceof String : {}", param.get("parCode") instanceof String);
 			parCode = Optional.ofNullable(param.get("parCode"));
-			logger.info("parCode : {}, parCode.isPresent() : {}", parCode, parCode.isPresent());
-			if(!parCode.isEmpty()) {
+			if(parCode.isPresent()) {
 				list = commonService.getCgListByParCode("CG_2006", parCode.get().toString(), "Y");
 			}else{
 				list  = commonService.getCgList("CG_2005", "Y");
@@ -84,6 +82,32 @@ public class ExpendController {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	
+	
+	@RequestMapping(value = "/saveDepWithdralList", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> saveDepWithdralList( @RequestParam(required = true) HashMap<String, Object> param,
+													     HttpSession session,
+														 HttpServletRequest  request,
+														 HttpServletResponse response){
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> map = new HashMap<String,Object>();
+		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+		int result = 0;
+		logger.info("param : {}", param.toString());
+		try {
+			result = expendService.saveDepWithdralList(param);
+			if(result >= 0) {
+				map.put("result", CommonContraint.SUCCEESS);
+			}else {
+				map.put("result", CommonContraint.FAIL);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			map.put("result", "fail");
+		}
+		return map;
 	}
 	
 	
