@@ -24,6 +24,7 @@ function goSave(){
 		$("#depWithDrawlList > tr").each(function(i, value){
 			var map = {
 				ACT_DATE      : $(this).children().find("input[id^=ACT_DATE_]").val(),
+				ACCOUNT       : $(this).children().find("input[id^=ACCOUNT_]").val(),
 				DEPOSIT_TOTAL : $(this).children().find("input[id^=DEPOSIT_TOTAL_]").val().replace(/,/g, ""),
 			    WITHDRL_TOTAL : $(this).children().find("input[id^=WITHDRL_TOTAL_]").val().replace(/,/g, ""),
 			    DESCRIPTION   : $(this).children().find("input[id^=DESCRIPTION_]").val(),
@@ -77,13 +78,21 @@ function goAdd(){
 	var html = "";
 	    html += '<tr id="UED_SEQ_' + trCnt + '">';
 	    html += '	<td scope="col"><input id="CHKUEDSEQ_' +  trCnt + '" type="checkbox"></td>';
-	    html += '	<td scope="col"><input id="ACT_DATE_' +  trCnt + '"  type="text"></td>';   
-	    html += '	<td scope="col"><input id="DEPOSIT_TOTAL_' +  trCnt + '"   onChange="numberCheck(this.id, this.value);" type="text"></td>';    
-	    html += '	<td scope="col"><input id="WITHDRL_TOTAL_' +  trCnt + '"  onChange="numberCheck(this.id, this.value);"  type="text"></td>';   
-	    html += '	<td scope="col"><input id="DESCRIPTION_' +  trCnt + '"  type="text"></td>';  
+	    html += '	<td scope="col"><input id="ACT_DATE_' +  trCnt + '"  type="text" style="width:110px;"></td>';
+	    html += '	<td scope="col">';
+	    html += '        <select id="ACCOUNT_CD_' + trCnt + '"  style="width:110px;">';
+	    var accountList = getAccountList();
+	    for(var i=0; i<accountList.length; i++){
+			html += '             <option value="' + accountList[i].ACCOUNT_CD + '">' + accountList[i].ACCOUNT_NM + '</option>';
+    	}
+	    html += '        </select>'; 
+	    html += '   </td>'; 
+	    html += '	<td scope="col"><input id="DEPOSIT_TOTAL_' +  trCnt + '"   onChange="numberCheck(this.id, this.value);" type="text"  style="width:110px;"></td>';    
+	    html += '	<td scope="col"><input id="WITHDRL_TOTAL_' +  trCnt + '"  onChange="numberCheck(this.id, this.value);"  type="text"  style="width:110px;"></td>';   
+	    html += '	<td scope="col"><input id="DESCRIPTION_' +  trCnt + '"  type="text"  style="width:110px;"></td>';  
 	    html += '	<td scope="col">';
 	    let tmpId = 'DW_CATE_2_' + trCnt;
-	    html += "        <select id='DW_CATE_1_" +  trCnt +  "' onChange='setDwCate2(\"" + tmpId + "\", this.value);'>";
+	    html += "        <select id='DW_CATE_1_" +  trCnt +  "' onChange='setDwCate2(\"" + tmpId + "\", this.value);'  style='width:110px;'>";
 	    var codeList = getDwCateList();
     	for(var i=0; i<codeList.length; i++){
 		html += '             <option value="' + codeList[i].CODE_CD + '">' + codeList[i].CODE_NM + '</option>';
@@ -91,7 +100,7 @@ function goAdd(){
 	    html += '        </select>';
 	    html += '   </td>'; 
 	    html += '	<td scope="col">'
-	    html += '        <select id="'+ tmpId + '">';
+	    html += '        <select id="'+ tmpId + '"  style="width:110px;">';
 	    html += '        </select>'; 
 	    html += '   </td>'; 
 	    html += '</tr>';
@@ -136,6 +145,20 @@ function setDwCate2(targetId, parCode){
 	$("#" + targetId).append(html);
 }
 
+function getAccountList(){
+	var l;
+	$.ajax({
+	    type : 'get',
+	    url : '/expend/getAccountList',
+	    dataType : 'json', 
+	    async: false,
+	    success : function(result) { 
+	    	l = result;
+	    }
+	});
+	return l;
+}
+
 
 function checkFlag(t){
 	var flag = $(t).prop('checked');
@@ -150,6 +173,7 @@ function checkFlag(t){
 function formCheck(){
 	
 	let chkActDate     = 0;
+	let chkAccount     = 0;
 	let chkDepTotal    = 0;
 	let chkWithTotal   = 0;
 	let chkDescription = 0;
@@ -165,6 +189,12 @@ function formCheck(){
 	$("#depWithDrawlList").children().find("input[id^=ACT_DATE_]").each(function(i, value){
 		if($(this).val().trim().length == 0 || $(this).val() == null){
 			chkActDate++;
+		}
+	});
+	
+	$("#depWithDrawlList").children().find("input[id^=ACCOUNT_]").each(function(i, value){
+		if($(this).val().trim().length == 0 || $(this).val() == null){
+			chkAccount++;
 		}
 	});
 	
@@ -199,12 +229,16 @@ function formCheck(){
 	});
 	
 	
-	if(chkActDate + chkDepTotal + chkWithTotal + chkDescription + chkDwCate1 + chkDwCate2 == 0){
+	if(chkActDate + chkAccount + chkDepTotal + chkWithTotal + chkDescription + chkDwCate1 + chkDwCate2 == 0){
 		return true;
 	}else{
 		var mesg = '';
 		if(chkActDate > 0){
 			mesg += '<spring:message code="com.depwithdral.actDate"/>';   // 날짜
+		}
+		if(chkAccount > 0){
+			mesg == '' ? mesg += '' :  mesg += ',';
+			mesg += '<spring:message code="com.depwithdral.account"/>';   // 계좌
 		}
 		if(chkDepTotal > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
@@ -255,6 +289,7 @@ function formCheck(){
 	    <tr>
 	      <th scope="col"><input id="chkAll" type="checkbox" onchange="javascript:checkFlag(this);"></th>
 	      <th scope="col"><spring:message code="com.depwithdral.actDate"/></th>      <!--  날짜 -->
+	      <th scope="col"><spring:message code="com.depwithdral.account"/></th>      <!--  계좌 -->
 	      <th scope="col"><spring:message code="com.depwithdral.depTotal"/></th>     <!--  입금액 -->
 	      <th scope="col"><spring:message code="com.depwithdral.withTotal"/></th>    <!--  지출액 -->
 	      <th scope="col"><spring:message code="com.depwithdral.description"/></th>  <!--  입출금사유 -->

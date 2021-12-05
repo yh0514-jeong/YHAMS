@@ -36,6 +36,7 @@ public class ExpendServiceImpl implements ExpendService{
 				map.put("USER_SEQ" , param.get("USER_SEQ").toString());
 				map.put("CREATE_ID", param.get("USER_SEQ").toString());
 				map.put("UPDATE_ID", param.get("USER_SEQ").toString());
+				logger.info("saveDepWithdralList map==> {}", map.toString());
 				//r = mapper.saveDepWithdralList(map);
 			}
 		}catch (Exception e) {
@@ -44,6 +45,12 @@ public class ExpendServiceImpl implements ExpendService{
 		}
 		return r;
 		
+	}
+
+
+	@Override
+	public ArrayList<HashMap<String, Object>> getAccountList(HashMap<String, Object> param) throws Exception {
+		return mapper.getAccountList(param);
 	}
 
 }

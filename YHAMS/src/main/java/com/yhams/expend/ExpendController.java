@@ -61,6 +61,23 @@ public class ExpendController {
 	}
 	
 	
+	@RequestMapping(value = "/getAccountList", method = RequestMethod.GET)
+	@ResponseBody
+	public ArrayList<HashMap<String, Object>> getAccountList(HttpSession session,
+															 HttpServletRequest  request,
+															 HttpServletResponse response){
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
+		HashMap<String, Object> param = new HashMap<String,Object>();
+		try {
+			param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+			list = expendService.getAccountList(param);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
+	
 	@RequestMapping(value = "/getDwCateList", method = RequestMethod.GET)
 	@ResponseBody
 	public ArrayList<HashMap<String, Object>> getDwCateList(@RequestParam(required = true) HashMap<String, Object> param,
