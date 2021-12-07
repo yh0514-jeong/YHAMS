@@ -1,6 +1,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yhams.expend.ExpendMapper">
 
+	<sql id="DepWithdralCondition">
+	
+	
+	</sql>
+
 	<select id="getAccountList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	
 		SELECT  ACCOUNT_CD,
@@ -11,6 +16,140 @@
 		   AND   USE_YN   = 'Y'
 			
 		   ORDER BY ACCOUNT_CD ASC
+	
+	</select>
+	
+	
+	<insert id="saveDepWithdralList" parameterType="java.util.HashMap">
+	
+			INSERT INTO TB_TRAN_ACCT_SMR (
+			
+					ACT_SEQ,
+					USER_SEQ,
+					ACCOUNT_CD,
+					ACT_DATE,
+					DEPOSIT_TOTAL,
+					WITHDRL_TOTAL,
+					DESCRIPT,
+					DW_CATE1,
+					DW_CATE2,
+					CREATE_ID,
+					CREATE_DATE,
+					UPDATE_ID,
+					UPDATE_DATE
+				
+				) VALUES (
+				
+					#{ACT_SEQ},
+					#{USER_SEQ},
+					#{ACCOUNT_CD},
+					#{ACT_DATE},
+					#{DEPOSIT_TOTAL},
+					#{WITHDRL_TOTAL},
+					#{DESCRIPT},
+					#{DW_CATE1},
+					#{DW_CATE2},
+					#{CREATE_ID},
+					NOW(),
+					#{UPDATE_ID},
+					NOW()
+				
+				)
+	
+	</insert>
+	
+	
+	
+	<select id="depWithdralList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+		SELECT   T1.RNUM,
+		         T1.ACT_SEQ,
+				 T1.ACCOUNT_NM,
+				 DATE_FORMAT(T1.ACT_DATE, '%Y-%m-%d') AS ACT_DATE,
+				 FORMAT(T1.DEPOSIT_TOTAL, 0) AS DEPOSIT_TOTAL,
+		 		 FORMAT(T1.WITHDRL_TOTAL, 0) AS WITHDRL_TOTAL,
+				 T1.DESCRIPT,
+				 T1.DW_CATE1_NM, 
+				 T1.DW_CATE2_NM
+			
+		  FROM (SELECT    ROW_NUMBER() OVER (ORDER BY ACT_DATE DESC) AS RNUM,
+						  TTAS.ACT_SEQ,
+						  TTAS.USER_SEQ,
+						  TTAS.ACCOUNT_CD,
+						  (SELECT TMA.ACCOUNT_NM
+							 FROM TB_META_ACCOUNT TMA
+							WHERE TTAS.ACCOUNT_CD = TMA.ACCOUNT_CD
+						   ) AS ACCOUNT_NM,
+						  TTAS.ACT_DATE,
+						  TTAS.DEPOSIT_TOTAL,
+						  TTAS.WITHDRL_TOTAL,
+						  TTAS.DESCRIPT,
+						  TTAS.DW_CATE1,
+						  (SELECT CODE_NM
+						     FROM TB_CMM_CDDTL TCC
+				            WHERE TTAS.DW_CATE1 = TCC.CODE_CD		    
+						  ) AS DW_CATE1_NM,
+						  TTAS.DW_CATE2,
+						  (SELECT CODE_NM
+						     FROM TB_CMM_CDDTL TCC
+				            WHERE TTAS.DW_CATE2 = TCC.CODE_CD		    
+						  ) AS DW_CATE2_NM,
+						  TTAS.CREATE_ID,
+						  TTAS.CREATE_DATE,
+						  TTAS.UPDATE_ID,
+						  TTAS.UPDATE_DATE
+						 
+						FROM TB_TRAN_ACCT_SMR TTAS 
+						
+						WHERE TTAS.USER_SEQ = #{USER_SEQ}
+						
+						<include refid="DepWithdralCondition"/>
+						
+				) T1
+				
+				WHERE T1.RNUM BETWEEN ((#{cntPerPage} * (#{curPage}-1)) + 1) AND (#{cntPerPage} * #{curPage})
+	
+	</select>
+	
+	
+	<select id="depWithdralCount" parameterType="java.util.HashMap" resultType="long">
+	
+		SELECT  COUNT(*)
+			
+		  FROM (SELECT    ROW_NUMBER() OVER (ORDER BY ACT_DATE DESC) AS RNUM,
+						  TTAS.ACT_SEQ,
+						  TTAS.USER_SEQ,
+						  TTAS.ACCOUNT_CD,
+						  (SELECT TMA.ACCOUNT_NM
+							 FROM TB_META_ACCOUNT TMA
+							WHERE TTAS.ACCOUNT_CD = TMA.ACCOUNT_CD
+						   ) AS ACCOUNT_NM,
+						  TTAS.ACT_DATE,
+						  TTAS.DEPOSIT_TOTAL,
+						  TTAS.WITHDRL_TOTAL,
+						  TTAS.DESCRIPT,
+						  TTAS.DW_CATE1,
+						  (SELECT CODE_NM
+						     FROM TB_CMM_CDDTL TCC
+				            WHERE TTAS.DW_CATE1 = TCC.CODE_CD		    
+						  ) AS DW_CATE1_NM,
+						  TTAS.DW_CATE2,
+						  (SELECT CODE_NM
+						     FROM TB_CMM_CDDTL TCC
+				            WHERE TTAS.DW_CATE2 = TCC.CODE_CD		    
+						  ) AS DW_CATE2_NM,
+						  TTAS.CREATE_ID,
+						  TTAS.CREATE_DATE,
+						  TTAS.UPDATE_ID,
+						  TTAS.UPDATE_DATE
+						 
+						FROM TB_TRAN_ACCT_SMR TTAS 
+						
+						WHERE TTAS.USER_SEQ = #{USER_SEQ}
+						
+						<include refid="DepWithdralCondition"/>
+						
+				) T1
 	
 	</select>
 	 

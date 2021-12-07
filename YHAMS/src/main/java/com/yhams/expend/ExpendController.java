@@ -2,6 +2,7 @@ package com.yhams.expend;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.yhams.common.CommonService;
 import com.yhams.log.LogService;
 import com.yhams.util.CommonContraint;
+import com.yhams.util.PagingUtil;
 
 @Controller
 @RequestMapping("/expend")
@@ -102,12 +104,45 @@ public class ExpendController {
 	}
 	
 	
+	@RequestMapping(value = "/depWithdralList", method = RequestMethod.GET)
+	@ResponseBody
+	public HashMap<String, Object> depWithdralList(@RequestParam(required = true) HashMap<String, Object> param,
+															    HttpSession session,
+																HttpServletRequest  request,
+																HttpServletResponse response){
+		logService.insertUserActLog(request, session);
+		
+		HashMap<String, Object> result          = new HashMap<String, Object>();
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+		
+		long total       = 0;
+		int cntPerPage   = param.get("cntPerPage") == null ? 10 : Integer.parseInt(param.get("cntPerPage").toString());
+		int curPage      = param.get("curPage")  == null ? 1 : Integer.parseInt(param.get("curPage").toString());
+		
+		try {
+			total = expendService.depWithdralCount(param);
+			list = expendService.depWithdralList(param);
+			PagingUtil pagingUtil = new PagingUtil(10, cntPerPage, total);
+			Map<String, Object> block = pagingUtil.getFixedBlock(curPage);
+			result.put("block", block);
+			result.put("total", total);
+			result.put("list",  list);
+			result.put("resultCode",  CommonContraint.SUCCEESS);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode",  CommonContraint.FAIL);
+		}
+		return result;
+	}
+	
+	
 	@RequestMapping(value = "/saveDepWithdralList", method = RequestMethod.POST)
 	@ResponseBody
 	public HashMap<String, Object> saveDepWithdralList( @RequestParam(required = true) HashMap<String, Object> param,
-													     HttpSession session,
-														 HttpServletRequest  request,
-														 HttpServletResponse response){
+														HttpSession session,
+														HttpServletRequest  request,
+														HttpServletResponse response){
 		logService.insertUserActLog(request, session);
 		HashMap<String, Object> map = new HashMap<String,Object>();
 		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));

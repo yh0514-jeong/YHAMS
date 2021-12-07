@@ -34,10 +34,11 @@
 	 
 	 $.ajax({
 		    type : 'get',
-		    url : '/asset/unearnedList', 
+		    url : '/expend/depWithdralList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
+		    	console.log(JSON.stringify(result));
 		    	if(result.resultCode == "success"){
 		    		$("#list").empty();
 		    		var data = result.list;
@@ -50,15 +51,18 @@
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
 			    			html += '<tr align="center">';
-				    		html += '    <td scope="row"><input type="checkbox" value="' + data[i].UED_SEQ + '"></td>';
+				    		html += '    <td scope="row"><input type="checkbox" value="' + data[i].ACT_SEQ + '"></td>';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_DATE + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_INCM + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_SOURCE + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_CTG_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].ACT_DATE + '</td>';
+				    		html += '    <td scope="row">' + data[i].ACCOUNT_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].DEPOSIT_TOTAL + '</td>';
+				    		html += '    <td scope="row">' + data[i].WITHDRL_TOTAL + '</td>';
+				    		html += '    <td scope="row">' + data[i].DESCRIPT + '</td>';
+				    		html += '    <td scope="row">' + data[i].DW_CATE1_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].DW_CATE2_NM + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goUpdate(\'' + data[i].UED_SEQ +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
-				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].UED_SEQ +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
+				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goUpdate(\'' + data[i].ACT_SEQ +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
+				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].ACT_SEQ +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -154,7 +158,7 @@ function goStringifyDelTarget(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.period"/></div><!--기간 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.depwithdral.period"/></div><!--기간 -->
     </div>
     <input type="text" class="form-control" id="START_DATE" style="width: 150px;">&nbsp;~&nbsp;
     <input type="text" class="form-control" id="END_DATE"   style="width: 150px;">
@@ -162,14 +166,14 @@ function goStringifyDelTarget(){
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.uenSource"/></div><!-- 수입처 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.depwithdral.descript"/></div><!-- 입출금사유 -->
     </div>
     <input type="text" class="form-control" id="UEN_SOURCE"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.uenCtg"/></div><!-- 수입분류 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.depwithdral.dwCate"/></div><!-- 대/소분류 -->
     </div>
     <input type="text" class="form-control" id="UED_CTG_NM"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
@@ -191,13 +195,15 @@ function goStringifyDelTarget(){
 	<table class="table">
 	  <thead align="center">
 	    <tr>
-	      <th scope="col" width="5%"></th>
-	      <th scope="col" width="10%"><spring:message code="com.txt.number"/></th><!-- No. -->
-	      <th scope="col" width="15%">일자</th><!-- 일자 -->
-	      <th scope="col" width="15%">입금액</th><!-- 입금액 -->
-	      <th scope="col" width="15%">지출액</th><!-- 지출액 -->
-	      <th scope="col" width="20%">입/출금사유</th><!-- 입/출금사유 -->
-	      <th scope="col" width="5%">분류</th>
+	      <th scope="col" width="2%"></th>
+	      <th scope="col" width="5%"><spring:message code="com.txt.number"/></th>             <!-- No. -->
+	      <th scope="col" width="10%"><spring:message code="com.depwithdral.actDate"/></th>   <!-- 일자 -->
+	      <th scope="col" width="15%"><spring:message code="com.depwithdral.account"/></th>   <!-- 계좌 -->
+	      <th scope="col" width="10%"><spring:message code="com.depwithdral.depTotal"/></th>  <!-- 입금액 -->
+	      <th scope="col" width="10%"><spring:message code="com.depwithdral.withTotal"/></th> <!-- 지출액 -->
+	      <th scope="col" width="15%"><spring:message code="com.depwithdral.descript"/></th>  <!-- 입/출금사유 -->
+	      <th scope="col" width="10%"><spring:message code="com.depwithdral.dwCate1"/></th>   <!-- 대분류 -->
+	      <th scope="col" width="10%"><spring:message code="com.depwithdral.dwCate2"/></th>   <!-- 소분류 -->
 	      <th scope="col" width="*"></th>
 	    </tr>
 	  </thead>

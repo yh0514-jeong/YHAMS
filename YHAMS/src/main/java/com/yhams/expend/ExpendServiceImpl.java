@@ -33,11 +33,10 @@ public class ExpendServiceImpl implements ExpendService{
 			for(int i=0; i<list.size(); i++) {
 				HashMap<String, Object> map = list.get(i);
 				map.put("ACT_SEQ"  , UUID.randomUUID().toString());
-				map.put("USER_SEQ" , param.get("USER_SEQ").toString());
 				map.put("CREATE_ID", param.get("USER_SEQ").toString());
 				map.put("UPDATE_ID", param.get("USER_SEQ").toString());
 				logger.info("saveDepWithdralList map==> {}", map.toString());
-				//r = mapper.saveDepWithdralList(map);
+				r = mapper.saveDepWithdralList(map);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -51,6 +50,18 @@ public class ExpendServiceImpl implements ExpendService{
 	@Override
 	public ArrayList<HashMap<String, Object>> getAccountList(HashMap<String, Object> param) throws Exception {
 		return mapper.getAccountList(param);
+	}
+
+
+	@Override
+	public ArrayList<HashMap<String, Object>> depWithdralList(HashMap<String, Object> param) throws Exception {
+		return mapper.depWithdralList(param);
+	}
+
+
+	@Override
+	public long depWithdralCount(HashMap<String, Object> param) throws Exception {
+		return mapper.depWithdralCount(param);
 	}
 
 }

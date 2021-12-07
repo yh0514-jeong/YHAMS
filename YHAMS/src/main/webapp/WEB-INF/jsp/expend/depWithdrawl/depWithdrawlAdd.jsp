@@ -24,12 +24,12 @@ function goSave(){
 		$("#depWithDrawlList > tr").each(function(i, value){
 			var map = {
 				ACT_DATE      : $(this).children().find("input[id^=ACT_DATE_]").val(),
-				ACCOUNT       : $(this).children().find("input[id^=ACCOUNT_]").val(),
+				ACCOUNT_CD    : $(this).children().find("select[id^=ACCOUNT_]").val(),
 				DEPOSIT_TOTAL : $(this).children().find("input[id^=DEPOSIT_TOTAL_]").val().replace(/,/g, ""),
 			    WITHDRL_TOTAL : $(this).children().find("input[id^=WITHDRL_TOTAL_]").val().replace(/,/g, ""),
-			    DESCRIPTION   : $(this).children().find("input[id^=DESCRIPTION_]").val(),
-			    DW_CATE_1	  : $(this).children().find("select[id^=DW_CATE_1_]").val(),
-			    DW_CATE_2	  : $(this).children().find("select[id^=DW_CATE_2_]").val()
+			    DESCRIPT      : $(this).children().find("input[id^=DESCRIPT_]").val(),
+			    DW_CATE1	  : $(this).children().find("select[id^=DW_CATE1_]").val(),
+			    DW_CATE2	  : $(this).children().find("select[id^=DW_CATE2_]").val()
 			};
 			list.push(map);
 		});
@@ -89,11 +89,12 @@ function goAdd(){
 	    html += '   </td>'; 
 	    html += '	<td scope="col"><input id="DEPOSIT_TOTAL_' +  trCnt + '"   onChange="numberCheck(this.id, this.value);" type="text"  style="width:110px;"></td>';    
 	    html += '	<td scope="col"><input id="WITHDRL_TOTAL_' +  trCnt + '"  onChange="numberCheck(this.id, this.value);"  type="text"  style="width:110px;"></td>';   
-	    html += '	<td scope="col"><input id="DESCRIPTION_' +  trCnt + '"  type="text"  style="width:110px;"></td>';  
+	    html += '	<td scope="col"><input id="DESCRIPT_' +  trCnt + '"  type="text"  style="width:110px;"></td>';  
 	    html += '	<td scope="col">';
-	    let tmpId = 'DW_CATE_2_' + trCnt;
-	    html += "        <select id='DW_CATE_1_" +  trCnt +  "' onChange='setDwCate2(\"" + tmpId + "\", this.value);'  style='width:110px;'>";
+	    let tmpId = 'DW_CATE2_' + trCnt;
+	    html += "        <select id='DW_CATE1_" +  trCnt +  "' onChange='setDwCate2(\"" + tmpId + "\", this.value);'  style='width:110px;'>";
 	    var codeList = getDwCateList();
+	    html += '             <option value=""><spring:message code="com.txt.optionSelect"/></option>';
     	for(var i=0; i<codeList.length; i++){
 		html += '             <option value="' + codeList[i].CODE_CD + '">' + codeList[i].CODE_NM + '</option>';
     	}
@@ -101,6 +102,7 @@ function goAdd(){
 	    html += '   </td>'; 
 	    html += '	<td scope="col">'
 	    html += '        <select id="'+ tmpId + '"  style="width:110px;">';
+	    html += '             <option value=""><spring:message code="com.txt.optionSelect"/></option>';
 	    html += '        </select>'; 
 	    html += '   </td>'; 
 	    html += '</tr>';
@@ -210,20 +212,20 @@ function formCheck(){
 		}
 	});
 	
-	$("#depWithDrawlList").children().find("input[id^=DESCRIPTION_]").each(function(i, value){
+	$("#depWithDrawlList").children().find("input[id^=DESCRIPT_]").each(function(i, value){
 		if($(this).val().trim().length == 0 || $(this).val() == null){
 			chkDescription++;
 		}
 	});
 	
-	$("#depWithDrawlList").children().find("select[id^=DW_CATE_1_]").each(function(i, value){
-		if($(this).val() == null){
+	$("#depWithDrawlList").children().find("select[id^=DW_CATE1_]").each(function(i, value){
+		if($(this).val() == '' || $(this).val() == null){
 			chkDwCate1++;
 		}
 	});
 	
-	$("#depWithDrawlList").children().find("select[id^=DW_CATE_2_]").each(function(i, value){
-		if($(this).val() == null){
+	$("#depWithDrawlList").children().find("select[id^=DW_CATE2_]").each(function(i, value){
+		if($(this).val() == '' || $(this).val() == null){
 			chkDwCate2++;
 		}
 	});

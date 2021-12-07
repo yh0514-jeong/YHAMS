@@ -10,4 +10,10 @@ public interface ExpendMapper {
 
 	ArrayList<HashMap<String, Object>> getAccountList(HashMap<String, Object> param) throws Exception;
 
+	int saveDepWithdralList(HashMap<String, Object> map) throws Exception;
+
+	ArrayList<HashMap<String, Object>> depWithdralList(HashMap<String, Object> param) throws Exception;
+
+	long depWithdralCount(HashMap<String, Object> param) throws Exception;
+
 }
