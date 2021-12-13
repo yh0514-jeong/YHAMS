@@ -16,4 +16,8 @@ public interface ExpendMapper {
 
 	long depWithdralCount(HashMap<String, Object> param) throws Exception;
 
+	int deleteDepWithdrawalList(HashMap<String, Object> param) throws Exception;
+
+	HashMap<String, Object> selecteDepWithdrawal(String ACT_SEQ) throws Exception;
+
 }

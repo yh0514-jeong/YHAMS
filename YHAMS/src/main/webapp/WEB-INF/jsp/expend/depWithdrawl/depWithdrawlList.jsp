@@ -46,7 +46,7 @@
 			    	var html = "";
 			    	if(data.length == 0){
 				    		html += '<tr align="center">';
-				    		html += '    <th scope="row" colspan="7"><spring:message code="com.txt.noresult"/></th>';
+				    		html += '    <th scope="row" colspan="10"><spring:message code="com.txt.noresult"/></th>';
 				    		html += '</tr>';
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
@@ -85,24 +85,24 @@
      window.open(url, name, option);
  }
  
- function goUpdate(UED_SEQ){
-	 var url    = "/asset/unearnedUpdate?UED_SEQ=" + UED_SEQ;
-	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
+ function goUpdate(ACT_SEQ){
+	 var url    = "/expend/updateDepWithdrawal?ACT_SEQ=" + ACT_SEQ;
+	 var option = "width = 700, height = 500, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
  
  
- function goDel(uedSeqs){
+ function goDel(actSeqs){
 	 
 	 if(!confirm('<spring:message code="com.msg.chkSelectedDelete"/>')) return;   // 선택된 항목을 삭제하시겠습니까?
 	 
 	 var param = {
-	    'UED_SEQS' : uedSeqs
+	    'ACT_SEQ' : actSeqs
 	 };
 	 
 	 $.ajax({
 		    type : 'POST',
-		    url : '/asset/deleteUnearedList', 
+		    url : '/expend/deleteDepWithdrawalList', 
 		    dataType : 'json',
 		    data : param,
 		    success : function(result) { 

@@ -252,7 +252,7 @@ function formCheck(){
 		}
 		if(chkDescription > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.depwithdral.description"/>';  // 입출금사유
+			mesg += '<spring:message code="com.depwithdral.descript"/>';  // 입출금사유
 		}
 		if(chkDwCate1 > 0){
 			mesg == '' ? mesg += '' :  mesg += ',';
@@ -294,7 +294,7 @@ function formCheck(){
 	      <th scope="col"><spring:message code="com.depwithdral.account"/></th>      <!--  계좌 -->
 	      <th scope="col"><spring:message code="com.depwithdral.depTotal"/></th>     <!--  입금액 -->
 	      <th scope="col"><spring:message code="com.depwithdral.withTotal"/></th>    <!--  지출액 -->
-	      <th scope="col"><spring:message code="com.depwithdral.description"/></th>  <!--  입출금사유 -->
+	      <th scope="col"><spring:message code="com.depwithdral.descript"/></th>     <!--  입출금사유 -->
 	      <th scope="col"><spring:message code="com.depwithdral.dwCate1"/></th>      <!--  대분류 -->
 	      <th scope="col"><spring:message code="com.depwithdral.dwCate2"/></th>      <!--  소분류 -->
 	    </tr>

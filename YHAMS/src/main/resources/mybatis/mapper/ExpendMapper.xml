@@ -152,5 +152,40 @@
 				) T1
 	
 	</select>
+	
+	
+	<delete id="deleteDepWithdrawalList" parameterType="java.util.HashMap">
+	 
+	 	DELETE FROM	TB_TRAN_ACCT_SMR
+	 	WHERE ACT_SEQ IN 
+	 	<foreach collection="actSeqs" item="item" separator="," open="(" close=")">
+            #{item}
+    	</foreach>
+    	
+	 </delete>
+	 
+	 
+	 <select id="selecteDepWithdrawal" parameterType="String" resultType="java.util.HashMap">
+	 
+	 			
+			SELECT  TTAS.ACT_SEQ,
+			        TTAS.USER_SEQ,
+			        TTAS.ACCOUNT_CD,
+			        (SELECT TMA.ACCOUNT_NM
+			           FROM TB_META_ACCOUNT TMA
+			          WHERE TTAS.ACCOUNT_CD = TMA.ACCOUNT_CD
+					  ) AS ACCOUNT_NM,
+			        TTAS.ACT_DATE,
+			        TTAS.DEPOSIT_TOTAL,
+			        TTAS.WITHDRL_TOTAL,
+			        TTAS.DESCRIPT,
+			        TTAS.DW_CATE1,
+			        TTAS.DW_CATE2
+		        
+			   FROM TB_TRAN_ACCT_SMR TTAS
+			
+			  WHERE ACT_SEQ = #{ACT_SEQ}
+	 
+	 </select>
 	 
 </mapper>

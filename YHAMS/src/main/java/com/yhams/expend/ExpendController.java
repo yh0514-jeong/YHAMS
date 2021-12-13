@@ -163,4 +163,59 @@ public class ExpendController {
 	}
 	
 	
+	@RequestMapping(value = "/deleteDepWithdrawalList", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> deleteDepWithdrawalList(@RequestParam HashMap<String, Object> param, 
+					                                      HttpSession session,
+					                                      HttpServletRequest request,
+					                                      HttpServletResponse response){
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		int r = 0;
+		try {
+			String[] actSeqs = param.get("ACT_SEQ").toString().split(",");
+			logger.info("actSeqs==>" + actSeqs);
+			param.put("actSeqs", actSeqs);
+			r = expendService.deleteDepWithdrawalList(param);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", CommonContraint.FAIL);
+		}
+		result.put("result", CommonContraint.SUCCEESS);
+		return result;
+	}
+	
+	
+	
+	@RequestMapping(value = "/updateDepWithdrawal")
+	public ModelAndView updateDepWithdrawal(@RequestParam(required = true) String ACT_SEQ, 
+								            HttpSession session,
+								            HttpServletRequest request,
+								            HttpServletResponse response) {
+		
+		
+		logService.insertUserActLog(request, session);
+		
+		ModelAndView mv           = new ModelAndView();
+		HashMap<String, Object> r = new HashMap<String, Object>();
+		
+		ArrayList<HashMap<String, Object>> actTypeList = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> isuOrgList  = new ArrayList<HashMap<String,Object>>();
+		
+		try {
+			
+			r = expendService.selecteDepWithdrawal(ACT_SEQ);
+			mv.addObject("result", r);
+			mv.addObject("nav"   , "입출금내역 수정");
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		mv.setViewName("expend/depWithdrawl/depWithdrawlUpdate");
+		return mv;
+	}
+	
+	
+	
 }

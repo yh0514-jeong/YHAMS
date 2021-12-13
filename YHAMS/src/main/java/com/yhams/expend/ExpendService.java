@@ -13,4 +13,8 @@ public interface ExpendService {
 	
 	ArrayList<HashMap<String, Object>> depWithdralList(HashMap<String, Object> param) throws Exception;
 
+	int deleteDepWithdrawalList(HashMap<String, Object> param) throws Exception;
+
+	HashMap<String, Object> selecteDepWithdrawal(String aCT_SEQ) throws Exception;
+
 }
