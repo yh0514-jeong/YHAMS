@@ -196,15 +196,34 @@ public class ExpendController {
 		
 		logService.insertUserActLog(request, session);
 		
-		ModelAndView mv           = new ModelAndView();
-		HashMap<String, Object> r = new HashMap<String, Object>();
+		ModelAndView mv               = new ModelAndView();
+		HashMap<String, Object> r     = new HashMap<String, Object>();
+		HashMap<String, Object> param = new HashMap<String, Object>();
 		
-		ArrayList<HashMap<String, Object>> actTypeList = new ArrayList<HashMap<String,Object>>();
-		ArrayList<HashMap<String, Object>> isuOrgList  = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> accounCdList = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> dwCate1List  = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> dwCate2List  = new ArrayList<HashMap<String,Object>>();
 		
 		try {
 			
-			r = expendService.selecteDepWithdrawal(ACT_SEQ);
+			r = expendService.selecteDepWithdrawal(ACT_SEQ);	
+			
+			param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+			accounCdList = expendService.getAccountList(param);
+			dwCate1List  = commonService.getCgList("CG_2005", "Y");
+						
+			Optional<?> maybeDwCate1 = Optional.ofNullable(r.get("DW_CATE1"));
+			
+			
+			if(maybeDwCate1.isPresent()) {
+				logger.info("maybeDwCate1.isPresent() : {}, maybeDwCate1 : {}", maybeDwCate1.isPresent(), maybeDwCate1.get().toString());	
+				dwCate2List = commonService.getCgListByParCode("CG_2006", maybeDwCate1.get().toString(), "Y");
+			}
+			
+			mv.addObject("accounCdList", accounCdList);
+			mv.addObject("dwCate1List", dwCate1List);
+			mv.addObject("dwCate2List", dwCate2List);
+			
 			mv.addObject("result", r);
 			mv.addObject("nav"   , "입출금내역 수정");
 			
