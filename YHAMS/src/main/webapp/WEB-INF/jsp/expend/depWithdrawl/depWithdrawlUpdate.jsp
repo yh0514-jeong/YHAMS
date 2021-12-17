@@ -19,9 +19,9 @@
 
 	function updateDepWithdrawl(){
 		
-		let pattern = /^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[0-1])$/;
+		let datePattern = /^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[0-1])$/;
 
-		if(!pattern.test($("#ACT_DATE").val().trim())){
+		if(!datePattern.test($("#ACT_DATE").val().trim())){
 			alert('<spring:message code="com.depwithdral.chkActDate"/>');   // 날짜 형식을 다시 한 번 확인해주세요.
 			return;
 		}
@@ -31,12 +31,12 @@
 			return;
 		}
 		
-		if($("#DEPOSIT_TOTAL").val().trim().length == 0){
+		if(isNaN($("#DEPOSIT_TOTAL").val().trim().replace(/,/g, ""))){
 			alert('<spring:message code="com.depwithdral.chkDepTotal"/>');     // 입금액을 확인해주세요.
 			return;
 		}
 		
-		if($("#WITHDRL_TOTAL").val().trim().length == 0){
+		if(isNaN($("#WITHDRL_TOTAL").val().trim().replace(/,/g, ""))){
 			alert('<spring:message code="com.depwithdral.chkWithTotal"/>');     // 지출액을 확인해주세요.
 			return;
 		}
@@ -69,7 +69,7 @@
 
 		$.ajax({
 		    type : 'post',
-		    url : '/asset/updateUnearned', 
+		    url : '/expend/updateDepWithdrawl', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
@@ -90,6 +90,36 @@
 	function numberCheck(id, value){
 		value = value.replace(/[^0-9]/g, "").replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 		$("#" + id ).val(value);
+	}
+	
+	
+	function getDwCateList(parCode){
+		var param = {};
+		param.parCode = parCode;
+		var l;
+		$.ajax({
+		    type : 'get',
+		    url : '/expend/getDwCateList',
+		    data : param,
+		    dataType : 'json', 
+		    async: false,
+		    success : function(result) { 
+		    	l = result;
+		    }
+		});
+		return l;
+	}
+	
+	
+	function setDwCate2(targetId, parCode){
+		var list = getDwCateList(parCode);
+		var html = '';
+		    html += '<option value=""><spring:message code="com.txt.optionSelect"/></option>';
+		for(var i=0; i<list.length; i++){
+			html += '<option value="' + list[i].CODE_CD + '">' + list[i].CODE_NM + '</option>';
+	   	}
+		$("#" + targetId).empty();
+		$("#" + targetId).append(html);
 	}
 	
 
@@ -138,7 +168,7 @@
 	<div class="row mb-3">
 	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.depwithdral.dwCate1"/></label><!-- 대분류 -->
 	    <div class="col-sm-10">
-	      <select id="DW_CATE1" class="form-select" aria-label="Default select example">
+	      <select id="DW_CATE1" class="form-select" aria-label="Default select example" onchange="javascript:setDwCate2('DW_CATE2', this.value);">
 	          		<option value=""><spring:message code="com.txt.optionSelect"/></option>
 	          <c:forEach items="${dwCate1List}" var="item">
 	          		<option value="${item.CODE_CD}" <c:if test ="${result.DW_CATE1 eq item.CODE_CD}"> selected="selected"</c:if>>${item.CODE_NM}</option>

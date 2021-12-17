@@ -236,5 +236,27 @@ public class ExpendController {
 	}
 	
 	
+	@RequestMapping(value = "/updateDepWithdrawl", method = RequestMethod.POST)
+	@ResponseBody
+	public HashMap<String, Object> updateUnearned(@RequestParam HashMap<String, Object> param, 
+			                                      HttpSession session,
+			                                      HttpServletRequest request,
+			                                      HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		int r = 0;
+		try {
+			param.put("UPDATE_ID", session.getAttribute("USER_SEQ"));
+			r = expendService.updateDepWithdrawl(param);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("result", CommonContraint.FAIL);
+		}
+		result.put("result", CommonContraint.SUCCEESS);
+		return result;
+	}
+	
+	
 	
 }

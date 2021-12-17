@@ -77,4 +77,10 @@ public class ExpendServiceImpl implements ExpendService{
 		return mapper.selecteDepWithdrawal(ACT_SEQ);
 	}
 
+
+	@Override
+	public int updateDepWithdrawl(HashMap<String, Object> param) throws Exception {
+		return mapper.updateDepWithdrawl(param);
+	}
+
 }

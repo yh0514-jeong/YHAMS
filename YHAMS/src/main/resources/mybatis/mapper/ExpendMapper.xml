@@ -188,4 +188,23 @@
 	 
 	 </select>
 	 
+	 
+	 <update id="updateDepWithdrawl" parameterType="java.util.HashMap">
+	 
+	 	UPDATE TB_TRAN_ACCT_SMR	
+	 	
+		   SET ACCOUNT_CD     = #{ACCOUNT_CD},
+		       ACT_DATE       = #{ACT_DATE},
+		       DEPOSIT_TOTAL  = #{DEPOSIT_TOTAL},
+		       WITHDRL_TOTAL  = #{WITHDRL_TOTAL},
+		       DESCRIPT       = #{DESCRIPT},
+		       DW_CATE1       = #{DW_CATE1},
+		       DW_CATE2       = #{DW_CATE2},
+		       UPDATE_DATE    = NOW(),
+		       UPDATE_ID      = #{UPDATE_ID}
+		       
+		WHERE ACT_SEQ         = #{ACT_SEQ}
+	 
+	 </update>
+	 
 </mapper>

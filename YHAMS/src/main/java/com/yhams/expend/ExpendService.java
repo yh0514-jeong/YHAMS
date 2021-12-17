@@ -15,6 +15,8 @@ public interface ExpendService {
 
 	int deleteDepWithdrawalList(HashMap<String, Object> param) throws Exception;
 
-	HashMap<String, Object> selecteDepWithdrawal(String aCT_SEQ) throws Exception;
+	HashMap<String, Object> selecteDepWithdrawal(String ACT_SEQ) throws Exception;
+
+	int updateDepWithdrawl(HashMap<String, Object> param) throws Exception;
 
 }

@@ -20,4 +20,6 @@ public interface ExpendMapper {
 
 	HashMap<String, Object> selecteDepWithdrawal(String ACT_SEQ) throws Exception;
 
+	int updateDepWithdrawl(HashMap<String, Object> param) throws Exception;
+
 }
