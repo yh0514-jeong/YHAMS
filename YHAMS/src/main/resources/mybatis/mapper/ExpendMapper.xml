@@ -2,7 +2,24 @@
 <mapper namespace="com.yhams.expend.ExpendMapper">
 
 	<sql id="DepWithdralCondition">
-	
+
+	   WHERE TMP.USER_SEQ = #{USER_SEQ}
+	   
+	   <if test="START_DATE != null and START_DATE != ''">
+	   	  AND  TMP.ACT_DATE <![CDATA[ >= ]]>  STR_TO_DATE(#{START_DATE},'%Y-%m-%d')
+	   </if>  
+	   
+	   <if test="END_DATE != null and END_DATE != ''">
+	   	  AND  TMP.ACT_DATE <![CDATA[ <= ]]>  STR_TO_DATE(#{END_DATE},'%Y-%m-%d')
+	   </if>
+	   
+	   <if test="DESCRIPT != null and DESCRIPT != ''">
+	   	  AND   TMP.DESCRIPT LIKE CONCAT('%',#{DESCRIPT},'%')
+	   </if>
+	   
+	   <if test="DW_CATE != null and DW_CATE != ''">
+	     AND   (TMP.DW_CATE1_NM LIKE CONCAT('%',#{DW_CATE},'%') OR TMP.DW_CATE2_NM LIKE CONCAT('%',#{DW_CATE},'%') )
+	   </if>
 	
 	</sql>
 
@@ -72,36 +89,38 @@
 				 T1.DW_CATE1_NM, 
 				 T1.DW_CATE2_NM
 			
-		  FROM (SELECT    ROW_NUMBER() OVER (ORDER BY ACT_DATE DESC) AS RNUM,
-						  TTAS.ACT_SEQ,
-						  TTAS.USER_SEQ,
-						  TTAS.ACCOUNT_CD,
-						  (SELECT TMA.ACCOUNT_NM
-							 FROM TB_META_ACCOUNT TMA
-							WHERE TTAS.ACCOUNT_CD = TMA.ACCOUNT_CD
-						   ) AS ACCOUNT_NM,
-						  TTAS.ACT_DATE,
-						  TTAS.DEPOSIT_TOTAL,
-						  TTAS.WITHDRL_TOTAL,
-						  TTAS.DESCRIPT,
-						  TTAS.DW_CATE1,
-						  (SELECT CODE_NM
-						     FROM TB_CMM_CDDTL TCC
-				            WHERE TTAS.DW_CATE1 = TCC.CODE_CD		    
-						  ) AS DW_CATE1_NM,
-						  TTAS.DW_CATE2,
-						  (SELECT CODE_NM
-						     FROM TB_CMM_CDDTL TCC
-				            WHERE TTAS.DW_CATE2 = TCC.CODE_CD		    
-						  ) AS DW_CATE2_NM,
-						  TTAS.CREATE_ID,
-						  TTAS.CREATE_DATE,
-						  TTAS.UPDATE_ID,
-						  TTAS.UPDATE_DATE
-						 
-						FROM TB_TRAN_ACCT_SMR TTAS 
-						
-						WHERE TTAS.USER_SEQ = #{USER_SEQ}
+		  FROM (SELECT    ROW_NUMBER() OVER (ORDER BY TMP.ACT_DATE DESC) AS RNUM,
+		  	 			  TMP.*
+		  	      
+		  	      FROM (SELECT   TTAS.ACT_SEQ,
+								 TTAS.USER_SEQ,
+								 TTAS.ACCOUNT_CD,
+								 (SELECT TMA.ACCOUNT_NM
+								 FROM TB_META_ACCOUNT TMA
+								WHERE TTAS.ACCOUNT_CD = TMA.ACCOUNT_CD
+								  ) AS ACCOUNT_NM,
+								 TTAS.ACT_DATE,
+								 TTAS.DEPOSIT_TOTAL,
+								 TTAS.WITHDRL_TOTAL,
+								 TTAS.DESCRIPT,
+								 TTAS.DW_CATE1,
+								 (SELECT CODE_NM
+								    FROM TB_CMM_CDDTL TCC
+							       WHERE TTAS.DW_CATE1 = TCC.CODE_CD		    
+								 ) AS DW_CATE1_NM,
+								 TTAS.DW_CATE2,
+								 (SELECT CODE_NM
+								    FROM TB_CMM_CDDTL TCC
+							       WHERE TTAS.DW_CATE2 = TCC.CODE_CD		    
+								 ) AS DW_CATE2_NM,
+								 TTAS.CREATE_ID,
+								 TTAS.CREATE_DATE,
+								 TTAS.UPDATE_ID,
+								 TTAS.UPDATE_DATE
+									 
+							FROM TB_TRAN_ACCT_SMR TTAS 
+
+						 ) TMP
 						
 						<include refid="DepWithdralCondition"/>
 						
@@ -116,36 +135,40 @@
 	
 		SELECT  COUNT(*)
 			
-		  FROM (SELECT    ROW_NUMBER() OVER (ORDER BY ACT_DATE DESC) AS RNUM,
-						  TTAS.ACT_SEQ,
-						  TTAS.USER_SEQ,
-						  TTAS.ACCOUNT_CD,
-						  (SELECT TMA.ACCOUNT_NM
-							 FROM TB_META_ACCOUNT TMA
-							WHERE TTAS.ACCOUNT_CD = TMA.ACCOUNT_CD
-						   ) AS ACCOUNT_NM,
-						  TTAS.ACT_DATE,
-						  TTAS.DEPOSIT_TOTAL,
-						  TTAS.WITHDRL_TOTAL,
-						  TTAS.DESCRIPT,
-						  TTAS.DW_CATE1,
-						  (SELECT CODE_NM
-						     FROM TB_CMM_CDDTL TCC
-				            WHERE TTAS.DW_CATE1 = TCC.CODE_CD		    
-						  ) AS DW_CATE1_NM,
-						  TTAS.DW_CATE2,
-						  (SELECT CODE_NM
-						     FROM TB_CMM_CDDTL TCC
-				            WHERE TTAS.DW_CATE2 = TCC.CODE_CD		    
-						  ) AS DW_CATE2_NM,
-						  TTAS.CREATE_ID,
-						  TTAS.CREATE_DATE,
-						  TTAS.UPDATE_ID,
-						  TTAS.UPDATE_DATE
-						 
-						FROM TB_TRAN_ACCT_SMR TTAS 
-						
-						WHERE TTAS.USER_SEQ = #{USER_SEQ}
+		  FROM (
+		  		
+		  		SELECT    ROW_NUMBER() OVER (ORDER BY TMP.ACT_DATE DESC) AS RNUM,
+		  	 			  TMP.*
+		  	      
+		  	      FROM (SELECT   TTAS.ACT_SEQ,
+								 TTAS.USER_SEQ,
+								 TTAS.ACCOUNT_CD,
+								 (SELECT TMA.ACCOUNT_NM
+								 FROM TB_META_ACCOUNT TMA
+								WHERE TTAS.ACCOUNT_CD = TMA.ACCOUNT_CD
+								  ) AS ACCOUNT_NM,
+								 TTAS.ACT_DATE,
+								 TTAS.DEPOSIT_TOTAL,
+								 TTAS.WITHDRL_TOTAL,
+								 TTAS.DESCRIPT,
+								 TTAS.DW_CATE1,
+								 (SELECT CODE_NM
+								    FROM TB_CMM_CDDTL TCC
+							       WHERE TTAS.DW_CATE1 = TCC.CODE_CD		    
+								 ) AS DW_CATE1_NM,
+								 TTAS.DW_CATE2,
+								 (SELECT CODE_NM
+								    FROM TB_CMM_CDDTL TCC
+							       WHERE TTAS.DW_CATE2 = TCC.CODE_CD		    
+								 ) AS DW_CATE2_NM,
+								 TTAS.CREATE_ID,
+								 TTAS.CREATE_DATE,
+								 TTAS.UPDATE_ID,
+								 TTAS.UPDATE_DATE
+									 
+							FROM TB_TRAN_ACCT_SMR TTAS 
+
+						 ) TMP
 						
 						<include refid="DepWithdralCondition"/>
 						

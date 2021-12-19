@@ -1,6 +1,7 @@
 package com.yhams.expend;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -111,6 +112,11 @@ public class ExpendController {
 																HttpServletRequest  request,
 																HttpServletResponse response){
 		logService.insertUserActLog(request, session);
+	    Enumeration<String> p =  request.getAttributeNames();
+	    while(p.hasMoreElements()) {
+	    	logger.info("params : {}", p.nextElement());
+	    }
+	    
 		
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();

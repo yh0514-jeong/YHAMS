@@ -26,8 +26,8 @@
 	 var param = {
 	    START_DATE    : $("#START_DATE").val().trim(),
 	    END_DATE      : $("#END_DATE").val().trim(),
-	    UED_SOURCE    : $("#UEN_SOURCE").val().trim(),
-	    UED_CTG_NM    : $("#UED_CTG_NM").val().trim(),
+	    DESCRIPT      : $("#DESCRIPT").val().trim(),
+	    DW_CATE       : $("#DW_CATE").val().trim(),
 		cntPerPage    : $("#cntPerPage").val(),
 		curPage       : $("#curPage").val()
 	 };
@@ -168,14 +168,14 @@ function goStringifyDelTarget(){
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.depwithdral.descript"/></div><!-- 입출금사유 -->
     </div>
-    <input type="text" class="form-control" id="UEN_SOURCE"  onkeyup="javascript:enterkey();" style="width: 150px;">
+    <input type="text" class="form-control" id="DESCRIPT"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
   &nbsp;
   <div class="input-group">
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.depwithdral.dwCate"/></div><!-- 대/소분류 -->
     </div>
-    <input type="text" class="form-control" id="UED_CTG_NM"  onkeyup="javascript:enterkey();" style="width: 150px;">
+    <input type="text" class="form-control" id="DW_CATE"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
   &nbsp;
   <button type="button" class="btn btn-primary" onclick="javascript:list(1);"><spring:message code="com.btn.search"/></button> <!-- 검색 -->
