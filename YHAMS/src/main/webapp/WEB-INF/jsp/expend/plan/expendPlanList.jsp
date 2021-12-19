@@ -76,13 +76,13 @@
  }
  
  function goNew(){
-	 var url    = "/asset/unearnedAdd";
+	 var url    = "/expend/expendPlanUpdate";
 	 var option = "width = 850, height = 500, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
  
- function goUpdate(UED_SEQ){
-	 var url    = "/asset/unearnedUpdate?UED_SEQ=" + UED_SEQ;
+ function goUpdate(EXP_PLAN_SEQ){
+	 var url    = "/expend/expendPlanUpdate?EXP_PLAN_SEQ=" + EXP_PLAN_SEQ;
 	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
@@ -154,22 +154,7 @@ function goStringifyDelTarget(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.period"/></div><!--기간 -->
-    </div>
-    <input type="text" class="form-control" id="START_DATE" style="width: 150px;">&nbsp;~&nbsp;
-    <input type="text" class="form-control" id="END_DATE"   style="width: 150px;">
-  </div>
-  &nbsp;
-  <div class="input-group">
-    <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.uenSource"/></div><!-- 수입처 -->
-    </div>
-    <input type="text" class="form-control" id="UEN_SOURCE"  onkeyup="javascript:enterkey();" style="width: 150px;">
-  </div>
-  &nbsp;
-  <div class="input-group">
-    <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.unearned.uenCtg"/></div><!-- 수입분류 -->
+      <div class="input-group-text" id="btnGroupAddon">지출계획 연월</div><!--지출계획 연월-->
     </div>
     <input type="text" class="form-control" id="UED_CTG_NM"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
@@ -192,11 +177,11 @@ function goStringifyDelTarget(){
 	  <thead align="center">
 	    <tr>
 	      <th scope="col" width="5%"></th>
-	      <th scope="col" width="10%"><spring:message code="com.txt.number"/></th><!-- No. -->
-	      <th scope="col" width="15%"><spring:message code="com.unearned.uenDate"/></th><!-- 수입일 -->
-	      <th scope="col" width="15%"><spring:message code="com.unearned.uenIncm"/></th><!-- 금액 -->
-	      <th scope="col" width="15%"><spring:message code="com.unearned.uenSource"/></th><!-- 수입처 -->
-	      <th scope="col" width="15%"><spring:message code="com.unearned.uenCtg"/></th><!-- 수입분류 -->
+	      <th scope="col" width="5%"><spring:message code="com.txt.number"/></th><!-- No. -->
+	      <th scope="col" width="15%">지출계획 연월</th><!-- 지출계획 연월 -->
+	      <th scope="col" width="15%">지출계획액</th><!-- 지출계획액 -->
+	      <th scope="col" width="15%">실지출액</th><!-- 실지출액 -->
+	      <th scope="col" width="20%">오차(지출예정액-실지출액)</th><!-- 오차(지출예정액-실지출액) -->
 	      <th scope="col" width="*"></th>
 	    </tr>
 	  </thead>

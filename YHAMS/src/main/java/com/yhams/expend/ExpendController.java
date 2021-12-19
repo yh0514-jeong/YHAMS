@@ -14,8 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -64,7 +65,7 @@ public class ExpendController {
 	}
 	
 	
-	@RequestMapping(value = "/getAccountList", method = RequestMethod.GET)
+	@GetMapping(value = "/getAccountList")
 	@ResponseBody
 	public ArrayList<HashMap<String, Object>> getAccountList(HttpSession session,
 															 HttpServletRequest  request,
@@ -81,7 +82,7 @@ public class ExpendController {
 	}
 	
 	
-	@RequestMapping(value = "/getDwCateList", method = RequestMethod.GET)
+	@GetMapping(value = "/getDwCateList")
 	@ResponseBody
 	public ArrayList<HashMap<String, Object>> getDwCateList(@RequestParam(required = true) HashMap<String, Object> param,
 															 HttpSession session,
@@ -105,7 +106,7 @@ public class ExpendController {
 	}
 	
 	
-	@RequestMapping(value = "/depWithdralList", method = RequestMethod.GET)
+	@GetMapping(value = "/depWithdralList")
 	@ResponseBody
 	public HashMap<String, Object> depWithdralList(@RequestParam(required = true) HashMap<String, Object> param,
 															    HttpSession session,
@@ -143,7 +144,7 @@ public class ExpendController {
 	}
 	
 	
-	@RequestMapping(value = "/saveDepWithdralList", method = RequestMethod.POST)
+	@PostMapping(value = "/saveDepWithdralList")
 	@ResponseBody
 	public HashMap<String, Object> saveDepWithdralList( @RequestParam(required = true) HashMap<String, Object> param,
 														HttpSession session,
@@ -169,7 +170,7 @@ public class ExpendController {
 	}
 	
 	
-	@RequestMapping(value = "/deleteDepWithdrawalList", method = RequestMethod.POST)
+	@PostMapping(value = "/deleteDepWithdrawalList")
 	@ResponseBody
 	public HashMap<String, Object> deleteDepWithdrawalList(@RequestParam HashMap<String, Object> param, 
 					                                      HttpSession session,
@@ -242,13 +243,13 @@ public class ExpendController {
 	}
 	
 	
-	@RequestMapping(value = "/updateDepWithdrawl", method = RequestMethod.POST)
+	@PostMapping(value = "/updateDepWithdrawl")
 	@ResponseBody
-	public HashMap<String, Object> updateUnearned(@RequestParam HashMap<String, Object> param, 
-			                                      HttpSession session,
-			                                      HttpServletRequest request,
-			                                      HttpServletResponse response){
-		
+	public HashMap<String, Object> updateDepWithdrawl(@RequestParam HashMap<String, Object> param, 
+				                                      HttpSession session,
+				                                      HttpServletRequest request,
+				                                      HttpServletResponse response){
+			
 		logService.insertUserActLog(request, session);
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		int r = 0;
@@ -262,6 +263,16 @@ public class ExpendController {
 		result.put("result", CommonContraint.SUCCEESS);
 		return result;
 	}
+	
+	
+	
+	@RequestMapping(value = "/expendPlanUpdate")
+	public ModelAndView expendPlanUpdate() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("expend/plan/expendPlanUpdate");
+		return mv;
+	}
+	
 	
 	
 	
