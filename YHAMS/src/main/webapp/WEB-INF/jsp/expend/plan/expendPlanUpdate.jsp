@@ -193,6 +193,27 @@ function formCheck(){
 	}
 	
 }
+
+function chkDupYearMonth(value){
+	
+	var l;
+	let param = {};
+	param.STD_YEAR_MONTH = value;
+	
+	$.ajax({
+	    type : 'get',
+	    url : '/expend/chkDupYearMonth', 
+	    data : param,
+	    dataType : 'json', 
+	    async: false,
+	    success : function(result) { 
+	    	if(result.isExist == "FALSE"){
+	    		alert("이미 해당 연월에 등록된 지출계획 내역이 있습니다.\n 불러오시겠습니까?");
+	    	}
+	    }
+	});
+	return l;
+}
 	
 </script>
 <body>
@@ -214,7 +235,7 @@ function formCheck(){
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon">계획연월</div><!-- 계획연월 -->
     </div>
-    <input type="text" class="form-control" id="STD_YEAR_MONTH">
+    <input type="text" class="form-control" id="STD_YEAR_MONTH" onchange="javascript:chkDupYearMonth(this.value);">
   </div>
 </div>
 
@@ -238,7 +259,7 @@ function formCheck(){
 	      <th scope="col" width="18%">할당금액</th>       <!--  할당금액 -->
 	      <th scope="col" width="18%">당월누적사용액</th>   <!--  당월누적사용액 -->
 	      <th scope="col" width="18%">실사용액</th>       <!--  실사용액 -->
-	      <th scope="col" width="18%">누적실사용액</th>     <!--  누적실사용액 -->
+	      <th scope="col" width="18%">누적실사용액</th>     <!-- 누적실사용액 -->
 	      <th scope="col" width="18%">오차</th>          <!--  오차-->
 	    </tr>
 	  </thead>

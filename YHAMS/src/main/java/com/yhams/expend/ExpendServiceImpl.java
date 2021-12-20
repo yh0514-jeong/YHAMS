@@ -83,4 +83,10 @@ public class ExpendServiceImpl implements ExpendService{
 		return mapper.updateDepWithdrawl(param);
 	}
 
+
+	@Override
+	public String chkDupYearMonth(HashMap<String, Object> param) throws Exception {
+		return mapper.chkDupYearMonth(param);
+	}
+
 }

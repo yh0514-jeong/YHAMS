@@ -274,6 +274,25 @@ public class ExpendController {
 	}
 	
 	
+	@GetMapping(value = "/chkDupYearMonth")
+	@ResponseBody
+	public HashMap<String, Object> chkDupYearMonth(@RequestParam HashMap<String, Object> param,
+													HttpSession session,
+												    HttpServletRequest request, 
+												    HttpServletResponse response){
+		
+		HashMap<String, Object> result = new HashMap<>();
+		String isExist = "";
+		try {
+			param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+			isExist = expendService.chkDupYearMonth(param);
+			result.put("isExist", isExist);
+		}catch (Exception e) {
+			result.put("result", CommonContraint.FAIL);
+		}
+		return result;
+		
+	}
 	
 	
 }

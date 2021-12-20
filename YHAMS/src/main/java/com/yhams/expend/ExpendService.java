@@ -19,4 +19,6 @@ public interface ExpendService {
 
 	int updateDepWithdrawl(HashMap<String, Object> param) throws Exception;
 
+	String chkDupYearMonth(HashMap<String, Object> param) throws Exception;
+
 }
