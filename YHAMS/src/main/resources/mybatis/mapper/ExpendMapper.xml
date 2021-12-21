@@ -236,7 +236,7 @@
 			SELECT  CASE WHEN COUNT(*)  <![CDATA[ > ]]> 0 THEN 'TRUE'
 			        ELSE 'FALSE'
 			        END AS RESULT
-		      FROM  TB_TRAN_EXP_PLAN
+		      FROM  TB_TRAN_DAILY_EXP_PLAN
 		      WHERE USER_SEQ       = #{USER_SEQ}
 		      AND   STD_YEAR_MONTH = #{STD_YEAR_MONTH}
 		      

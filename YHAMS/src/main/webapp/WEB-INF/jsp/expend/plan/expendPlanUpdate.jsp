@@ -80,6 +80,8 @@ function goDel(){
 		alert('<spring:message code="com.msg.unselected"/>');   //  선택된 내역이 없습니다.
 	}
 	$("#chkAll").attr("checked", false);
+	
+	setFeildToggle();
 }
 
 function goAdd(){
@@ -99,6 +101,8 @@ function goAdd(){
 	$("#UED_DATE_" + trCnt).datepicker({dateFormat: 'yy-mm-dd'});
 	trCnt = trCnt+1;
 	$("#chkAll").attr("checked", false);
+	
+	setFeildToggle();
 }
 
 function numberCheck(id, value){
@@ -207,12 +211,31 @@ function chkDupYearMonth(value){
 	    dataType : 'json', 
 	    async: false,
 	    success : function(result) { 
-	    	if(result.isExist == "FALSE"){
+	    	if(result.isExist == "TRUE"){
 	    		alert("이미 해당 연월에 등록된 지출계획 내역이 있습니다.\n 불러오시겠습니까?");
 	    	}
 	    }
 	});
 	return l;
+}
+
+function setFeildToggle(){
+	if($("#expendPlanList").children().length == 0){
+		$("#setField").hide();
+	}else{
+		$("#setField").show();
+	}
+}
+
+function setSequentialDate(){
+	
+	
+}
+
+function setEqualNumber(){
+	
+	
+	
 }
 	
 </script>
@@ -246,8 +269,8 @@ function chkDupYearMonth(value){
 	  <thead class="thead-dark" align="center">
 	  	<tr id="setField">
 	      <th scope="col" width="*"></th>
-	      <th scope="col" width="18%"><input type="button" value="순차적 날짜 적용"></th> <!--  순차적날짜 적용 버튼 -->
-	      <th scope="col" width="18%"><input type="button" value="동일금액 적용"></th>   <!--  동일금액 적용 버튼 -->
+	      <th scope="col" width="20%"><button onclick="javascript:setSequentialDate();">순차적날짜 적용</button></th> <!--  순차적날짜 적용 버튼 -->
+	      <th scope="col" width="18%"><button onclick="javascript:setEqualNumber();">동일금액 적용</button></th>   <!--  동일금액 적용 버튼 -->
 	      <th scope="col" width="18%"></th>   <!-- -->
 	      <th scope="col" width="18%"></th>   <!-- -->
 	      <th scope="col" width="18%"></th>   <!-- -->
