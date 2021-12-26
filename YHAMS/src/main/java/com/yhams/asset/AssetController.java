@@ -70,6 +70,13 @@ public class AssetController {
 		mv.setViewName("asset/salary/salaryList");
 		return mv;
 	}
+		
+	@RequestMapping(value = "/yearlyAssetPlan")
+	public ModelAndView yearlyAssetPlanMain() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("asset/yearlyAssetPlan/yearlyAssetPlanList");
+		return mv;
+	}
 	
 	
 	@RequestMapping(value = "/accountList", method = RequestMethod.GET)
@@ -572,6 +579,19 @@ public class AssetController {
 		
 		return result;
 	}
+	
+	
+	@RequestMapping(value = "/yearlyAssetPlanUpdate")
+	public ModelAndView yearlyAssetPlanUpdate() {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("asset/yearlyAssetPlan/yearlyAssetPlanUpdate");
+		return mv;
+	}
+	
+	
+	
+	
+	
 
 
 	
