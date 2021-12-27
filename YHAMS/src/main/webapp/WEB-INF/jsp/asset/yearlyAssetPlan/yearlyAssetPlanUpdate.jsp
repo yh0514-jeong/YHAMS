@@ -16,16 +16,7 @@ var trCnt = 0;
 let EXP_PLAN_SEQ = '${EXP_PLAN_SEQ}';
 
 $(document).ready(function() {
-	
-	$("#STD_YEAR_MONTH").datepicker({
-		changeMonth: true,
-        changeYear: true,
-        showButtonPanel: true,
-        dateFormat: 'yy-mm',
-        onClose: function(dateText, inst) { 
-            $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
-        }
-	});
+		
 	
 });
 
@@ -84,26 +75,42 @@ function goDel(){
 	setFeildToggle();
 }
 
+function goAddChk(){
+	
+	if($("#STD_YEAR").val().trim().length == 0){
+		alert("계획연도를 입력해주세요.");
+		return;
+	}else{
+		var param = {};
+		param.STD_YEAR = $("#STD_YEAR").val();
+		$.ajax({
+		    type : 'get',
+		    url : '/asset/chkYearlyAssetPlanExist', 
+		    dataType : 'json', 
+		    data : param,
+		    async: false,
+		    success : function(result) { 
+		    	if(result.isExist == "FALSE"){
+				    goAdd();    		
+		    	}else{
+		    		alert("해당연도의 지출계획이 이미 존재합니다. 불러오시겠습니까?");
+		    	}
+		    }
+		});
+	}
+}
+
 function goAdd(){
 	
-	var html = "";
-	    html += '<tr id="UED_SEQ_' + trCnt + '">';
-	    html += '	<td scope="col"><input id="CHKUEDSEQ_' +  trCnt + '"  type="checkbox"></td>';
-	    html += '	<td scope="col"><input id="UED_DATE_' +  trCnt + '"   type="text"  style="width: 110px;"></td>';   
-	    html += '	<td scope="col"><input id="UED_INCM_' +  trCnt + '"   onChange="numberCheck(this.id, this.value);" type="text" style="width: 110px;"></td>';    
-	    html += '	<td scope="col"><input id="UED_SOURCE_' +  trCnt + '" type="text" style="width: 110px;"></td>';   
-	    html += '	<td scope="col"><input id="UED_SOURCE_' +  trCnt + '" type="text" style="width: 110px;"></td>';   
-	    html += '	<td scope="col"><input id="UED_SOURCE_' +  trCnt + '" type="text" style="width: 110px;"></td>';   
-	    html += '	<td scope="col"><input id="UED_SOURCE_' +  trCnt + '" type="text" style="width: 110px;"></td>';   
-	    html += '</tr>';
-	    
-    $("#expendPlanList").append(html);
-	$("#UED_DATE_" + trCnt).datepicker({dateFormat: 'yy-mm-dd'});
-	trCnt = trCnt+1;
-	$("#chkAll").attr("checked", false);
 	
-	setFeildToggle();
+	
+	
+	
+	
+	
+	
 }
+
 
 function numberCheck(id, value){
 	value = value.replace(/[^0-9]/g, "").replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
@@ -248,7 +255,7 @@ function setEqualNumber(){
 </div>
 
 <div class="panel panel-default" style="float: right;">
-	<button id="btnAdd" onclick="javascript:goAdd();" type="button" class="btn btn-success"><spring:message code="com.btn.add"/></button><!-- 추가 -->
+	<button id="btnAdd" onclick="javascript:goAddChk();" type="button" class="btn btn-success"><spring:message code="com.btn.add"/></button><!-- 추가 -->
 	<button id="btnDel" onclick="javascript:goDel();" type="button" class="btn btn-danger"><spring:message code="com.btn.delete"/></button><!-- 삭제 -->
 	<button id="btnSave" onclick="javascript:goSave();" type="button" class="btn btn-primary"><spring:message code="com.btn.save"/></button><!-- 저장 -->
 </div>
@@ -258,7 +265,7 @@ function setEqualNumber(){
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon">계획연도</div><!-- 계획연도 -->
     </div>
-    <input type="text" class="form-control" id="STD_YEAR_MONTH" onchange="javascript:chkDupYearMonth(this.value);">
+    <input type="number" class="form-control" id="STD_YEAR">
   </div>
 </div>
 

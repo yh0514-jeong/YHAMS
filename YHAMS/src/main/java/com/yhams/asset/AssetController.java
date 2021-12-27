@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -588,11 +589,27 @@ public class AssetController {
 		return mv;
 	}
 	
-	
-	
-	
-	
-
-
-	
+	@GetMapping(value = "/chkYearlyAssetPlanExist")
+	@ResponseBody
+	public HashMap<String, Object> chkYearlyAssetPlanExist(@RequestParam(required = true) HashMap<String, Object> param,
+															   HttpSession session,
+	                                                           HttpServletRequest request,
+	                                                           HttpServletResponse response){
+		HashMap<String, Object> result = new HashMap<>();
+		try{
+			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
+			String isExist = assetService.chkYearlyAssetPlanExist(param);
+			
+			if("FALSE".equals(isExist)) {
+				ArrayList<HashMap<String, Object>> userYearlyPlanTemplate = assetService.userYearlyPlanTemplate(param);
+				result.put("userYearlyPlanTemplate", userYearlyPlanTemplate);
+			}
+			
+			result.put("isExist", isExist);
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 }

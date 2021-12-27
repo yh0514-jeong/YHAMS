@@ -582,4 +582,22 @@
 	 
 	 </select>
 	 
+	 
+	 <select id="chkYearlyAssetPlanExist" parameterType="java.util.HashMap" resultType="String">
+	 
+	 	SELECT CASE WHEN COUNT(*) > 0 THEN 'TRUE'
+			        ELSE 'FALSE'
+			        END AS RESULT
+	     FROM TB_TRAN_YEARLY_ASSET_PLAN
+	    WHERE STD_YEAR = #{STD_YEAR}
+	      AND USER_SEQ = #{USER_SEQ}
+	 
+	 </select>
+	 
+	 <select id="userYearlyPlanTemplate" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	 
+	 	
+	 
+	 </select>
+	 
 </mapper>

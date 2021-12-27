@@ -47,4 +47,8 @@ public interface AssetMapper {
 	ArrayList<HashMap<String, Object>> getLastSalary(HashMap<String, Object> param) throws Exception;
 
 	int dupChkSalMonth(HashMap<String, Object> param) throws Exception;
+
+	String chkYearlyAssetPlanExist(HashMap<String, Object> param) throws Exception;
+
+	ArrayList<HashMap<String, Object>> userYearlyPlanTemplate(HashMap<String, Object> param) throws Exception;
 }

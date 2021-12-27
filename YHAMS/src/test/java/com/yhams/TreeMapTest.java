@@ -1,6 +1,9 @@
 package com.yhams;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -16,8 +19,8 @@ class TreeMapTest {
 private static final Logger log = LoggerFactory.getLogger(TreeMapTest.class);
 
 	
-@Test
-public void treeMapIsSortableTest() {
+	@Test
+	public void treeMapIsSortableTest() {
 	
 			TreeMap<Integer, String> tmap = new TreeMap<>();
 			
@@ -52,6 +55,44 @@ public void treeMapIsSortableTest() {
 			log.info("tmap.descendingMap() : {}", tmap.descendingMap());
 			log.info("tmap.descendingKeySet() : {}", tmap.descendingKeySet());
 	
-	}
+		}
+	
+	
+	
+		@Test
+		public void insert_tb_meta_user_def_icmexp_category() {
+					
+			List<List<String>> mainSubList = Arrays.asList (Arrays.asList("수입", "월급")
+															,Arrays.asList("지출", "어머니 용돈")
+															,Arrays.asList("지출", "통신비용")
+															,Arrays.asList("지출", "보험료")
+															,Arrays.asList("지출", "여자친구")
+															,Arrays.asList("지출", "경기도장학관")
+															,Arrays.asList("지출", "교통비")
+															,Arrays.asList("지출", "카드"));
+			
+		  
+		   mainSubList.stream().forEach(list -> {
+			  
+			   StringBuffer buffer = new StringBuffer();
+				buffer.append("INSERT INTO tb_meta_user_def_icmexp_category (USER_DEF_SEQ,USER_SEQ,MAIN_CTG,SUB_CTG,SUB_CTG_NM,CODE_ORDR,USE_YN,CREATE_ID,CREATE_DATE,UPDATE_ID,UPDATE_DATE) VALUES (\n"
+						+ "");
+				buffer.append("'" + UUID.randomUUID().toString() + "',");
+				buffer.append("'USER_00001',");
+				buffer.append("수입".equals(list.get(0)) ? "'DW_CAT1_01'," : "'DW_CAT1_02',");
+				buffer.append("'" + UUID.randomUUID().toString() + "',");
+				buffer.append("'" + list.get(1) + "',");
+				buffer.append("'Y',");
+				buffer.append("'USER_00001',");
+				buffer.append("NOW(),");
+				buffer.append("'USER_00001',");
+				buffer.append("NOW());");
+				
+				System.out.println(buffer);
+			   
+		   });
+			
+		}
+
 
 }

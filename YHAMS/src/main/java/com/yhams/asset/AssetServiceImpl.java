@@ -181,4 +181,14 @@ public class AssetServiceImpl implements AssetService {
 		return mapper.dupChkSalMonth(param);
 	}
 
+	@Override
+	public String chkYearlyAssetPlanExist(HashMap<String, Object> param) throws Exception {
+		return mapper.chkYearlyAssetPlanExist(param);
+	}
+
+	@Override
+	public ArrayList<HashMap<String, Object>> userYearlyPlanTemplate(HashMap<String, Object> param) throws Exception {
+		return mapper.userYearlyPlanTemplate(param);
+	}
+
 }
