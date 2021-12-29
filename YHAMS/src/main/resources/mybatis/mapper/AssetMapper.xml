@@ -596,7 +596,22 @@
 	 
 	 <select id="userYearlyPlanTemplate" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	 
-	 	
+	 		SELECT   ROW_NUMBER() OVER (PARTITION BY TMUDIC.MAIN_CTG 
+										 ORDER BY TMUDIC.MAIN_CTG, TMUDIC.CODE_ORDR) AS RNUM,
+	 				 TMUDIC.MAIN_CTG,
+	         		 (SELECT TCC.CODE_NM
+					    FROM TB_CMM_CDDTL TCC
+					   WHERE TCC.CODE_ID = 'CG_2005'
+					    AND  TMUDIC.MAIN_CTG = TCC.CODE_CD) AS MAIN_CTG_NM,
+					 TMUDIC.SUB_CTG,
+					 TMUDIC.SUB_CTG_NM,
+					 TMUDIC.CODE_ORDR
+					 
+			FROM  TB_META_USER_DEF_ICMEXP_CATEGORY TMUDIC
+			WHERE TMUDIC.USER_SEQ = #{USER_SEQ}
+			AND   TMUDIC.USE_YN   = 'Y'
+			
+			ORDER BY TMUDIC.MAIN_CTG, TMUDIC.CODE_ORDR ASC 
 	 
 	 </select>
 	 

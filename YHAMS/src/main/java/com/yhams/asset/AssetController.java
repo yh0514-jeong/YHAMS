@@ -1,9 +1,11 @@
 package com.yhams.asset;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +34,7 @@ import com.yhams.util.PagingUtil;
 @RequestMapping("/asset")
 public class AssetController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AssetController.class);
+	private static final Logger log = LoggerFactory.getLogger(AssetController.class);
 	
 	@Autowired
 	AssetService assetService;
@@ -97,7 +99,7 @@ public class AssetController {
 		int curPage      = param.get("curPage")    == null ? 1 : Integer.parseInt(param.get("curPage").toString());
 		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
 		
-		logger.info("param==>" + param.toString());
+		log.info("param==>" + param.toString());
 		
 		try {
 			total = assetService.accountCount(param);
@@ -203,7 +205,7 @@ public class AssetController {
 		int r = 0;
 		try {
 			param.put("UPDATE_ID", session.getAttribute("USER_SEQ"));
-			logger.info("deleteAccount param.toString()==>" + param.toString());
+			log.info("deleteAccount param.toString()==>" + param.toString());
 			r = assetService.deleteAccount(param);
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -232,7 +234,7 @@ public class AssetController {
 		int curPage      = param.get("curPage")    == null ? 1 : Integer.parseInt(param.get("curPage").toString());
 		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
 		
-		logger.info("param==>" + param.toString());
+		log.info("param==>" + param.toString());
 		
 		try {
 			total = assetService.unearnedCount(param);
@@ -356,7 +358,7 @@ public class AssetController {
 		int r = 0;
 		try {
 			String[] uedSeqs = param.get("UED_SEQS").toString().split(",");
-			logger.info("uedSeqs==>" + uedSeqs);
+			log.info("uedSeqs==>" + uedSeqs);
 			param.put("uedSeqs", uedSeqs);
 			r = assetService.deleteUnearedList(param);
 		}catch (Exception e) {
@@ -601,7 +603,16 @@ public class AssetController {
 			String isExist = assetService.chkYearlyAssetPlanExist(param);
 			
 			if("FALSE".equals(isExist)) {
+				
 				ArrayList<HashMap<String, Object>> userYearlyPlanTemplate = assetService.userYearlyPlanTemplate(param);
+				
+				long dwCat101Cnt = userYearlyPlanTemplate.stream().filter( hmap -> hmap.get("MAIN_CTG").equals("DW_CAT1_01")).count();
+				long dwCat102Cnt = userYearlyPlanTemplate.stream().filter( hmap -> hmap.get("MAIN_CTG").equals("DW_CAT1_02")).count();
+				
+				log.info("dwCat101Cnt : {}, dwCat102Cnt : {}", dwCat101Cnt, dwCat102Cnt);
+				
+				result.put("dwCat101Cnt", dwCat101Cnt);
+				result.put("dwCat102Cnt", dwCat102Cnt);
 				result.put("userYearlyPlanTemplate", userYearlyPlanTemplate);
 			}
 			

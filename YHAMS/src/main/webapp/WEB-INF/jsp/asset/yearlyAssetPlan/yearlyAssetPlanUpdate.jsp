@@ -62,17 +62,7 @@ function goSave(){
 
 
 function goDel(){
-	var len = $("#expendPlanList").children().find("input[type='checkbox']:checked").length;
-	if(len > 0){
-		$("#expendPlanList").children().find("input[type='checkbox']:checked").each(function(i, val){
-			$(this).closest('tr').remove();
-		});
-	}else{
-		alert('<spring:message code="com.msg.unselected"/>');   //  선택된 내역이 없습니다.
-	}
-	$("#chkAll").attr("checked", false);
-	
-	setFeildToggle();
+	$("#yearlyAssetPlanList").empty();
 }
 
 function goAddChk(){
@@ -91,7 +81,7 @@ function goAddChk(){
 		    async: false,
 		    success : function(result) { 
 		    	if(result.isExist == "FALSE"){
-				    goAdd();    		
+				    goAdd(result);    		
 		    	}else{
 		    		alert("해당연도의 지출계획이 이미 존재합니다. 불러오시겠습니까?");
 		    	}
@@ -100,14 +90,29 @@ function goAddChk(){
 	}
 }
 
-function goAdd(){
+function goAdd(result){
 	
+	let list = result.userYearlyPlanTemplate;
 	
+	let dwCat101Cnt = result.dwCat101Cnt;
+	let dwCat102Cnt = result.dwCat102Cnt;
 	
+	let finalHtml = '';
 	
+	for(let i=0; i<list.length; i++){
+		html  = '<tr>';
+		if(list[i].RNUM == 1){
+			html += '   <th scope="col" width="5%" head="head" rowSpan="' + (list[i].MAIN_CTG == 'DW_CAT1_01' ? dwCat101Cnt : dwCat102Cnt) + '">' + list[i].MAIN_CTG_NM + '</th>';
+		}
+			html += '   <th scope="col" width="5%">' + list[i].SUB_CTG_NM +'</th>';
+		for(let j=1; j<13; j++){
+			html += '   <th scope="col" width="7%"><input id="'+ list[i].SUB_CTG + '_' + j + '"type="text" style="width: 50px;"></th>';	
+		}
+		html += '      <th scope="col" width="7%"></th>';
+		finalHtml += html;
+	}
 	
-	
-	
+	$("#yearlyAssetPlanList").append(finalHtml);
 	
 }
 
@@ -283,155 +288,16 @@ function setEqualNumber(){
 	      <th scope="col" width="18%"></th>  
 	      <th scope="col" width="18%"></th>  
 	    </tr> -->
-	    <tr>
+	    <tr id="monthHeader">
 	      <th scope="col" width="5%"></th>
 	      <th scope="col" width="10%"></th>
-	      <th scope="col" width="7%">1월</th>         
-	      <th scope="col" width="7%">2월</th>         
-	      <th scope="col" width="7%">3월</th>         
-	      <th scope="col" width="7%">4월</th>         
-	      <th scope="col" width="7%">5월</th>         
-	      <th scope="col" width="7%">6월</th>         
-	      <th scope="col" width="7%">7월</th>         
-	      <th scope="col" width="7%">8월</th>         
-	      <th scope="col" width="7%">8월</th>         
-	      <th scope="col" width="7%">9월</th>         
-	      <th scope="col" width="7%">10월</th>         
-	      <th scope="col" width="7%">11월</th>         
-	      <th scope="col" width="7%">12월</th>         
-	    </tr>
-	    <tr>
-	      <th scope="col" width="5%">수입</th>
-	      <th scope="col" width="10%">월급</th>
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>      
-	    </tr>
-	    <tr>
-	      <th scope="col" width="5%" rowspan="7">지출</th>
-	      <th scope="col" width="10%">어머니 용돈</th>
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>          
-	    </tr>
-	    <tr>
-	      <th scope="col" width="10%">통신비용</th>
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>          
-	    </tr>
-	    <tr>
-	      <th scope="col" width="10%">보험료</th>
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>          
-	    </tr>
-	    <tr>
-	      <th scope="col" width="10%">여자친구</th>
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>          
-	    </tr>
-	    <tr>
-	      <th scope="col" width="10%">경기도장학관</th>
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>          
-	    </tr>
-	    <tr>
-	      <th scope="col" width="10%">교통비</th>
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>          
-	    </tr>
-	    <tr>
-	      <th scope="col" width="10%">카드</th>
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>         
-	      <th scope="col" width="7%"><input type="text" style="width: 50px;"></th>          
+	      <c:forEach begin="1" end="12" var="month">
+     		 <th scope="col" width="7%">${month}월</th>    
+	      </c:forEach>
+	      <th scope="col" width="7%">계</th>	
 	    </tr>
 	  </thead>
-	  <tbody id="expendPlanList">
+	  <tbody id="yearlyAssetPlanList">
 	    
 	  </tbody>
 	</table>

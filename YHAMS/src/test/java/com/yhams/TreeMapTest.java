@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -71,7 +72,8 @@ private static final Logger log = LoggerFactory.getLogger(TreeMapTest.class);
 															,Arrays.asList("지출", "교통비")
 															,Arrays.asList("지출", "카드"));
 			
-		  
+		  AtomicInteger idx = new AtomicInteger(1);
+			
 		   mainSubList.stream().forEach(list -> {
 			  
 			   StringBuffer buffer = new StringBuffer();
@@ -82,16 +84,15 @@ private static final Logger log = LoggerFactory.getLogger(TreeMapTest.class);
 				buffer.append("수입".equals(list.get(0)) ? "'DW_CAT1_01'," : "'DW_CAT1_02',");
 				buffer.append("'" + UUID.randomUUID().toString() + "',");
 				buffer.append("'" + list.get(1) + "',");
+				buffer.append(idx + ",");
 				buffer.append("'Y',");
 				buffer.append("'USER_00001',");
 				buffer.append("NOW(),");
 				buffer.append("'USER_00001',");
 				buffer.append("NOW());");
-				
 				System.out.println(buffer);
-			   
+				idx.incrementAndGet();
 		   });
-			
 		}
 
 
