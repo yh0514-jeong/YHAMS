@@ -80,6 +80,7 @@ function goAddChk(){
 		    data : param,
 		    async: false,
 		    success : function(result) { 
+		    	console.log(JSON.stringify(result));
 		    	if(result.isExist == "FALSE"){
 				    goAdd(result);    		
 		    	}else{
@@ -101,7 +102,7 @@ function goAdd(result){
 	
 	for(let i=0; i<list.length; i++){
 		html  = '<tr>';
-		if(list[i].RNUM == 1){
+		if(list[i].IS_HEAD == "HEAD"){
 			html += '   <th scope="col" width="5%" head="head" rowSpan="' + (list[i].MAIN_CTG == 'DW_CAT1_01' ? dwCat101Cnt : dwCat102Cnt) + '">' + list[i].MAIN_CTG_NM + '</th>';
 		}
 			html += '   <th scope="col" width="5%">' + list[i].SUB_CTG_NM +'</th>';

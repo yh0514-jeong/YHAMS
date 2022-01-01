@@ -596,22 +596,172 @@
 	 
 	 <select id="userYearlyPlanTemplate" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	 
-	 		SELECT   ROW_NUMBER() OVER (PARTITION BY TMUDIC.MAIN_CTG 
-										 ORDER BY TMUDIC.MAIN_CTG, TMUDIC.CODE_ORDR) AS RNUM,
-	 				 TMUDIC.MAIN_CTG,
-	         		 (SELECT TCC.CODE_NM
-					    FROM TB_CMM_CDDTL TCC
-					   WHERE TCC.CODE_ID = 'CG_2005'
-					    AND  TMUDIC.MAIN_CTG = TCC.CODE_CD) AS MAIN_CTG_NM,
-					 TMUDIC.SUB_CTG,
-					 TMUDIC.SUB_CTG_NM,
-					 TMUDIC.CODE_ORDR
-					 
-			FROM  TB_META_USER_DEF_ICMEXP_CATEGORY TMUDIC
-			WHERE TMUDIC.USER_SEQ = #{USER_SEQ}
-			AND   TMUDIC.USE_YN   = 'Y'
-			
-			ORDER BY TMUDIC.MAIN_CTG, TMUDIC.CODE_ORDR ASC 
+		SELECT  CASE WHEN USER_DEF_SEQ IS NOT NULL AND RNUM = 1 THEN 'HEAD'
+		        ELSE NULL END AS IS_HEAD,
+				CASE WHEN USER_DEF_SEQ IS NULL THEN 'TOTAL'
+		        ELSE NULL END AS IS_TOTAL,
+				CASE WHEN X.USER_DEF_SEQ IS NULL THEN CONCAT(X.MAIN_CTG, '_SUM')
+				ELSE X.USER_DEF_SEQ
+				END AS USER_DEF_SEQ,
+				CASE WHEN X.USER_DEF_SEQ IS NULL THEN CONCAT(X.MAIN_CTG_NM, ' 계')
+				ELSE X.SUB_CTG_NM
+				END AS SUB_CTG_NM,		 
+		        X.MAIN_CTG AS MAIN_CTG,
+		        X.MAIN_CTG_NM AS MAIN_CTG_NM,
+		        X.CODE_ORDR AS CODE_ORDR,
+		        X.RNUM AS RNUM,
+				X.1_MONTH AS 1_MONTH,
+			    X.2_MONTH AS 2_MONTH,
+				X.3_MONTH AS 3_MONTH,
+				X.4_MONTH AS 4_MONTH,
+				X.5_MONTH AS 5_MONTH,
+				X.6_MONTH AS 6_MONTH,
+				X.7_MONTH AS 7_MONTH,
+				X.8_MONTH AS 8_MONTH,
+				X.9_MONTH AS 9_MONTH,
+				X.10_MONTH AS 9_MONTH,
+				X.11_MONTH AS 11_MONTH,
+				X.12_MONTH AS 12_MONTH,
+				(X.1_MONTH + X.2_MONTH + X.3_MONTH+ X.4_MONTH + X.5_MONTH+ X.6_MONTH + 
+				 X.7_MONTH+ X.8_MONTH+ X.9_MONTH + X.10_MONTH + X.11_MONTH+ X.12_MONTH) AS TOTAL
+        FROM (
+
+					SELECT      T1.USER_DEF_SEQ,
+						        T1.MAIN_CTG,
+						        (SELECT  TCC.CODE_NM
+						           FROM  TB_CMM_CDDTL TCC
+						           WHERE T1.MAIN_CTG = TCC.CODE_CD
+						            AND  TCC.CODE_ID = 'CG_2005'
+								  ) AS MAIN_CTG_NM,
+						        T1.CODE_ORDR,
+						        T1.RNUM,
+						        T1.SUB_CTG_NM,
+								SUM(1_MONTH) AS 1_MONTH,
+						        SUM(2_MONTH) AS 2_MONTH,
+						        SUM(3_MONTH) AS 3_MONTH,
+						        SUM(4_MONTH) AS 4_MONTH,
+						        SUM(5_MONTH) AS 5_MONTH,
+						        SUM(6_MONTH) AS 6_MONTH,
+						        SUM(7_MONTH) AS 7_MONTH,
+						        SUM(8_MONTH) AS 8_MONTH,
+						        SUM(9_MONTH) AS 9_MONTH,
+					            SUM(10_MONTH) AS 10_MONTH,
+					            SUM(11_MONTH) AS 11_MONTH,
+					            SUM(12_MONTH) AS 12_MONTH
+						        
+						FROM (
+					
+									SELECT    ROW_NUMBER() OVER (PARTITION BY TMUDIC.MAIN_CTG ORDER BY CODE_ORDR ASC) AS RNUM,
+											  TMUDIC.USER_DEF_SEQ,
+											  TMUDIC.USER_SEQ,
+											  TMUDIC.MAIN_CTG,
+											  TMUDIC.SUB_CTG_NM,
+											  TMUDIC.USE_YN,
+											  TMUDIC.CODE_ORDR,
+									          (SELECT TTYAP.AMOUNT
+									             FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									            WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									             AND  TMUDIC.USER_DEF_SEQ  = TTYAP.SUB_CTG
+									             AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-01')
+											  ) AS '1_MONTH',
+											  (SELECT TTYAP.AMOUNT
+									           FROM   TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									           WHERE  TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									           AND    TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									           AND    TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									           AND    CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0))  = CONCAT(#{STD_YEAR}, '-02')
+											   ) AS '2_MONTH',
+											  (SELECT TTYAP.AMOUNT
+									            FROM  TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									            WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									             AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									             AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0))  = CONCAT(#{STD_YEAR}, '-03')
+											   ) AS '3_MONTH',
+											  (SELECT TTYAP.AMOUNT
+									             FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									            WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									             AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									             AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-04')
+											  ) AS '4_MONTH',
+											  (SELECT TTYAP.AMOUNT
+									             FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									            WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									             AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									              AND TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-05')
+											   ) AS '5_MONTH',
+											  (SELECT TTYAP.AMOUNT
+									           FROM   TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									           WHERE  TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									            AND   TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									            AND   TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									            AND   CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-06')
+											   ) AS '6_MONTH',
+											   (SELECT TTYAP.AMOUNT
+									             FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									            WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									             AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									             AND TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-07')
+											   ) AS '7_MONTH',
+											   (SELECT TTYAP.AMOUNT
+									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									           AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-08')
+											  ) AS '8_MONTH',
+											   (SELECT TTYAP.AMOUNT
+									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									           AND TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-09')
+											  ) AS '9_MONTH',
+											  (SELECT TTYAP.AMOUNT
+									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									           AND TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-10')
+											  ) AS '10_MONTH',
+											  (SELECT TTYAP.AMOUNT
+									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									           AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
+									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-11')
+											  ) AS '11_MONTH',
+											  (SELECT TTYAP.AMOUNT
+									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
+									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
+									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
+									           AND  TMUDIC.USER_SEQ  = TTYAP.USER_SEQ
+									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-12')
+											  ) AS '12_MONTH'
+											  				  
+										FROM TB_META_USER_DEF_ICMEXP_CATEGORY TMUDIC
+										
+										WHERE USE_YN   = 'Y'
+										AND   USER_SEQ = #{USER_SEQ}
+										
+										ORDER BY CODE_ORDR ASC
+							
+							) T1
+							
+							
+							GROUP BY  T1.MAIN_CTG, T1.USER_DEF_SEQ WITH ROLLUP 
+							
+				 ) X
+							
+				
+				WHERE MAIN_CTG IS NOT NULL
+							
+				ORDER BY MAIN_CTG, IS_TOTAL, CODE_ORDR ASC
+		
 	 
 	 </select>
 	 

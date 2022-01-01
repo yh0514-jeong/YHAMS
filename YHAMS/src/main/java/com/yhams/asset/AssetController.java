@@ -606,14 +606,22 @@ public class AssetController {
 				
 				ArrayList<HashMap<String, Object>> userYearlyPlanTemplate = assetService.userYearlyPlanTemplate(param);
 				
-				long dwCat101Cnt = userYearlyPlanTemplate.stream().filter( hmap -> hmap.get("MAIN_CTG").equals("DW_CAT1_01")).count();
-				long dwCat102Cnt = userYearlyPlanTemplate.stream().filter( hmap -> hmap.get("MAIN_CTG").equals("DW_CAT1_02")).count();
+				log.info("userYearlyPlanTemplate : {}", userYearlyPlanTemplate);
+				result.put("userYearlyPlanTemplate", userYearlyPlanTemplate);
+				
+				
+				long dwCat101Cnt = userYearlyPlanTemplate.stream()
+										.filter( hmap -> hmap.get("MAIN_CTG").equals("DW_CAT1_01"))
+										.count();
+				long dwCat102Cnt = userYearlyPlanTemplate.stream()
+										.filter( hmap -> hmap.get("MAIN_CTG").equals("DW_CAT1_02"))
+										.count();
 				
 				log.info("dwCat101Cnt : {}, dwCat102Cnt : {}", dwCat101Cnt, dwCat102Cnt);
 				
 				result.put("dwCat101Cnt", dwCat101Cnt);
 				result.put("dwCat102Cnt", dwCat102Cnt);
-				result.put("userYearlyPlanTemplate", userYearlyPlanTemplate);
+				
 			}
 			
 			result.put("isExist", isExist);
