@@ -610,20 +610,20 @@
 		        X.MAIN_CTG_NM AS MAIN_CTG_NM,
 		        X.CODE_ORDR AS CODE_ORDR,
 		        X.RNUM AS RNUM,
-				X.1_MONTH AS 1_MONTH,
-			    X.2_MONTH AS 2_MONTH,
-				X.3_MONTH AS 3_MONTH,
-				X.4_MONTH AS 4_MONTH,
-				X.5_MONTH AS 5_MONTH,
-				X.6_MONTH AS 6_MONTH,
-				X.7_MONTH AS 7_MONTH,
-				X.8_MONTH AS 8_MONTH,
-				X.9_MONTH AS 9_MONTH,
-				X.10_MONTH AS 9_MONTH,
-				X.11_MONTH AS 11_MONTH,
-				X.12_MONTH AS 12_MONTH,
-				(X.1_MONTH + X.2_MONTH + X.3_MONTH+ X.4_MONTH + X.5_MONTH+ X.6_MONTH + 
-				 X.7_MONTH+ X.8_MONTH+ X.9_MONTH + X.10_MONTH + X.11_MONTH+ X.12_MONTH) AS TOTAL
+				X.MONTH_1 AS MONTH_1,
+			    X.MONTH_2 AS MONTH_2,
+				X.MONTH_3 AS MONTH_3,
+				X.MONTH_4 AS MONTH_4,
+				X.MONTH_5 AS MONTH_5,
+				X.MONTH_6 AS MONTH_6,
+				X.MONTH_7 AS MONTH_7,
+				X.MONTH_8 AS MONTH_8,
+				X.MONTH_9 AS MONTH_9,
+				X.MONTH_10 AS MONTH_10,
+				X.MONTH_11 AS MONTH_11,
+				X.MONTH_12 AS MONTH_12,
+				(X.MONTH_1 + X.MONTH_2 + X.MONTH_3+ X.MONTH_4 + X.MONTH_5+ X.MONTH_6 + 
+				 X.MONTH_7+ X.MONTH_8+ X.MONTH_9 + X.MONTH_10 + X.MONTH_11+ X.MONTH_12) AS TOTAL
         FROM (
 
 					SELECT      T1.USER_DEF_SEQ,
@@ -636,18 +636,18 @@
 						        T1.CODE_ORDR,
 						        T1.RNUM,
 						        T1.SUB_CTG_NM,
-								SUM(1_MONTH) AS 1_MONTH,
-						        SUM(2_MONTH) AS 2_MONTH,
-						        SUM(3_MONTH) AS 3_MONTH,
-						        SUM(4_MONTH) AS 4_MONTH,
-						        SUM(5_MONTH) AS 5_MONTH,
-						        SUM(6_MONTH) AS 6_MONTH,
-						        SUM(7_MONTH) AS 7_MONTH,
-						        SUM(8_MONTH) AS 8_MONTH,
-						        SUM(9_MONTH) AS 9_MONTH,
-					            SUM(10_MONTH) AS 10_MONTH,
-					            SUM(11_MONTH) AS 11_MONTH,
-					            SUM(12_MONTH) AS 12_MONTH
+								SUM(MONTH_1) AS MONTH_1,
+						        SUM(MONTH_2) AS MONTH_2,
+						        SUM(MONTH_3) AS MONTH_3,
+						        SUM(MONTH_4) AS MONTH_4,
+						        SUM(MONTH_5) AS MONTH_5,
+						        SUM(MONTH_6) AS MONTH_6,
+						        SUM(MONTH_7) AS MONTH_7,
+						        SUM(MONTH_8) AS MONTH_8,
+						        SUM(MONTH_9) AS MONTH_9,
+					            SUM(MONTH_10) AS MONTH_10,
+					            SUM(MONTH_11) AS MONTH_11,
+					            SUM(MONTH_12) AS MONTH_12
 						        
 						FROM (
 					
@@ -664,84 +664,84 @@
 									             AND  TMUDIC.USER_DEF_SEQ  = TTYAP.SUB_CTG
 									             AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-01')
-											  ) AS '1_MONTH',
+											  ) AS 'MONTH_1',
 											  (SELECT TTYAP.AMOUNT
 									           FROM   TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									           WHERE  TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									           AND    TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									           AND    TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									           AND    CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0))  = CONCAT(#{STD_YEAR}, '-02')
-											   ) AS '2_MONTH',
+											   ) AS 'MONTH_2',
 											  (SELECT TTYAP.AMOUNT
 									            FROM  TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									            WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									             AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									             AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0))  = CONCAT(#{STD_YEAR}, '-03')
-											   ) AS '3_MONTH',
+											   ) AS 'MONTH_3',
 											  (SELECT TTYAP.AMOUNT
 									             FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									            WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									             AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									             AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-04')
-											  ) AS '4_MONTH',
+											  ) AS 'MONTH_4',
 											  (SELECT TTYAP.AMOUNT
 									             FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									            WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									             AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									              AND TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-05')
-											   ) AS '5_MONTH',
+											   ) AS 'MONTH_5',
 											  (SELECT TTYAP.AMOUNT
 									           FROM   TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									           WHERE  TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									            AND   TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									            AND   TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									            AND   CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-06')
-											   ) AS '6_MONTH',
+											   ) AS 'MONTH_6',
 											   (SELECT TTYAP.AMOUNT
 									             FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									            WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									             AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									             AND TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									             AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-07')
-											   ) AS '7_MONTH',
+											   ) AS 'MONTH_7',
 											   (SELECT TTYAP.AMOUNT
 									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									           AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-08')
-											  ) AS '8_MONTH',
+											  ) AS 'MONTH_8',
 											   (SELECT TTYAP.AMOUNT
 									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									           AND TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-09')
-											  ) AS '9_MONTH',
+											  ) AS 'MONTH_9',
 											  (SELECT TTYAP.AMOUNT
 									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									           AND TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-10')
-											  ) AS '10_MONTH',
+											  ) AS 'MONTH_10',
 											  (SELECT TTYAP.AMOUNT
 									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									           AND  TMUDIC.USER_SEQ = TTYAP.USER_SEQ
 									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-11')
-											  ) AS '11_MONTH',
+											  ) AS 'MONTH_11',
 											  (SELECT TTYAP.AMOUNT
 									           FROM TB_TRAN_YEARLY_ASSET_PLAN TTYAP
 									          WHERE TMUDIC.MAIN_CTG = TTYAP.MAIN_CTG
 									           AND  TMUDIC.USER_DEF_SEQ = TTYAP.SUB_CTG
 									           AND  TMUDIC.USER_SEQ  = TTYAP.USER_SEQ
 									           AND  CONCAT(TTYAP.STD_YEAR, "-", LPAD(TTYAP.STD_MONTH,2,0)) = CONCAT(#{STD_YEAR}, '-12')
-											  ) AS '12_MONTH'
+											  ) AS 'MONTH_12'
 											  				  
 										FROM TB_META_USER_DEF_ICMEXP_CATEGORY TMUDIC
 										

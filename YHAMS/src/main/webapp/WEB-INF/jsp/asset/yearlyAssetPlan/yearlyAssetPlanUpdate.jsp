@@ -13,8 +13,6 @@
 
 var trCnt = 0; 
 
-let EXP_PLAN_SEQ = '${EXP_PLAN_SEQ}';
-
 $(document).ready(function() {
 		
 	
@@ -80,7 +78,6 @@ function goAddChk(){
 		    data : param,
 		    async: false,
 		    success : function(result) { 
-		    	console.log(JSON.stringify(result));
 		    	if(result.isExist == "FALSE"){
 				    goAdd(result);    		
 		    	}else{
@@ -105,22 +102,73 @@ function goAdd(result){
 		if(list[i].IS_HEAD == "HEAD"){
 			html += '   <th scope="col" width="5%" head="head" rowSpan="' + (list[i].MAIN_CTG == 'DW_CAT1_01' ? dwCat101Cnt : dwCat102Cnt) + '">' + list[i].MAIN_CTG_NM + '</th>';
 		}
-			html += '   <th scope="col" width="5%">' + list[i].SUB_CTG_NM +'</th>';
-		for(let j=1; j<13; j++){
-			html += '   <th scope="col" width="7%"><input id="'+ list[i].SUB_CTG + '_' + j + '"type="text" style="width: 50px;"></th>';	
-		}
-		html += '      <th scope="col" width="7%"></th>';
+			html += '   <th scope="col" width="5%" ' + (list[i].IS_TOTAL == 'total' ? 'total="total"' : '') + '>' + list[i].SUB_CTG_NM + '</th>';
+			
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_1, 'MONTH_1');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_2, 'MONTH_2');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_3, 'MONTH_3');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_4, 'MONTH_4');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_5, 'MONTH_5');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_6, 'MONTH_6');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_7, 'MONTH_7');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_8, 'MONTH_8');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_9, 'MONTH_9');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_10, 'MONTH_10');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_11, 'MONTH_11');
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].MONTH_12, 'MONTH_12');
+			
+			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ, list[i].IS_TOTAL, list[i].TOTAL);   // row별 total
+			
+			html += '</tr>';
 		finalHtml += html;
 	}
 	
 	$("#yearlyAssetPlanList").append(finalHtml);
-	
 }
 
+function generateHtml(mainCtg, userDefSeq, isTotal, value, month){
+	
+	let html = '';
+	let id = mainCtg;
+	value = value == null?  '' : value;
+	
+	if(isTotal == 'TOTAL'){
+		id += '__' + isTotal + '__' + month;
+	}else {
+		id += '__' + userDefSeq;
+		if(month == null){
+			id += '__' + 'TOTAL';
+		}else{
+			id += '__' + month;
+		}
+	}
+	
+	if(isTotal == "TOTAL" || month == null){
+		html = '   <th scope="col" width="5%"><p id="' + id + '">' + value + '</p></th>';
+	}else{
+		html = '   <th scope="col" width="5%"><input id="' + id + '" type="text" value="' + value + '" style="width:60px;" onchange="javascript:numberCheck(this.id, this.value);"></th>';
+	}
+	return html;
+}
 
 function numberCheck(id, value){
 	value = value.replace(/[^0-9]/g, "").replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 	$("#" + id ).val(value);
+	
+	let idSplit = id.split('__');
+	
+	let hSumTotalId = idSplit[0] + '__' + idSplit[1] + '__TOTAL';
+	let vSumTotalId = idSplit[0] + '__TOTAL__' + idSplit[2];
+	
+	// 가로 합계 계산
+	let hSum = 0;
+	$("#input[id^=" + idSplit[0] + '__' + idSplit[1] + "]").each(function(i, item){
+		hSum += item[i].val();
+	});
+	
+	// 세로 합계 계산
+	let vSum = 0;
+	
 }
 
 
@@ -282,8 +330,8 @@ function setEqualNumber(){
 	  <thead class="thead-dark" align="center">
 	  	<!-- <tr id="setField">
 	      <th scope="col" width="*"></th>
-	      <th scope="col" width="20%"><button onclick="javascript:setSequentialDate();">순차적날짜 적용</button></th>  순차적날짜 적용 버튼
-	      <th scope="col" width="18%"><button onclick="javascript:setEqualNumber();">동일금액 적용</button></th>    동일금액 적용 버튼
+	      <th scope="col" width="20%"><button onclick="javascript:setSequentialDate();">순차적날짜 적용</button></th>  
+	      <th scope="col" width="18%"><button onclick="javascript:setEqualNumber();">동일금액 적용</button></th> 
 	      <th scope="col" width="18%"></th>  
 	      <th scope="col" width="18%"></th>  
 	      <th scope="col" width="18%"></th>  
