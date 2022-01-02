@@ -152,22 +152,37 @@ function generateHtml(mainCtg, userDefSeq, isTotal, value, month){
 }
 
 function numberCheck(id, value){
+	
 	value = value.replace(/[^0-9]/g, "").replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 	$("#" + id ).val(value);
 	
 	let idSplit = id.split('__');
-	
 	let hSumTotalId = idSplit[0] + '__' + idSplit[1] + '__TOTAL';
 	let vSumTotalId = idSplit[0] + '__TOTAL__' + idSplit[2];
 	
+	
 	// 가로 합계 계산
+	let hSumEleIdRule = idSplit[0] + '__' + idSplit[1];
 	let hSum = 0;
-	$("#input[id^=" + idSplit[0] + '__' + idSplit[1] + "]").each(function(i, item){
-		hSum += item[i].val();
+	$("input[id^='" + hSumEleIdRule + "']").each(function(i, item){
+		if($(item).val().trim().length == 0){
+			return "boolean";
+		}else{
+			hSum += parseInt($(item).val().replace(/,/g, ""));
+		}
 	});
+	$("p[id='"+ idSplit[0] + '__' + idSplit[1] + "__TOTAL']").text(hSum);
 	
 	// 세로 합계 계산
 	let vSum = 0;
+	$("input[id^='" + idSplit[0] + "'][id$='" + idSplit[2] + "']").each(function(i, item){
+		if($(item).val().trim().length == 0){
+			return "boolean";
+		}else{
+			vSum += parseInt($(item).val().replace(/,/g, ""));
+		}
+	});
+	$("p[id='"+ idSplit[0] + '__TOTAL__' + idSplit[2] + "']").text(vSum);
 	
 }
 
