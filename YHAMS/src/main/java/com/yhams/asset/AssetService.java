@@ -47,4 +47,6 @@ public interface AssetService {
 
 	ArrayList<HashMap<String, Object>> userYearlyPlanTemplate(HashMap<String, Object> param) throws Exception;
 
+	int saveYearlyAssetPlanList(HashMap<String, Object> param) throws Exception;
+
 }

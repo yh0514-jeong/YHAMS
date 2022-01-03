@@ -20,16 +20,23 @@ $(document).ready(function() {
 
 
 function goSave(){
-	if(formCheck()){
+	
 		var list = new Array();
-		$("#expendPlanList > tr").each(function(i, value){
-			var map = {
-				UED_DATE   : $(this).children().find("input[id^=UED_DATE_]").val(),
-			    UED_INCM   : $(this).children().find("input[id^=UED_INCM_]").val().replace(/,/g, ""),
-			    UED_SOURCE : $(this).children().find("input[id^=UED_SOURCE_]").val(),
-			    UED_CTG	   : $(this).children().find("select[id^=UED_CTG_]").val()
-			};
-			list.push(map);
+		
+		$("#yearlyAssetPlanList > tr").each(function(i, value){
+			$(this).find("input").each(function(j, value_j){
+				if($(value_j).val().trim().length > 0){
+					let idsp = $(value_j).attr('id').split('__');
+					let map = {
+						STD_YEAR : $("#STD_YEAR").val(),
+						STD_MONTH : idsp[2],
+						MAIN_CTG : idsp[0],
+						SUB_CTG : idsp[1],
+						AMOUNT : $(value_j).val().replace(/,/g, "")
+					};
+					list.push(map);
+				}
+			});
 		});
 		
 		var param = {
@@ -38,7 +45,7 @@ function goSave(){
 		
 		$.ajax({
 		    type : 'post',
-		    url  : '/expend/saveExpendPlanList', 
+		    url  : '/asset/saveYearlyAssetPlanList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) {
@@ -55,7 +62,6 @@ function goSave(){
 		        alert('<spring:message code="com.msg.registerfail"/>');  // 등록 실패
 		    }
 		});
-	}
 }
 
 
@@ -81,7 +87,9 @@ function goAddChk(){
 		    	if(result.isExist == "FALSE"){
 				    goAdd(result);    		
 		    	}else{
-		    		alert("해당연도의 지출계획이 이미 존재합니다. 불러오시겠습니까?");
+		    		if(confirm("해당연도의 지출계획이 이미 존재합니다. 불러오시겠습니까?")){
+		    			
+		    		}
 		    	}
 		    }
 		});
@@ -171,7 +179,7 @@ function numberCheck(id, value){
 			hSum += parseInt($(item).val().replace(/,/g, ""));
 		}
 	});
-	$("p[id='"+ idSplit[0] + '__' + idSplit[1] + "__TOTAL']").text(hSum);
+	$("p[id='"+ idSplit[0] + '__' + idSplit[1] + "__TOTAL']").text(hSum.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","));
 	
 	// 세로 합계 계산
 	let vSum = 0;
@@ -182,8 +190,7 @@ function numberCheck(id, value){
 			vSum += parseInt($(item).val().replace(/,/g, ""));
 		}
 	});
-	$("p[id='"+ idSplit[0] + '__TOTAL__' + idSplit[2] + "']").text(vSum);
-	
+	$("p[id='"+ idSplit[0] + '__TOTAL__' + idSplit[2] + "']").text(vSum.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","));
 }
 
 

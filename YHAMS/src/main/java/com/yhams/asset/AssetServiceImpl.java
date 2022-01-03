@@ -2,6 +2,7 @@ package com.yhams.asset;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,7 @@ import com.yhams.common.CommonMapper;
 @Service
 public class AssetServiceImpl implements AssetService {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AssetServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(AssetServiceImpl.class);
 	
 	@Autowired
 	AssetMapper mapper;
@@ -70,7 +71,7 @@ public class AssetServiceImpl implements AssetService {
 		int r = 0;
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 		ObjectMapper mpr = new ObjectMapper();
-		logger.info("param.toString()==>" + param.toString());
+		log.info("param.toString()==>" + param.toString());
 		try {
 			list = mpr.readValue(param.get("list").toString(), ArrayList.class);
 			for(int i=0; i<list.size(); i++) {
@@ -140,7 +141,7 @@ public class AssetServiceImpl implements AssetService {
 			   map.put("USER_SEQ"    ,  param.get("USER_SEQ"));
 			   map.put("CREATE_ID"   ,  param.get("USER_SEQ"));
 			   map.put("UPDATE_ID"   ,  param.get("USER_SEQ"));
-			   logger.info("map.toString()==>" + map.toString());
+			   log.info("map.toString()==>" + map.toString());
 			   result = result + mapper.saveSalaryList(map);
 			}
 			
@@ -189,6 +190,41 @@ public class AssetServiceImpl implements AssetService {
 	@Override
 	public ArrayList<HashMap<String, Object>> userYearlyPlanTemplate(HashMap<String, Object> param) throws Exception {
 		return mapper.userYearlyPlanTemplate(param);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int saveYearlyAssetPlanList(HashMap<String, Object> param) throws Exception {
+		
+		ArrayList<HashMap<String, Object>> list  = new ArrayList<HashMap<String,Object>>();
+		ObjectMapper mpr = new ObjectMapper();
+		int result = 0;
+		
+		try {
+			list = mpr.readValue(param.get("list").toString(), ArrayList.class);
+			
+			for(int i=0; i<list.size(); i++) {
+				HashMap<String, Object> p = new HashMap<>();
+				p.put("ASSET_PLAN_SEQ", UUID.randomUUID().toString());
+				p.put("USER_SEQ"      , param.get("USER_SEQ"));
+				p.put("STD_YEAR"      , list.get(i).get("STD_YEAR"));
+				p.put("STD_MONTH"     , Integer.parseInt(list.get(i).get("STD_MONTH").toString().replace("MONTH_", "")));
+				p.put("MAIN_CTG"      , list.get(i).get("MAIN_CTG"));
+				p.put("SUB_CTG"       , list.get(i).get("SUB_CTG"));
+				p.put("AMOUNT"        , list.get(i).get("AMOUNT"));
+				p.put("CREATE_ID"     , param.get("USER_SEQ"));
+				p.put("UPDATE_ID"     , param.get("USER_SEQ"));
+				log.info("p==>{}", p);
+				result = result + mapper.saveYearlyAssetPlanList(p);
+				result++;
+			}
+			
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
 	}
 
 }

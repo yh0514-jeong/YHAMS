@@ -17,6 +17,7 @@ import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -623,7 +624,6 @@ public class AssetController {
 				result.put("dwCat102Cnt", dwCat102Cnt);
 				
 			}
-			
 			result.put("isExist", isExist);
 			
 		}catch (Exception e) {
@@ -631,4 +631,26 @@ public class AssetController {
 		}
 		return result;
 	}
+	
+	
+	@PostMapping(value = "/saveYearlyAssetPlanList")
+	@ResponseBody
+	public HashMap<String, Object> saveYearlyAssetPlanList(@RequestParam(required = true) HashMap<String, Object> param,
+															   HttpSession session,
+	                                                           HttpServletRequest request,
+	                                                           HttpServletResponse response){
+		HashMap<String, Object> result = new HashMap<>();
+		try{
+			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
+			int r = assetService.saveYearlyAssetPlanList(param);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	
+	
+	
+	
 }
