@@ -81,8 +81,8 @@
      window.open(url, name, option);
  }
  
- function goUpdate(EXP_PLAN_SEQ){
-	 var url    = "/asset/yearlyAssetPlanUpdate?EXP_PLAN_SEQ=" + EXP_PLAN_SEQ;
+ function goUpdate(STD_YEAR){
+	 var url    = "/asset/yearlyAssetPlanUpdate?STD_YEAR=" + STD_YEAR;
 	 var option = "width = 1200, height = 600, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }

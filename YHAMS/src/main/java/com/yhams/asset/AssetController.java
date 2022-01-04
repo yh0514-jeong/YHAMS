@@ -1,11 +1,9 @@
 package com.yhams.asset;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,7 +11,6 @@ import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.databind.introspect.TypeResolutionContext.Empty;
-import com.fasterxml.jackson.databind.util.ObjectBuffer;
 import com.yhams.common.CommonService;
 import com.yhams.log.LogService;
 import com.yhams.util.CommonContraint;
@@ -586,8 +581,51 @@ public class AssetController {
 	
 	
 	@RequestMapping(value = "/yearlyAssetPlanUpdate")
-	public ModelAndView yearlyAssetPlanUpdate() {
+	public ModelAndView yearlyAssetPlanUpdate(@RequestParam(required = false) String STD_YEAR,
+			                                   HttpServletRequest request,
+			                                   HttpServletResponse response,
+			                                   HttpSession session) throws Exception {
+		
+		HashMap<String, Object> result = new HashMap<>();
+		HashMap<String, Object> param  = new HashMap<>();
 		ModelAndView mv = new ModelAndView();
+		
+		Optional<String> maybeStdYear = Optional.ofNullable(STD_YEAR);
+		
+		if(maybeStdYear.isPresent()) {
+			
+			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
+			param.put("STD_YEAR",  maybeStdYear.get());
+						
+			ArrayList<HashMap<String, Object>> userYearlyPlanTemplate = assetService.userYearlyPlanTemplate(param);
+			
+			log.info("userYearlyPlanTemplate : {}", userYearlyPlanTemplate);
+			result.put("userYearlyPlanTemplate", userYearlyPlanTemplate);
+			
+			
+			long dwCat101Cnt = userYearlyPlanTemplate.stream()
+									.filter( hmap -> hmap.get("MAIN_CTG").equals("DW_CAT1_01"))
+									.count();
+			long dwCat102Cnt = userYearlyPlanTemplate.stream()
+									.filter( hmap -> hmap.get("MAIN_CTG").equals("DW_CAT1_02"))
+									.count();
+			
+			log.info("dwCat101Cnt : {}, dwCat102Cnt : {}", dwCat101Cnt, dwCat102Cnt);
+			
+			result.put("dwCat101Cnt", dwCat101Cnt);
+			result.put("dwCat102Cnt", dwCat102Cnt);
+			result.put("list", userYearlyPlanTemplate);
+			
+			mv.addObject("result", result);
+			mv.addObject("STD_YEAR", maybeStdYear.get());
+			mv.addObject("nav", "연자산계획 수정");
+			
+		}else {
+			
+			mv.addObject("nav", "연자산계획 등록");
+		
+		}
+		
 		mv.setViewName("asset/yearlyAssetPlan/yearlyAssetPlanUpdate");
 		return mv;
 	}
@@ -602,7 +640,6 @@ public class AssetController {
 		try{
 			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
 			String isExist = assetService.chkYearlyAssetPlanExist(param);
-			
 			if("FALSE".equals(isExist)) {
 				
 				ArrayList<HashMap<String, Object>> userYearlyPlanTemplate = assetService.userYearlyPlanTemplate(param);
@@ -648,9 +685,6 @@ public class AssetController {
 		}
 		return result;
 	}
-	
-	
-	
 	
 	
 }
