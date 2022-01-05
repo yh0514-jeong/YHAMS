@@ -12,12 +12,13 @@
 <script type="text/javascript" src='<c:url value="/js/paging.js"/>'></script>
 <script type="text/javascript">
 
-	let STD_YEAR = '${EXP_PLAN_SEQ}';
+	let STD_YEAR = '${STD_YEAR}';
 	let trCnt = 0;
 
 	$(document).ready(function() {
 		if(STD_YEAR != null && STD_YEAR != ''){
-			goAdd('${result.list}');
+			goAdd('${result}');
+			$("#STD_YEAR").val(STD_YEAR).attr('disabled', true);
 		}
 	});
 
@@ -88,7 +89,7 @@
 						goAdd(result);
 					} else {
 						if (confirm("해당연도의 지출계획이 이미 존재합니다. 불러오시겠습니까?")) {
-							 var url = '/asset/salaryUpdate';
+							 var url = '/asset/yearlyAssetPlanUpdate?STD_YEAR=' + param.STD_YEAR;
 							 window.location.href= url;
 						}
 					}
@@ -98,9 +99,11 @@
 	}
 
 	function goAdd(result) {
-
+		
+		result = typeof result == 'string' ? JSON.parse(result) : result;
+		
 		let list = result.userYearlyPlanTemplate;
-
+		
 		let dwCat101Cnt = result.dwCat101Cnt;
 		let dwCat102Cnt = result.dwCat102Cnt;
 
@@ -157,7 +160,8 @@
 
 		let html = '';
 		let id = mainCtg;
-		value = value == null ? '' : value;
+		value = value == null || '' ? '' : value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+				
 
 		if (isTotal == 'TOTAL') {
 			id += '__' + isTotal + '__' + month;

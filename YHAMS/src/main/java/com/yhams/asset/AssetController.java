@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -614,9 +616,11 @@ public class AssetController {
 			
 			result.put("dwCat101Cnt", dwCat101Cnt);
 			result.put("dwCat102Cnt", dwCat102Cnt);
-			result.put("list", userYearlyPlanTemplate);
+			result.put("userYearlyPlanTemplate", userYearlyPlanTemplate);
 			
-			mv.addObject("result", result);
+			JSONObject json_result = new JSONObject(result);
+			
+			mv.addObject("result", json_result);
 			mv.addObject("STD_YEAR", maybeStdYear.get());
 			mv.addObject("nav", "연자산계획 수정");
 			
