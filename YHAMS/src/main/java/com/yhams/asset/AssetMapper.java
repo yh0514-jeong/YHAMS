@@ -53,4 +53,6 @@ public interface AssetMapper {
 	ArrayList<HashMap<String, Object>> userYearlyPlanTemplate(HashMap<String, Object> param) throws Exception;
 
 	int saveYearlyAssetPlanList(HashMap<String, Object> p) throws Exception;
+
+	int deleteYearlyAssetPlanList(HashMap<String, Object> param) throws Exception;
 }

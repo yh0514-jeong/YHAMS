@@ -807,4 +807,13 @@
 	 </insert>
 	 
 	 
+	 <delete id="deleteYearlyAssetPlanList" parameterType="java.util.HashMap">
+	 
+	 		DELETE FROM TB_TRAN_YEARLY_ASSET_PLAN
+			WHERE  USER_SEQ = #{USER_SEQ}
+			AND    STD_YEAR = #{STD_YEAR}
+	 
+	 </delete>
+	 
+	 
 </mapper>

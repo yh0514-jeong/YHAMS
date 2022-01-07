@@ -227,4 +227,9 @@ public class AssetServiceImpl implements AssetService {
 		return 0;
 	}
 
+	@Override
+	public int deleteYearlyAssetPlanList(HashMap<String, Object> param) throws Exception {
+		return mapper.deleteYearlyAssetPlanList(param);
+	}
+
 }

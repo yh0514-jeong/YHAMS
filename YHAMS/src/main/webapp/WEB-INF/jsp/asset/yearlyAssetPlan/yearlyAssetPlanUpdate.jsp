@@ -67,8 +67,36 @@
 		});
 	}
 
-	function goDel() {
-		$("#yearlyAssetPlanList").empty();
+	function goDel(btnId) {
+		if(btnId == 'btnDelDb'){
+			if(confirm('데이터베이스에 저장된 하기 연자산계획이 삭제됩니다.\n 그래도 삭제하시겠습니까?')){
+				let param = {};
+				param.STD_YEAR = $("#STD_YEAR").val()
+				alert('param==>' + JSON.stringify(param));
+				$.ajax({
+					type : 'post',
+					url : '/asset/deleteYearlyAssetPlanList',
+					dataType : 'json',
+					data : param,
+					async : false,
+					success : function(result) {
+						if(result.result == "success"){
+							alert("성공적으로 삭제되었습니다.");
+							 var url = '/asset/yearlyAssetPlanUpdate';
+							 window.location.href= url;
+						}else{
+							alert("삭제에 실패하였습니다.");
+						}
+					}
+				});
+				
+			}
+		}else if(btnId == 'btnDel'){
+			if(confirm('하기 연자산계획 내역을 삭제하시겠습니까?')){
+				$("#yearlyAssetPlanList").empty();
+			}
+			
+		}
 	}
 
 	function goAddChk() {
@@ -119,7 +147,7 @@
 			}
 			html += '   <th scope="col" width="5%" '
 					+ (list[i].IS_TOTAL == 'total' ? 'total="total"' : '')
-					+ '>' + list[i].SUB_CTG_NM + '</th>';
+					+ '>' + list[i].SUB_CTG_NM + '<img src="/img/check-box.png" height="13px;" width="13px;" style="font-size: 13px;float: right;">&nbsp;&nbsp;&nbsp;<img src="/img/delete-button.png" height="13px;" width="13px;" style="font-size: 13px;float: right;"></th>';
 
 			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ,
 					list[i].IS_TOTAL, list[i].MONTH_1, 'MONTH_1');
@@ -319,14 +347,18 @@
 			$("#setField").show();
 		}
 	}
-
-	function setSequentialDate() {
-
+	
+	
+	function chkboxFlag(chkboxId){
+		console.log('chkboxId==>' + chkboxId);
+		$("#criteria_chkbox").find('input[id^="chkbox_"]').each(function(i, item){
+			if($(item).attr("id") != chkboxId){
+				$(item).prop("checked", false);
+			}
+		});
 	}
+	
 
-	function setEqualNumber() {
-
-	}
 </script>
 <body>
 
@@ -337,18 +369,28 @@
 	</div>
 
 	<div class="panel panel-default" style="float: right;">
-		<button id="btnAdd" onclick="javascript:goAddChk();" type="button"
-			class="btn btn-success">
+		
+		<!-- 추가 -->
+		<button id="btnAdd" onclick="javascript:goAddChk();" type="button"	class="btn btn-success">
 			<spring:message code="com.btn.add" />
 		</button>
-		<!-- 추가 -->
-		<button id="btnDel" onclick="javascript:goDel();" type="button"
-			class="btn btn-danger">
-			<spring:message code="com.btn.delete" />
-		</button>
+		
 		<!-- 삭제 -->
-		<button id="btnSave" onclick="javascript:goSave();" type="button"
-			class="btn btn-primary">
+		<c:if test="${STD_YEAR == null}">
+			<button id="btnDel" onclick="javascript:goDel(this.id);" type="button"	class="btn btn-danger">
+				<spring:message code="com.btn.delete" />
+			</button>
+		</c:if>
+		
+		<!-- 삭제 -->
+		<c:if test="${STD_YEAR != null}">
+			<button id="btnDelDb" onclick="javascript:goDel(this.id);" type="button"	class="btn btn-danger">
+				<spring:message code="com.btn.delete" />
+			</button>
+		</c:if>
+		
+		
+		<button id="btnSave" onclick="javascript:goSave();" type="button" class="btn btn-primary">
 			<spring:message code="com.btn.save" />
 		</button>
 		<!-- 저장 -->
@@ -368,17 +410,20 @@
 
 	<!-- 전체 메뉴리스트 -->
 	<div class="table table-hover">
+	    <div>
+			<img src="/img/check-box.png" height="13px;" width="13px;" style="font-size: 13px;float: left;">&nbsp;&nbsp;<p style="font-size: 13px; float: left;">금액 일괄적용</p>
+			&nbsp;&nbsp;<img src="/img/delete-button.png" height="13px;" width="13px;" style="font-size: 13px;float: left;">&nbsp;&nbsp;<p style="font-size: 13px; float: left;">삭제</p>
+		</div>
 		<table class="table">
 			<thead class="thead-dark" align="center">
-				<!-- <tr id="setField">
-	      <th scope="col" width="*"></th>
-	      <th scope="col" width="20%"><button onclick="javascript:setSequentialDate();">순차적날짜 적용</button></th>  
-	      <th scope="col" width="18%"><button onclick="javascript:setEqualNumber();">동일금액 적용</button></th> 
-	      <th scope="col" width="18%"></th>  
-	      <th scope="col" width="18%"></th>  
-	      <th scope="col" width="18%"></th>  
-	      <th scope="col" width="18%"></th>  
-	    </tr> -->
+				<tr id="criteria_chkbox">
+					<th scope="col" width="5%"></th>
+					<th scope="col" width="10%"></th>
+					<c:forEach begin="1" end="12" var="month">
+						<th scope="col" width="7%"><input type="checkbox" id="chkbox_${month}" onchange="javascript:chkboxFlag(this.id);"></th>
+					</c:forEach>
+					<th scope="col" width="7%"></th>
+				</tr>
 				<tr id="monthHeader">
 					<th scope="col" width="5%"></th>
 					<th scope="col" width="10%"></th>
