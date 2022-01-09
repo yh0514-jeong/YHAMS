@@ -51,4 +51,6 @@ public interface AssetService {
 
 	int deleteYearlyAssetPlanList(HashMap<String, Object> param) throws Exception;
 
+	ArrayList<HashMap<String, Object>> yearlyAssetPlanList(HashMap<String, Object> param) throws Exception;
+
 }

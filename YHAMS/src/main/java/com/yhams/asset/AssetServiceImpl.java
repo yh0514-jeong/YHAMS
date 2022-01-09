@@ -196,11 +196,16 @@ public class AssetServiceImpl implements AssetService {
 	@Transactional(rollbackFor = Exception.class)
 	public int saveYearlyAssetPlanList(HashMap<String, Object> param) throws Exception {
 		
+	
+		
 		ArrayList<HashMap<String, Object>> list  = new ArrayList<HashMap<String,Object>>();
 		ObjectMapper mpr = new ObjectMapper();
 		int result = 0;
 		
 		try {
+			
+			result = mapper.deleteYearlyAssetPlanList(param);
+			
 			list = mpr.readValue(param.get("list").toString(), ArrayList.class);
 			
 			for(int i=0; i<list.size(); i++) {
@@ -230,6 +235,11 @@ public class AssetServiceImpl implements AssetService {
 	@Override
 	public int deleteYearlyAssetPlanList(HashMap<String, Object> param) throws Exception {
 		return mapper.deleteYearlyAssetPlanList(param);
+	}
+
+	@Override
+	public ArrayList<HashMap<String, Object>> yearlyAssetPlanList(HashMap<String, Object> param) throws Exception {
+		return mapper.yearlyAssetPlanList(param);
 	}
 
 }

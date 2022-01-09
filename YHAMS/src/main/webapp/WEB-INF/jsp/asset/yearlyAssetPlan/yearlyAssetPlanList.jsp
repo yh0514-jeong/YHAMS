@@ -34,7 +34,7 @@
 	 
 	 $.ajax({
 		    type : 'get',
-		    url : '/asset/unearnedList', 
+		    url : '/asset/yearlyAssetPlanList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
@@ -77,14 +77,13 @@
  
  function goNew(){
 	 var url    = "/asset/yearlyAssetPlanUpdate";
-	 var option = "width = 1200, height = 600, top = 100, left = 200, location = no";
-     window.open(url, name, option);
+	 window.open(url, 'newWin', 'height=' + screen.height + ',width=' + screen.width + 'fullscreen=yes');
  }
  
  function goUpdate(STD_YEAR){
 	 var url    = "/asset/yearlyAssetPlanUpdate?STD_YEAR=" + STD_YEAR;
-	 var option = "width = 1200, height = 600, top = 100, left = 200, location = no";
-     window.open(url, name, option);
+     window.open(url, 'newWin', 'height=' + screen.height + ',width=' + screen.width + 'fullscreen=yes');
+
  }
  
  
@@ -156,7 +155,9 @@ function goStringifyDelTarget(){
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon">자산계획 연도</div><!--자산계획 연도-->
     </div>
-    <input type="text" class="form-control" id="UED_CTG_NM"  onkeyup="javascript:enterkey();" style="width: 150px;">
+    <input type="number" class="form-control" id="START_YEAR"  onkeyup="javascript:enterkey();" style="width: 150px;">
+    &nbsp; ~ &nbsp;
+    <input type="number" class="form-control" id="END_YEAR"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
   &nbsp;
   <button type="button" class="btn btn-primary" onclick="javascript:list(1);"><spring:message code="com.btn.search"/></button> <!-- 검색 -->

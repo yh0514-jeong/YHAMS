@@ -114,6 +114,7 @@
 				async : false,
 				success : function(result) {
 					if (result.isExist == "FALSE") {
+						$("#yearlyAssetPlanList").empty();
 						goAdd(result);
 					} else {
 						if (confirm("해당연도의 지출계획이 이미 존재합니다. 불러오시겠습니까?")) {
@@ -146,8 +147,16 @@
 						+ '</th>';
 			}
 			html += '   <th scope="col" width="5%" '
-					+ (list[i].IS_TOTAL == 'total' ? 'total="total"' : '')
-					+ '>' + list[i].SUB_CTG_NM + '<img src="/img/check-box.png" height="13px;" width="13px;" style="font-size: 13px;float: right;">&nbsp;&nbsp;&nbsp;<img src="/img/delete-button.png" height="13px;" width="13px;" style="font-size: 13px;float: right;"></th>';
+					+ (list[i].IS_TOTAL == 'TOTAL' ? 'total="total"' : '')
+					+ '>' + list[i].SUB_CTG_NM;
+					
+			if(list[i].IS_TOTAL != 'TOTAL'){
+				let trId = list[i].MAIN_CTG + '__' +  list[i].USER_DEF_SEQ;
+				html +=	'<img id="' + trId + '" src="/img/check-box.png" height="13px;" width="13px;" style="font-size: 13px;float: right;cursor:pointer;" onclick="javascript:adaptSameValue(this.id);">&nbsp;&nbsp;&nbsp;';
+				html += '<img id="' + trId + '" src="/img/delete-button.png" height="13px;" width="13px;" style="font-size: 13px;float: right;cursor:pointer;" onclick="javascript:deleteRow(this.id);">';
+			}		
+			
+			html += '</th>';
 
 			html += generateHtml(list[i].MAIN_CTG, list[i].USER_DEF_SEQ,
 					list[i].IS_TOTAL, list[i].MONTH_1, 'MONTH_1');
@@ -210,15 +219,14 @@
 					+ id
 					+ '" type="text" value="'
 					+ value
-					+ '" style="width:60px;" onchange="javascript:numberCheck(this.id, this.value);"></th>';
+					+ '" style="width:90px;" onchange="javascript:numberCheck(this.id, this.value);"></th>';
 		}
 		return html;
 	}
 
 	function numberCheck(id, value) {
 
-		value = value.replace(/[^0-9]/g, "").replace(
-				/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+		value = value.replace(/[^0-9]/g, "").replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 		$("#" + id).val(value);
 
 		let idSplit = id.split('__');
@@ -236,14 +244,11 @@
 			}
 		});
 		$("p[id='" + idSplit[0] + '__' + idSplit[1] + "__TOTAL']")
-				.text(
-						hSum.toString().replace(
-								/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","));
+				.text(hSum.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","));
 
 		// 세로 합계 계산
 		let vSum = 0;
-		$("input[id^='" + idSplit[0] + "'][id$='" + idSplit[2] + "']").each(
-				function(i, item) {
+		$("input[id^='" + idSplit[0] + "'][id$='" + idSplit[2] + "']").each(function(i, item) {
 					if ($(item).val().trim().length == 0) {
 						return "boolean";
 					} else {
@@ -251,9 +256,7 @@
 					}
 				});
 		$("p[id='" + idSplit[0] + '__TOTAL__' + idSplit[2] + "']")
-				.text(
-						vSum.toString().replace(
-								/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","));
+				.text(vSum.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","));
 	}
 
 	function getUedCtgList() {
@@ -306,8 +309,7 @@
 					}
 				});
 
-		$("#expendPlanList").children().find("input[id^=UED_CTG_]").each(
-				function(i, value) {
+		$("#expendPlanList").children().find("input[id^=UED_CTG_]").each(function(i, value) {
 					if ($(this).val().trim().length == 0
 							|| $(this).val() == null) {
 						chkUedCtg++;
@@ -350,12 +352,32 @@
 	
 	
 	function chkboxFlag(chkboxId){
-		console.log('chkboxId==>' + chkboxId);
-		$("#criteria_chkbox").find('input[id^="chkbox_"]').each(function(i, item){
+		$("#criteria_chkbox").find('input[id^="MONTH_"]').each(function(i, item){
 			if($(item).attr("id") != chkboxId){
 				$(item).prop("checked", false);
 			}
 		});
+	}
+	
+	function adaptSameValue(id){
+	    
+		// 기준월 컬럼 가져오기
+		let stdMonth = $("#criteria_chkbox").find('input[id^="MONTH_"]:checked').attr('id');
+		
+		if(typeof stdMonth == 'undefined' || stdMonth == null){
+		   return;
+		}else{
+			let splId = id + '__' + stdMonth;
+			let selectedMonthItemVal = parseInt($("#" + splId).val().replace(/,/g, ""));
+			$("#" + id).closest('tr').find('input').each(function(i, item){
+				$(item).val(selectedMonthItemVal.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","));
+				numberCheck($(item).attr('id'), $(item).val());
+			});
+		}
+	}
+	
+	function deleteRow(id){
+	    alert('행 삭제');
 	}
 	
 
@@ -371,27 +393,37 @@
 	<div class="panel panel-default" style="float: right;">
 		
 		<!-- 추가 -->
-		<button id="btnAdd" onclick="javascript:goAddChk();" type="button"	class="btn btn-success">
-			<spring:message code="com.btn.add" />
-		</button>
-		
-		<!-- 삭제 -->
 		<c:if test="${STD_YEAR == null}">
-			<button id="btnDel" onclick="javascript:goDel(this.id);" type="button"	class="btn btn-danger">
-				<spring:message code="com.btn.delete" />
+			<button id="btnAdd" onclick="javascript:goAddChk();" type="button"	class="btn btn-success">
+				<spring:message code="com.btn.add" />
 			</button>
 		</c:if>
 		
 		<!-- 삭제 -->
-		<c:if test="${STD_YEAR != null}">
-			<button id="btnDelDb" onclick="javascript:goDel(this.id);" type="button"	class="btn btn-danger">
-				<spring:message code="com.btn.delete" />
-			</button>
-		</c:if>
+		<c:choose>
+			<c:when test="${STD_YEAR == null}">
+				<button id="btnDel" onclick="javascript:goDel(this.id);" type="button"	class="btn btn-danger">
+					삭제
+				</button>
+			</c:when>
+			<c:when test="${STD_YEAR != null}">
+				<button id="btnDelDb" onclick="javascript:goDel(this.id);" type="button" class="btn btn-danger">
+					삭제
+				</button>
+			</c:when>
+		</c:choose>	
 		
 		
+		<!-- 등록 -->
 		<button id="btnSave" onclick="javascript:goSave();" type="button" class="btn btn-primary">
-			<spring:message code="com.btn.save" />
+			<c:choose>
+				<c:when test="${STD_YEAR == null}">
+					신규등록
+				</c:when>
+				<c:otherwise>
+					수정
+				</c:otherwise>
+			</c:choose>
 		</button>
 		<!-- 저장 -->
 	</div>
@@ -420,7 +452,7 @@
 					<th scope="col" width="5%"></th>
 					<th scope="col" width="10%"></th>
 					<c:forEach begin="1" end="12" var="month">
-						<th scope="col" width="7%"><input type="checkbox" id="chkbox_${month}" onchange="javascript:chkboxFlag(this.id);"></th>
+						<th scope="col" width="7%"><input type="checkbox" id="MONTH_${month}" onchange="javascript:chkboxFlag(this.id);"></th>
 					</c:forEach>
 					<th scope="col" width="7%"></th>
 				</tr>

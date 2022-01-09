@@ -4,21 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -713,5 +711,36 @@ public class AssetController {
 		
 	}
 	
+	@GetMapping("/yearlyAssetPlanList")
+	@ResponseBody
+	public HashMap<String, Object> yearlyAssetPlanList(@RequestParam(required = true) HashMap<String, Object> param,
+														 HttpSession session,
+											             HttpServletRequest request,
+											             HttpServletResponse response){
+		log.info("yearlyAssetPlanList called...");
+		HashMap<String, Object> result = new HashMap<>();
+		ArrayList<HashMap<String, Object>> list = new ArrayList<>();
+		
+		
+		try {
+			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
+			log.info("param : {}", param.toString());
+			//total = assetService.yearlyAssetPlanListCount(param);
+			list  = assetService.yearlyAssetPlanList(param);
+			
+			//PagingUtil pagingUtil = new PagingUtil(10, cntPerPage, total);
+			//Map<String, Object> block = pagingUtil.getFixedBlock(curPage);
+			//result.put("block", block);
+			//result.put("total", total);
+			result.put("list",  list);
+			result.put("result", CommonContraint.SUCCEESS);
+			
+		}catch (Exception e) {
+			result.put("result", CommonContraint.FAIL);
+			e.printStackTrace();
+		}
+		
+		return result;
+	}
 	
 }
