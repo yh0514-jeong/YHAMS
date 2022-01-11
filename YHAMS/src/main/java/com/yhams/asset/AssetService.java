@@ -53,4 +53,6 @@ public interface AssetService {
 
 	ArrayList<HashMap<String, Object>> yearlyAssetPlanList(HashMap<String, Object> param) throws Exception;
 
+	long yearlyAssetPlanListCount(HashMap<String, Object> param) throws Exception;
+
 }

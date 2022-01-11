@@ -24,10 +24,8 @@
 	 }
 	 
 	 var param = {
-	    START_DATE    : $("#START_DATE").val().trim(),
-	    END_DATE      : $("#END_DATE").val().trim(),
-	    UED_SOURCE    : $("#UEN_SOURCE").val().trim(),
-	    UED_CTG_NM    : $("#UED_CTG_NM").val().trim(),
+		START_YEAR    : $("#START_YEAR").val(),
+		END_YEAR      : $("#END_YEAR").val(),
 		cntPerPage    : $("#cntPerPage").val(),
 		curPage       : $("#curPage").val()
 	 };
@@ -38,7 +36,8 @@
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
-		    	if(result.resultCode == "success"){
+		    	console.log(JSON.stringify(result));
+		    	if(result.result == "success"){
 		    		$("#list").empty();
 		    		var data = result.list;
 		    		drawPaging(result.block);
@@ -50,15 +49,15 @@
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
 			    			html += '<tr align="center">';
-				    		html += '    <td scope="row"><input type="checkbox" value="' + data[i].UED_SEQ + '"></td>';
+				    		html += '    <td scope="row"><input type="checkbox" value="' + data[i].STD_YEAR + '"></td>';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_DATE + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_INCM + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_SOURCE + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_CTG_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].STD_YEAR + '</td>';
+				    		html += '    <td scope="row">' + data[i].DW_CAT1_01_AMOUNT + '</td>';
+				    		html += '    <td scope="row">' + data[i].DW_CAT1_02_AMOUNT + '</td>';
+				    		html += '    <td scope="row">' + data[i].NET_AMOUNT + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goUpdate(\'' + data[i].UED_SEQ +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
-				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].UED_SEQ +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
+				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goUpdate(\'' + data[i].STD_YEAR +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
+				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].STD_YEAR +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -180,9 +179,9 @@ function goStringifyDelTarget(){
 	      <th scope="col" width="5%"></th>
 	      <th scope="col" width="5%"><spring:message code="com.txt.number"/></th><!-- No. -->
 	      <th scope="col" width="15%">계획연도</th><!-- 계획연도 -->
+	      <th scope="col" width="15%">수입계획액</th><!-- 수입계획액 -->
 	      <th scope="col" width="15%">지출계획액</th><!-- 지출계획액 -->
-	      <th scope="col" width="15%">실지출액</th><!-- 실지출액 -->
-	      <th scope="col" width="20%">오차(지출예정액-실지출액)</th><!-- 오차(지출예정액-실지출액) -->
+	      <th scope="col" width="25%">실투자액(수입계획액-지출계획액)</th><!-- 실투자액(수입계획액-지출계획액) -->
 	      <th scope="col" width="*"></th>
 	    </tr>
 	  </thead>

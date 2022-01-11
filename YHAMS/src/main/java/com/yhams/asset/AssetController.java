@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -721,17 +720,21 @@ public class AssetController {
 		HashMap<String, Object> result = new HashMap<>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<>();
 		
+		long total       = 0;
+		int cntPerPage   = param.get("cntPerPage") == null ? 10 : Integer.parseInt(param.get("cntPerPage").toString());
+		int curPage      = param.get("curPage")    == null ? 1 : Integer.parseInt(param.get("curPage").toString());
+		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
 		
 		try {
 			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
 			log.info("param : {}", param.toString());
-			//total = assetService.yearlyAssetPlanListCount(param);
+			total = assetService.yearlyAssetPlanListCount(param);
 			list  = assetService.yearlyAssetPlanList(param);
 			
-			//PagingUtil pagingUtil = new PagingUtil(10, cntPerPage, total);
-			//Map<String, Object> block = pagingUtil.getFixedBlock(curPage);
-			//result.put("block", block);
-			//result.put("total", total);
+			PagingUtil pagingUtil = new PagingUtil(10, cntPerPage, total);
+			Map<String, Object> block = pagingUtil.getFixedBlock(curPage);
+			result.put("block", block);
+			result.put("total", total);
 			result.put("list",  list);
 			result.put("result", CommonContraint.SUCCEESS);
 			

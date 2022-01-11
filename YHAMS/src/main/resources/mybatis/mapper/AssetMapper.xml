@@ -19,6 +19,19 @@
 	</sql>
 	
 	
+	<sql id="yearlyAssetPlanWhere">
+	
+		 <if test="START_YEAR != null and START_YEAR != ''">
+		   	  AND T1.STD_YEAR  <![CDATA[ >= ]]> #{START_YEAR}
+		  </if> 
+		   
+		  <if test="END_YEAR != null and END_YEAR != ''">
+		   	  AND T1.STD_YEAR <![CDATA[ <= ]]> #{END_YEAR}
+		  </if> 
+	
+	</sql>
+	
+	
 	<sql id="cmmUnearnedWhere">
 			AND   A.USER_SEQ = #{USER_SEQ}
 			
@@ -819,9 +832,9 @@
 	 
 	 	SELECT  X.RNUM,
 			    X.STD_YEAR,
-		        X.DW_CAT1_01_AMOUNT,
-		        X.DW_CAT1_02_AMOUNT,
-			    IFNULL(X.DW_CAT1_01_AMOUNT, 0) -  IFNULL(X.DW_CAT1_02_AMOUNT, 0) AS NET_AMOUNT
+		        FORMAT(X.DW_CAT1_01_AMOUNT, 0) AS DW_CAT1_01_AMOUNT,
+		        FORMAT(X.DW_CAT1_02_AMOUNT, 0) AS DW_CAT1_02_AMOUNT,
+			    FORMAT(IFNULL(X.DW_CAT1_01_AMOUNT, 0) -  IFNULL(X.DW_CAT1_02_AMOUNT, 0), 0) AS NET_AMOUNT
 		 
 	   FROM (
 				SELECT   ROW_NUMBER() OVER (ORDER BY T1.STD_YEAR DESC) AS RNUM,
@@ -859,13 +872,7 @@
 							
 						   WHERE 1=1
 						   
-						   <if test="START_YEAR != null and START_YEAR != ''">
-						   	  AND T1.STD_YEAR  <![CDATA[ >= ]]> 2022
-						   </if> 
-						   
-						   <if test="END_YEAR != null and END_YEAR != ''">
-						   	  AND T1.STD_YEAR <![CDATA[ <= ]]>   2023
-						   </if> 
+						   <include refid="yearlyAssetPlanWhere"/>
 							 
 			) X
 			
@@ -875,5 +882,50 @@
 	 
 	 </select>
 	 
+	 
+	 <select id="yearlyAssetPlanListCount" parameterType="java.util.HashMap" resultType="long">
+	 
+	 	SELECT  COUNT(*)
+		 
+	     FROM (
+				SELECT   T1.STD_YEAR,
+				         T2.AMOUNT AS DW_CAT1_01_AMOUNT,
+				         T3.AMOUNT AS DW_CAT1_02_AMOUNT
+				  FROM   (SELECT DISTINCT STD_YEAR 
+							FROM TB_TRAN_YEARLY_ASSET_PLAN
+						  ) T1
+							
+						  LEFT OUTER JOIN
+						  (SELECT  USER_SEQ,
+								   STD_YEAR,
+							       MAIN_CTG,
+							       SUM(AMOUNT) AS AMOUNT
+							 FROM  TB_TRAN_YEARLY_ASSET_PLAN
+							WHERE  USER_SEQ = #{USER_SEQ}
+							 AND   MAIN_CTG = 'DW_CAT1_01'
+							GROUP BY USER_SEQ, STD_YEAR, MAIN_CTG			
+						   ) T2
+	     				   ON T1.STD_YEAR = T2.STD_YEAR
+							
+						  LEFT OUTER JOIN
+						  (SELECT  USER_SEQ,
+								   STD_YEAR,
+							       MAIN_CTG,
+							       SUM(AMOUNT) AS AMOUNT
+							 FROM  TB_TRAN_YEARLY_ASSET_PLAN
+							WHERE  USER_SEQ = #{USER_SEQ}
+						     AND   MAIN_CTG = 'DW_CAT1_02'
+							GROUP BY USER_SEQ, STD_YEAR, MAIN_CTG			
+						   ) T3
+							
+						   ON T1.STD_YEAR = T3.STD_YEAR
+							
+						   WHERE 1=1
+						   
+						   <include refid="yearlyAssetPlanWhere"/>
+							 
+			) X
+	 
+	 </select>
 	 
 </mapper>

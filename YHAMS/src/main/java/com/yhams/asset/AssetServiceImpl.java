@@ -242,4 +242,9 @@ public class AssetServiceImpl implements AssetService {
 		return mapper.yearlyAssetPlanList(param);
 	}
 
+	@Override
+	public long yearlyAssetPlanListCount(HashMap<String, Object> param) throws Exception {
+		return mapper.yearlyAssetPlanListCount(param);
+	}
+
 }
