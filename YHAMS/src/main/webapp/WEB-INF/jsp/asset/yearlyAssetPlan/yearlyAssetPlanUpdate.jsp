@@ -135,16 +135,18 @@
 		let finalHtml = '';
 
 		for (let i = 0; i < list.length; i++) {
-			html = '<tr>';
 			if (list[i].IS_HEAD == "HEAD") {
-				html += '   <th id="' + list[i].MAIN_CTG + '__HEAD" scope="col" width="5%" head="head" rowSpan="'
+				html = '<tr id="' + list[i].MAIN_CTG +'__head" head="head">';
+				html += '   <th scope="col" width="5%" head="head" rowSpan="'
 						+ (list[i].MAIN_CTG == 'DW_CAT1_01' ? dwCat101Cnt
 								: dwCat102Cnt) + '">' + list[i].MAIN_CTG_NM
 						+ '</th>';
+			}else{
+				html = '<tr>';
 			}
-			html += '   <th scope="col" width="5%" '
-					+ (list[i].IS_TOTAL == 'TOTAL' ? 'total="total"' : '')
-					+ '>' + list[i].SUB_CTG_NM;
+				html += '   <th scope="col" width="5%" '
+						+ (list[i].IS_TOTAL == 'TOTAL' ? 'total="total"' : '')
+						+ '>' + list[i].SUB_CTG_NM;
 					
 			if(list[i].IS_TOTAL != 'TOTAL'){
 				let trId = list[i].MAIN_CTG + '__' +  list[i].USER_DEF_SEQ;
@@ -296,11 +298,16 @@
 	}
 	
 	function deleteRow(target){
+		$.headTr     = $(target).closest('tr');
 		let category = $(target).attr('id').split('__')[0];
-		$.headTh     =  $("#yearlyAssetPlanList").find('th[id="'+  category + '__HEAD"]');
-		let rowspan = $.headTh.attr('rowspan');
+		let rowspan  = $("#"+category+"__head").children('th').first().attr('rowspan');
+		
+		$("#"+category+"__head").children('th').first().attr('rowspan', rowspan-1);	
+		if($.headTr.attr('head') == 'head'){
+			$("#"+category+"__head").children('th').first().prependTo($.headTr.next());
+			$.headTr.next().attr('head', 'head').attr('id', category+"__head");
+		}
 		$(target).closest('tr').remove();
-		$.headTh.attr('rowspan', rowspan-1);
 	}
 	
 
