@@ -1,8 +1,10 @@
 package com.yhams.asset;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,10 +195,9 @@ public class AssetServiceImpl implements AssetService {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = Exception.class)
 	public int saveYearlyAssetPlanList(HashMap<String, Object> param) throws Exception {
-		
-	
 		
 		ArrayList<HashMap<String, Object>> list  = new ArrayList<HashMap<String,Object>>();
 		ObjectMapper mpr = new ObjectMapper();
@@ -205,7 +206,6 @@ public class AssetServiceImpl implements AssetService {
 		try {
 			
 			result = mapper.deleteYearlyAssetPlanList(param);
-			
 			list = mpr.readValue(param.get("list").toString(), ArrayList.class);
 			
 			for(int i=0; i<list.size(); i++) {
@@ -224,12 +224,11 @@ public class AssetServiceImpl implements AssetService {
 				result++;
 			}
 			
-			
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return 0;
+		return result;
 	}
 
 	@Override
@@ -245,6 +244,26 @@ public class AssetServiceImpl implements AssetService {
 	@Override
 	public long yearlyAssetPlanListCount(HashMap<String, Object> param) throws Exception {
 		return mapper.yearlyAssetPlanListCount(param);
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int deleteYearlyAssetPlanListByStdYears(HashMap<String, Object> param) throws Exception {
+		
+		String[] years = param.get("STD_YEAR").toString().split(",");
+		int result = 0;
+		
+	    try {
+	    	for(int i=0; i<years.length; i++) {
+	    		param.put("STD_YEAR", years[i]);
+	    		result += mapper.deleteYearlyAssetPlanList(param);
+			}
+	    }catch (Exception e) {
+	    	e.printStackTrace();
+	    	result =  -1;
+		}
+	    
+		return result;
 	}
 
 }

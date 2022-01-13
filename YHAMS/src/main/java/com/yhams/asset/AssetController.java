@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -683,7 +684,13 @@ public class AssetController {
 		try{
 			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
 			int r = assetService.saveYearlyAssetPlanList(param);
+			if(r > 0) {
+				result.put("result", CommonContraint.SUCCEESS);
+			}else {
+				result.put("result", CommonContraint.FAIL);
+			}
 		}catch (Exception e) {
+			result.put("result", CommonContraint.FAIL);
 			e.printStackTrace();
 		}
 		return result;
@@ -743,6 +750,30 @@ public class AssetController {
 			e.printStackTrace();
 		}
 		
+		return result;
+	}
+	
+	
+	@PostMapping("/deleteYearlyAssetPlanListByStdYears")
+	@ResponseBody
+	public HashMap<String, Object> deleteYearlyAssetPlanListByStdYears(@RequestParam(required = true) HashMap<String, Object> param,
+																HttpSession session,
+																HttpServletRequest request,
+																HttpServletResponse response){
+		log.info("deleteYearlyAssetPlanListByStdYears... param : {}", param);
+		HashMap<String, Object> result = new HashMap<>();
+		try {
+			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
+			int r = assetService.deleteYearlyAssetPlanListByStdYears(param);
+			if(r > 0) {
+				result.put("result", CommonContraint.SUCCEESS);
+			}else {
+				result.put("result", CommonContraint.FAIL);
+			}
+		}catch (Exception e) {
+			result.put("result", CommonContraint.FAIL);
+			e.printStackTrace();
+		}
 		return result;
 	}
 	

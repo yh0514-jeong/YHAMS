@@ -69,10 +69,9 @@
 
 	function goDel(btnId) {
 		if(btnId == 'btnDelDb'){
-			if(confirm('데이터베이스에 저장된 하기 연자산계획이 삭제됩니다.\n 그래도 삭제하시겠습니까?')){
+			if(confirm('<spring:message code="com.yearlyAssetPlan.chkDeleteWhenDbExist"/>')){  // 데이터베이스에 저장된 하기 연자산계획이 삭제됩니다. 그래도 삭제하시겠습니까?
 				let param = {};
 				param.STD_YEAR = $("#STD_YEAR").val()
-				alert('param==>' + JSON.stringify(param));
 				$.ajax({
 					type : 'post',
 					url : '/asset/deleteYearlyAssetPlanList',
@@ -81,18 +80,18 @@
 					async : false,
 					success : function(result) {
 						if(result.result == "success"){
-							alert("성공적으로 삭제되었습니다.");
+							alert('<spring:message code="com.msg.deleteSuccess"/>');  // 삭제 성공
 							 var url = '/asset/yearlyAssetPlanUpdate';
 							 window.location.href= url;
 						}else{
-							alert("삭제에 실패하였습니다.");
+							alert('<spring:message code="com.msg.deleteFail"/>');  // 삭제 실패
 						}
 					}
 				});
 				
 			}
 		}else if(btnId == 'btnDel'){
-			if(confirm('하기 연자산계획 내역을 삭제하시겠습니까?')){
+			if(confirm('<spring:message code="com.yearlyAssetPlan.chkDeletePlanBelow"/>')){  // 하기 연자산계획 내역을 삭제하시겠습니까? 
 				$("#yearlyAssetPlanList").empty();
 			}
 			
@@ -101,7 +100,7 @@
 
 	function goAddChk() {
 		if ($("#STD_YEAR").val().trim().length == 0) {
-			alert("계획연도를 입력해주세요.");
+			alert('<spring:message code="com.yearlyAssetPlan.chkYearlyAssetPlanYear"/>');  // 계획연도를 입력해주세요.
 			return;
 		} else {
 			var param = {};
@@ -117,7 +116,7 @@
 						$("#yearlyAssetPlanList").empty();
 						goAdd(result);
 					} else {
-						if (confirm("해당연도의 지출계획이 이미 존재합니다. 불러오시겠습니까?")) {
+						if (confirm('<spring:message code="com.yearlyAssetPlan.chkCallYearlyAssetPlanYear"/>')) {  // 해당연도의 지출계획이 이미 존재합니다. 불러오시겠습니까?
 							 var url = '/asset/yearlyAssetPlanUpdate?STD_YEAR=' + param.STD_YEAR;
 							 window.location.href= url;
 						}
@@ -130,18 +129,15 @@
 	function goAdd(result) {
 		
 		result = typeof result == 'string' ? JSON.parse(result) : result;
-		
 		let list = result.userYearlyPlanTemplate;
-		
 		let dwCat101Cnt = result.dwCat101Cnt;
 		let dwCat102Cnt = result.dwCat102Cnt;
-
 		let finalHtml = '';
 
 		for (let i = 0; i < list.length; i++) {
 			html = '<tr>';
 			if (list[i].IS_HEAD == "HEAD") {
-				html += '   <th scope="col" width="5%" head="head" rowSpan="'
+				html += '   <th id="' + list[i].MAIN_CTG + '__HEAD" scope="col" width="5%" head="head" rowSpan="'
 						+ (list[i].MAIN_CTG == 'DW_CAT1_01' ? dwCat101Cnt
 								: dwCat102Cnt) + '">' + list[i].MAIN_CTG_NM
 						+ '</th>';
@@ -153,7 +149,7 @@
 			if(list[i].IS_TOTAL != 'TOTAL'){
 				let trId = list[i].MAIN_CTG + '__' +  list[i].USER_DEF_SEQ;
 				html +=	'<img id="' + trId + '" src="/img/check-box.png" height="13px;" width="13px;" style="font-size: 13px;float: right;cursor:pointer;" onclick="javascript:adaptSameValue(this.id);">&nbsp;&nbsp;&nbsp;';
-				html += '<img id="' + trId + '" src="/img/delete-button.png" height="13px;" width="13px;" style="font-size: 13px;float: right;cursor:pointer;" onclick="javascript:deleteRow(this.id);">';
+				html += '<img id="' + trId + '" src="/img/delete-button.png" height="13px;" width="13px;" style="font-size: 13px;float: right;cursor:pointer;" onclick="javascript:deleteRow(this);">';
 			}		
 			
 			html += '</th>';
@@ -199,7 +195,6 @@
 		let id = mainCtg;
 		value = value == null || '' ? '' : value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
 				
-
 		if (isTotal == 'TOTAL') {
 			id += '__' + isTotal + '__' + month;
 		} else {
@@ -273,83 +268,6 @@
 		return l;
 	}
 
-	function formCheck() {
-
-		var chkUedDate = 0;
-		var chkUedIncm = 0;
-		var chkUedSource = 0;
-		var chkUedCtg = 0;
-
-		if ($("#expendPlanList tr").length == 0) {
-			alert('<spring:message code="com.msg.chkAddList"/>'); // 추가할 내용이 없습니다.
-			return false;
-		}
-
-		$("#expendPlanList").children().find("input[id^=UED_DATE_]").each(
-				function(i, value) {
-					if ($(this).val().trim().length == 0
-							|| $(this).val() == null) {
-						chkUedDate++;
-					}
-				});
-
-		$("#expendPlanList").children().find("input[id^=UED_INCM_]").each(
-				function(i, value) {
-					if ($(this).val().trim().length == 0
-							|| $(this).val() == null) {
-						chkUedIncm++;
-					}
-				});
-
-		$("#expendPlanList").children().find("input[id^=UED_SOURCE_]").each(
-				function(i, value) {
-					if ($(this).val().trim().length == 0
-							|| $(this).val() == null) {
-						chkUedSource++;
-					}
-				});
-
-		$("#expendPlanList").children().find("input[id^=UED_CTG_]").each(function(i, value) {
-					if ($(this).val().trim().length == 0
-							|| $(this).val() == null) {
-						chkUedCtg++;
-					}
-				});
-
-		if (chkUedDate + chkUedIncm + chkUedSource + chkUedCtg == 0) {
-			return true;
-		} else {
-			var mesg = '';
-			if (chkUedDate > 0) {
-				mesg += '<spring:message code="com.unearned.uenDate"/>'; // 수입일
-			}
-			if (chkUedIncm > 0) {
-				mesg == '' ? mesg += '' : mesg += ',';
-				mesg += '<spring:message code="com.unearned.uenIncm"/>'; // 금액
-			}
-			if (chkUedSource > 0) {
-				mesg == '' ? mesg += '' : mesg += ',';
-				mesg += '<spring:message code="com.unearned.uenSource"/>'; // 수입처
-			}
-			if (chkUedCtg > 0) {
-				mesg == '' ? mesg += '' : mesg += ',';
-				mesg += '<spring:message code="com.unearned.uenCtg"/>'; // 수입분류
-			}
-			alert(mesg + '<spring:message code="com.msg.pleaseChk"/>'); // ..를 확인해주세요.
-			return false;
-		}
-
-	}
-
-
-	function setFeildToggle() {
-		if ($("#expendPlanList").children().length == 0) {
-			$("#setField").hide();
-		} else {
-			$("#setField").show();
-		}
-	}
-	
 	
 	function chkboxFlag(chkboxId){
 		$("#criteria_chkbox").find('input[id^="MONTH_"]').each(function(i, item){
@@ -365,6 +283,7 @@
 		let stdMonth = $("#criteria_chkbox").find('input[id^="MONTH_"]:checked').attr('id');
 		
 		if(typeof stdMonth == 'undefined' || stdMonth == null){
+			alert('<spring:message code="com.yearlyAssetPlan.chkStdYear"/>');  // 선택된 기준 월이 없습니다.
 		   return;
 		}else{
 			let splId = id + '__' + stdMonth;
@@ -376,8 +295,12 @@
 		}
 	}
 	
-	function deleteRow(id){
-	    alert('행 삭제');
+	function deleteRow(target){
+		let category = $(target).attr('id').split('__')[0];
+		$.headTh     =  $("#yearlyAssetPlanList").find('th[id="'+  category + '__HEAD"]');
+		let rowspan = $.headTh.attr('rowspan');
+		$(target).closest('tr').remove();
+		$.headTh.attr('rowspan', rowspan-1);
 	}
 	
 
@@ -403,12 +326,12 @@
 		<c:choose>
 			<c:when test="${STD_YEAR == null}">
 				<button id="btnDel" onclick="javascript:goDel(this.id);" type="button"	class="btn btn-danger">
-					삭제
+					<spring:message code="com.btn.delete" /> <!-- 삭제 -->
 				</button>
 			</c:when>
 			<c:when test="${STD_YEAR != null}">
 				<button id="btnDelDb" onclick="javascript:goDel(this.id);" type="button" class="btn btn-danger">
-					삭제
+					<spring:message code="com.btn.delete" /> <!-- 삭제 -->
 				</button>
 			</c:when>
 		</c:choose>	
@@ -418,10 +341,10 @@
 		<button id="btnSave" onclick="javascript:goSave();" type="button" class="btn btn-primary">
 			<c:choose>
 				<c:when test="${STD_YEAR == null}">
-					신규등록
+					<spring:message code="com.btn.register" /> <!-- 등록 -->
 				</c:when>
 				<c:otherwise>
-					수정
+					<spring:message code="com.btn.update" /> <!-- 수정 -->
 				</c:otherwise>
 			</c:choose>
 		</button>
@@ -432,8 +355,7 @@
 		aria-label="Toolbar with button groups">
 		<div class="input-group">
 			<div class="input-group-prepend">
-				<div class="input-group-text" id="btnGroupAddon">계획연도</div>
-				<!-- 계획연도 -->
+				<div class="input-group-text" id="btnGroupAddon"><spring:message code="com.yearlyAssetPlan.planYear" /></div> <!-- 계획연도 --> 
 			</div>
 			<input type="number" class="form-control" id="STD_YEAR">
 		</div>

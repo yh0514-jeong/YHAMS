@@ -86,17 +86,17 @@
  }
  
  
- function goDel(uedSeqs){
+ function goDel(stdYears){
 	 
 	 if(!confirm('<spring:message code="com.msg.chkSelectedDelete"/>')) return;   // 선택된 항목을 삭제하시겠습니까?
 	 
 	 var param = {
-	    'UED_SEQS' : uedSeqs
+	    'STD_YEAR' : stdYears
 	 };
 	 
 	 $.ajax({
 		    type : 'POST',
-		    url : '/asset/deleteUnearedList', 
+		    url : '/asset/deleteYearlyAssetPlanListByStdYears', 
 		    dataType : 'json',
 		    data : param,
 		    success : function(result) { 
@@ -152,7 +152,7 @@ function goStringifyDelTarget(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">자산계획 연도</div><!--자산계획 연도-->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.yearlyAssetPlan.planYear"/></div><!--자산계획 연도-->
     </div>
     <input type="number" class="form-control" id="START_YEAR"  onkeyup="javascript:enterkey();" style="width: 150px;">
     &nbsp; ~ &nbsp;
@@ -178,10 +178,10 @@ function goStringifyDelTarget(){
 	    <tr>
 	      <th scope="col" width="5%"></th>
 	      <th scope="col" width="5%"><spring:message code="com.txt.number"/></th><!-- No. -->
-	      <th scope="col" width="15%">계획연도</th><!-- 계획연도 -->
-	      <th scope="col" width="15%">수입계획액</th><!-- 수입계획액 -->
-	      <th scope="col" width="15%">지출계획액</th><!-- 지출계획액 -->
-	      <th scope="col" width="25%">실투자액(수입계획액-지출계획액)</th><!-- 실투자액(수입계획액-지출계획액) -->
+	      <th scope="col" width="15%"><spring:message code="com.yearlyAssetPlan.planYear"/></th><!-- 계획연도 -->
+	      <th scope="col" width="15%"><spring:message code="com.yearlyAssetPlan.incomeAmountPlan"/></th><!-- 수입계획액 -->
+	      <th scope="col" width="15%"><spring:message code="com.yearlyAssetPlan.expendAmountPlan"/></th><!-- 지출계획액 -->
+	      <th scope="col" width="25%"><spring:message code="com.yearlyAssetPlan.netInvestAmount"/></th><!-- 실투자액(수입계획액-지출계획액) -->
 	      <th scope="col" width="*"></th>
 	    </tr>
 	  </thead>
