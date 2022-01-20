@@ -245,7 +245,6 @@ function setFeildToggle(){
     <h5 class="panel-title">일단위지출계획 등록</h5>
   </div>
 </div>
-
 <div class="panel panel-default" style="float: right;">
 	<button id="btnAdd" onclick="javascript:goAdd();" type="button" class="btn btn-success"><spring:message code="com.btn.add"/></button><!-- 추가 -->
 	<button id="btnDel" onclick="javascript:goDel();" type="button" class="btn btn-danger"><spring:message code="com.btn.delete"/></button><!-- 삭제 -->
@@ -258,6 +257,7 @@ function setFeildToggle(){
       <div class="input-group-text" id="btnGroupAddon">계획연월</div><!-- 계획연월 -->
     </div>
     <input type="text" class="form-control" id="STD_YEAR_MONTH" onchange="javascript:chkDupYearMonth(this.value);">
+ 	<p id="amountOfExpendPlan" style="float: left;">해당월 가용 지출액 : </p>
   </div>
 </div>
 
