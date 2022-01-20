@@ -13,8 +13,6 @@
 
 var trCnt = 0; 
 
-let EXP_PLAN_SEQ = '${EXP_PLAN_SEQ}';
-
 $(document).ready(function() {
 	
 	$("#STD_YEAR_MONTH").datepicker({
@@ -24,6 +22,9 @@ $(document).ready(function() {
         dateFormat: 'yy-mm',
         onClose: function(dateText, inst) { 
             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+        },
+        onSelect: function(dateText){
+        	$("#expendPlanList").empty();
         }
 	});
 	
@@ -86,23 +87,32 @@ function goDel(){
 
 function goAdd(){
 	
-	var html = "";
+	if($("#STD_YEAR_MONTH").val() == '' || $("#STD_YEAR_MONTH").val() == null){
+		alert('계획연월을 입력해주세요');
+		return;
+	}
+	
+	let selectedDate = $("#STD_YEAR_MONTH").val().split('-');
+	let lastDay = new Date(parseInt(selectedDate[0]), parseInt(selectedDate[1]), 0).getDate();
+	
+	for(let i=1; i<=lastDay; i++){
+		
+		var html = "";
 	    html += '<tr id="UED_SEQ_' + trCnt + '">';
 	    html += '	<td scope="col"><input id="CHKUEDSEQ_' +  trCnt + '"  type="checkbox"></td>';
 	    html += '	<td scope="col"><input id="UED_DATE_' +  trCnt + '"   type="text"  style="width: 110px;"></td>';   
 	    html += '	<td scope="col"><input id="UED_INCM_' +  trCnt + '"   onChange="numberCheck(this.id, this.value);" type="text" style="width: 110px;"></td>';    
-	    html += '	<td scope="col"><input id="UED_SOURCE_' +  trCnt + '" type="text" style="width: 110px;"></td>';   
-	    html += '	<td scope="col"><input id="UED_SOURCE_' +  trCnt + '" type="text" style="width: 110px;"></td>';   
-	    html += '	<td scope="col"><input id="UED_SOURCE_' +  trCnt + '" type="text" style="width: 110px;"></td>';   
-	    html += '	<td scope="col"><input id="UED_SOURCE_' +  trCnt + '" type="text" style="width: 110px;"></td>';   
+	    html += '	<td scope="col"><p></p></td>';   
+	    html += '	<td scope="col"><p></p></td>';   
+	    html += '	<td scope="col"><p></p></td>';   
+	    html += '	<td scope="col"><p></p></td>';   
 	    html += '</tr>';
 	    
-    $("#expendPlanList").append(html);
-	$("#UED_DATE_" + trCnt).datepicker({dateFormat: 'yy-mm-dd'});
-	trCnt = trCnt+1;
-	$("#chkAll").attr("checked", false);
+	    $("#expendPlanList").append(html);
+		$("#UED_DATE_" + trCnt).datepicker({dateFormat: 'yy-mm-dd'}).datepicker('setDate', $("#STD_YEAR_MONTH").val() + '-' + i);
+		trCnt = trCnt+1;
+	}
 	
-	setFeildToggle();
 }
 
 function numberCheck(id, value){
@@ -226,24 +236,13 @@ function setFeildToggle(){
 		$("#setField").show();
 	}
 }
-
-function setSequentialDate(){
-	
-	
-}
-
-function setEqualNumber(){
-	
-	
-	
-}
 	
 </script>
 <body>
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5 class="panel-title">지출계획 등록</h5>
+    <h5 class="panel-title">일단위지출계획 등록</h5>
   </div>
 </div>
 
@@ -267,15 +266,6 @@ function setEqualNumber(){
 <div class="table table-hover">	
 	<table class="table">
 	  <thead class="thead-dark" align="center">
-	  	<tr id="setField">
-	      <th scope="col" width="*"></th>
-	      <th scope="col" width="20%"><button onclick="javascript:setSequentialDate();">순차적날짜 적용</button></th> <!--  순차적날짜 적용 버튼 -->
-	      <th scope="col" width="18%"><button onclick="javascript:setEqualNumber();">동일금액 적용</button></th>   <!--  동일금액 적용 버튼 -->
-	      <th scope="col" width="18%"></th>   <!-- -->
-	      <th scope="col" width="18%"></th>   <!-- -->
-	      <th scope="col" width="18%"></th>   <!-- -->
-	      <th scope="col" width="18%"></th>   <!-- -->
-	    </tr>
 	    <tr>
 	      <th scope="col" width="*"><input id="chkAll" type="checkbox" onchange="javascript:checkFlag(this);"></th>
 	      <th scope="col" width="18%">날짜</th>          <!--  날짜 -->

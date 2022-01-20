@@ -76,8 +76,8 @@
  }
  
  function goNew(){
-	 var url    = "/expend/expendPlanUpdate";
-	 var option = "width = 850, height = 500, top = 100, left = 200, location = no";
+	 var url    = "/expend/dailyExpendPlanUpdate";
+	 var option = "width = 1000, height = 900, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
  
@@ -145,10 +145,10 @@ function goStringifyDelTarget(){
 <body>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5 class="panel-title">지출계획</h5>
+    <h5 class="panel-title">알단위지출계획</h5>
   </div>
   <div class="panel-body">
-    지출관리 > 지출계획
+    지출관리 > 일단위지출계획
   </div>
 </div>
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">

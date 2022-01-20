@@ -42,10 +42,10 @@ public class ExpendController {
 	CommonService commonService;
 	
 	
-	@RequestMapping(value = "/expendPlan")
+	@RequestMapping(value = "/dailyExpendPlan")
 	public ModelAndView accountManageMain() {
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("expend/plan/expendPlanList");
+		mv.setViewName("expend/dailyExpendPlan/dailyExpendPlanList");
 		return mv;
 	}
 	
@@ -266,10 +266,10 @@ public class ExpendController {
 	
 	
 	
-	@RequestMapping(value = "/expendPlanUpdate")
+	@RequestMapping(value = "/dailyExpendPlanUpdate")
 	public ModelAndView expendPlanUpdate() {
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("expend/plan/expendPlanUpdate");
+		mv.setViewName("expend/dailyExpendPlan/dailyExpendPlanUpdate");
 		return mv;
 	}
 	
