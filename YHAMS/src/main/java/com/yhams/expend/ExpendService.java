@@ -21,4 +21,12 @@ public interface ExpendService {
 
 	String chkDupYearMonth(HashMap<String, Object> param) throws Exception;
 
+	long getExistYearlyPlanCountByStdYearAndStdMonth(HashMap<String, Object> param) throws Exception;
+
+	long existYearlyPlanAmount(HashMap<String, Object> param) throws Exception;
+
+	long getDailyExpendPlanCount(HashMap<String, Object> param) throws Exception;
+
+	int saveDailyExpendPlanList(HashMap<String, Object> param) throws Exception;
+
 }

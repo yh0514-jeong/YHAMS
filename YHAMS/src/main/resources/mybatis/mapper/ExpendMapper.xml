@@ -242,5 +242,82 @@
 		      
 	 </select>
 	 
+	 	
+	 <select id="getExistYearlyPlanCountByStdYearAndStdMonth" parameterType="java.util.HashMap" resultType="long">
 	 
+		 SELECT   COUNT(*) AS CNT
+		   FROM   TB_TRAN_YEARLY_ASSET_PLAN
+		  WHERE   USER_SEQ  = #{USER_SEQ}
+		    AND   STD_YEAR  = #{STD_YEAR}
+			AND   STD_MONTH = #{STD_MONTH}
+	 
+	 </select>
+	 
+	 <select id="existYearlyPlanAmount" parameterType="java.util.HashMap" resultType="long">
+	 
+	 	SELECT  SUM(AMOUNT) AS SUM
+		  FROM  TB_TRAN_YEARLY_ASSET_PLAN
+		  WHERE USER_SEQ  = #{USER_SEQ}
+		  AND   STD_YEAR  = #{STD_YEAR}
+		  AND   STD_MONTH = #{STD_MONTH}
+		  AND   SUB_CTG IN (
+							SELECT  USER_DEF_SEQ
+						      FROM  TB_META_USER_DEF_ICMEXP_CATEGORY
+						     WHERE  USER_SEQ         = #{USER_SEQ}
+						     
+						     <if test="CATE == 'EXP'">
+						      AND EXP_PLAN_CATE_YN = 'Y'
+						     </if>
+						     
+						     <if test="CATE == 'ICM'">
+						      AND ICM_PLAN_CATE_YN = 'Y'
+						     </if>
+						       
+							)
+	 
+	 </select>
+	 
+	 
+	 <select id="getDailyExpendPlanCount" parameterType="java.util.HashMap" resultType="long">
+	 
+	 		SELECT  COUNT(*) 
+			  FROM  TB_TRAN_DAILY_EXP_PLAN
+			 WHERE  USER_SEQ       = #{USER_SEQ}
+			  AND   STD_YEAR_MONTH = #{STD_YEAR_MONTH}
+	 
+	 </select>
+	 
+	 
+	 <insert id="saveDailyExpendPlanList" parameterType="java.util.HashMap">
+	 
+ 			INSERT INTO TB_TRAN_DAILY_EXP_PLAN (
+						
+							EXP_PLAN_SEQ,
+							USER_SEQ,
+							STD_YEAR_MONTH,
+							STD_DATE,
+							AMOUNT,
+							CREATE_ID,
+							CREATE_DATE,
+							UPDATE_ID,
+							UPDATE_DATE
+						
+						
+						) VALUES (
+						
+							#{EXP_PLAN_SEQ},
+							#{USER_SEQ},
+							#{STD_YEAR_MONTH},
+							STR_TO_DATE(#{STD_DATE}, '%Y-%m-%d'),
+							#{AMOUNT},
+							#{CREATE_ID},
+							NOW(),
+							#{UPDATE_ID},
+							NOW()
+						
+						)
+	 
+	 </insert>
+	 
+	 	 
 </mapper>

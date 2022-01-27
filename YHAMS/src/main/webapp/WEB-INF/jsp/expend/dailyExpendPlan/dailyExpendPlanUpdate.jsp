@@ -24,7 +24,7 @@ $(document).ready(function() {
             $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
         },
         onSelect: function(dateText){
-        	$("#expendPlanList").empty();
+        	resetComponents();
         }
 	});
 	
@@ -32,31 +32,31 @@ $(document).ready(function() {
 
 
 function goSave(){
+	
 	if(formCheck()){
 		var list = new Array();
 		$("#expendPlanList > tr").each(function(i, value){
 			var map = {
-				UED_DATE   : $(this).children().find("input[id^=UED_DATE_]").val(),
-			    UED_INCM   : $(this).children().find("input[id^=UED_INCM_]").val().replace(/,/g, ""),
-			    UED_SOURCE : $(this).children().find("input[id^=UED_SOURCE_]").val(),
-			    UED_CTG	   : $(this).children().find("select[id^=UED_CTG_]").val()
+				STD_DATE   : $(this).children().find("input[id^=STD_DATE_]").val(),
+				AMOUNT     : $(this).children().find("input[id^=AMOUNT_]").val().replace(/,/g, ""),
 			};
 			list.push(map);
 		});
 		
 		var param = {
-		    'list' : JSON.stringify(list)		
+			'STD_YEAR_MONTH' : $("#STD_YEAR_MONTH").val(),
+		    'list'           : JSON.stringify(list)		
 		}
 		
-		$.ajax({
+	$.ajax({
 		    type : 'post',
-		    url  : '/expend/saveExpendPlanList', 
+		    url  : '/expend/saveDailyExpendPlanList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) {
-		    	if(result.result == 'success'){
+		    	if(result.resultCode == 'success'){
 		    		alert('<spring:message code="com.msg.registerSuccess"/>');  // 등록 성공!!
-		    		opener.parent.list(1); 
+		    		//opener.parent.list(1); 
 		    		window.close();
 		    	}else{
 		    	    alert('<spring:message code="com.msg.registerFail"/>'); // 등록 실패!
@@ -72,36 +72,94 @@ function goSave(){
 
 
 function goDel(){
-	var len = $("#expendPlanList").children().find("input[type='checkbox']:checked").length;
-	if(len > 0){
-		$("#expendPlanList").children().find("input[type='checkbox']:checked").each(function(i, val){
-			$(this).closest('tr').remove();
-		});
-	}else{
-		alert('<spring:message code="com.msg.unselected"/>');   //  선택된 내역이 없습니다.
-	}
-	$("#chkAll").attr("checked", false);
-	
-	setFeildToggle();
+	resetComponents();
 }
 
-function goAdd(){
+function goAddCheckFirst(){
 	
 	if($("#STD_YEAR_MONTH").val() == '' || $("#STD_YEAR_MONTH").val() == null){
-		alert('계획연월을 입력해주세요');
+		alert('<spring:message code="com.dailyExpendPlan.chkPlannedYearMonth"/>');  // 계획연월을 입력해주세요.
 		return;
+	}else{
+		let param = {
+			STD_YEAR_MONTH : $("#STD_YEAR_MONTH").val()
+		};
+		
+		// 해당 월의 일 지출 계획이 등록되어 있는지 체크
+		$.ajax({
+		    type : 'get',
+		    url  : '/expend/chkExistOfDailyExpendPlan', 
+		    dataType : 'json', 
+		    data : param,
+		    success : function(result) {
+		    	if(result.resultCode == "success"){
+		    		if(result.isExist){
+		    			if(confirm('<spring:message code="com.dailyExpendPlan.redirectToDailyExpendUpdate"/>')){  // 이미 해당 연월로 등록된 일 지출계획이 있습니다. 수정 화면으로 이동하시겠습니까?
+									    			
+		    			}else{
+			    			return;
+		    			}
+		    		}else{
+		    			goAddCheckSecond(param);
+		    		}
+		    	}else{
+		    		alert('<spring:message code="com.msg.askToManager"/>');   // 오류가 발생하였습니다. 관리자에게 문의 바랍니다.
+		    	}
+		    },
+		    error : function(request, status, error) { 
+		    	alert('<spring:message code="com.msg.askToManager"/>');   // 오류가 발생하였습니다. 관리자에게 문의 바랍니다.
+		    }
+		});
+		
 	}
+}
+
+function goAddCheckSecond(param){
+
+	// 등록을 해야 한다면, 연 지출 계획이 먼저 등록되어 있는지 확인
+	$.ajax({
+	    type : 'get',
+	    url  : '/expend/chkExistOfYearlyExpendPlan', 
+	    dataType : 'json', 
+	    data : param,
+	    success : function(result) {
+			if(result.resultCode == "success"){
+				if(result.existYearlyPlanCount > 0){
+					param.existYearlyPlanAmount = result.existYearlyPlanAmount;
+					goAdd(param);
+				}else{
+					if(confirm('<spring:message code="com.dailyExpendPlan.redirectToYealyAssetPlanAdd"/>')){   // 해당 연도에 등록된 연자산계획이 없습니다. 연자산계획 등록 화면으로 이동하시겠습니까?
+						// redirect to 연간자산계획
+					
+					}else{
+						return;
+					}
+				}
+	    	}else{
+	    		alert('<spring:message code="com.msg.askToManager"/>');   // 오류가 발생하였습니다. 관리자에게 문의 바랍니다.
+	    	}
+	    	
+	    },
+	    error : function(request, status, error) { 
+	    	alert('<spring:message code="com.msg.askToManager"/>');   // 오류가 발생하였습니다. 관리자에게 문의 바랍니다.
+	    }
+	    
+	});
 	
-	let selectedDate = $("#STD_YEAR_MONTH").val().split('-');
+}
+
+function goAdd(param){
+	
+	$("#expendPlanList").empty();
+	$("#amountOfExpendPlanValue").text(param.existYearlyPlanAmount.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","));
+	let selectedDate = param.STD_YEAR_MONTH.split('-');
 	let lastDay = new Date(parseInt(selectedDate[0]), parseInt(selectedDate[1]), 0).getDate();
 	
 	for(let i=1; i<=lastDay; i++){
-		
-		var html = "";
+		let html = "";
 	    html += '<tr id="UED_SEQ_' + trCnt + '">';
-	    html += '	<td scope="col"><input id="CHKUEDSEQ_' +  trCnt + '"  type="checkbox"></td>';
-	    html += '	<td scope="col"><input id="UED_DATE_' +  trCnt + '"   type="text"  style="width: 110px;"></td>';   
-	    html += '	<td scope="col"><input id="UED_INCM_' +  trCnt + '"   onChange="numberCheck(this.id, this.value);" type="text" style="width: 110px;"></td>';    
+	    html += '	<td scope="col"><input id="STD_DATE_' +  trCnt + '"  type="text"  style="width: 110px;" disabled="disabled"></td>';   
+	    html += '	<td scope="col"><input id="AMOUNT_' +  trCnt + '"   onChange="numberCheck(this.id, this.value);" type="text" style="width: 110px;"></td>';    
 	    html += '	<td scope="col"><p></p></td>';   
 	    html += '	<td scope="col"><p></p></td>';   
 	    html += '	<td scope="col"><p></p></td>';   
@@ -109,7 +167,7 @@ function goAdd(){
 	    html += '</tr>';
 	    
 	    $("#expendPlanList").append(html);
-		$("#UED_DATE_" + trCnt).datepicker({dateFormat: 'yy-mm-dd'}).datepicker('setDate', $("#STD_YEAR_MONTH").val() + '-' + i);
+		$("#STD_DATE_" + trCnt).datepicker({dateFormat: 'yy-mm-dd'}).datepicker('setDate', $("#STD_YEAR_MONTH").val() + '-' + i);
 		trCnt = trCnt+1;
 	}
 	
@@ -121,120 +179,43 @@ function numberCheck(id, value){
 }
 
 
-function getUedCtgList(){
-	var l;
-	$.ajax({
-	    type : 'get',
-	    url : '/asset/uedCtgList', 
-	    dataType : 'json', 
-	    async: false,
-	    success : function(result) { 
-	    	l = result;
-	    }
-	});
-	return l;
-}
-
-function checkFlag(t){
-	var flag = $(t).prop('checked');
-	if(flag){
-		 $("#expendPlanList").children().find("input[type='checkbox']").attr("checked", true);
-	}else{
-		 $("#expendPlanList").children().find("input[type='checkbox']").attr("checked", false);
-	}
-}
-
-
 function formCheck(){
-	
-	var chkUedDate   = 0;
-	var chkUedIncm   = 0;
-	var chkUedSource = 0;
-	var chkUedCtg    = 0;
-	
-	if($("#expendPlanList tr").length == 0){
-		alert('<spring:message code="com.msg.chkAddList"/>');   // 추가할 내용이 없습니다.
-		return false;
-	}
-	
-	
-	$("#expendPlanList").children().find("input[id^=UED_DATE_]").each(function(i, value){
-		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedDate++;
-		}
-	});
-	
-	$("#expendPlanList").children().find("input[id^=UED_INCM_]").each(function(i, value){
-		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedIncm++;
-		}
-	});
-	
-	$("#expendPlanList").children().find("input[id^=UED_SOURCE_]").each(function(i, value){
-		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedSource++;
-		}
-	});
-	
-	$("#expendPlanList").children().find("input[id^=UED_CTG_]").each(function(i, value){
-		if($(this).val().trim().length == 0 || $(this).val() == null){
-			chkUedCtg++;
-		}
-	});
-	
-	
-	if(chkUedDate + chkUedIncm + chkUedSource + chkUedCtg == 0){
-		return true;
-	}else{
-		var mesg = '';
-		if(chkUedDate > 0){
-			mesg += '<spring:message code="com.unearned.uenDate"/>';   // 수입일
-		}
-		if(chkUedIncm > 0){
-			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.unearned.uenIncm"/>';   // 금액
-		}
-		if(chkUedSource > 0){
-			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.unearned.uenSource"/>';  // 수입처
-		}
-		if(chkUedCtg > 0){
-			mesg == '' ? mesg += '' :  mesg += ',';
-			mesg += '<spring:message code="com.unearned.uenCtg"/>';  // 수입분류
-		}
-		alert(mesg + '<spring:message code="com.msg.pleaseChk"/>');  // ..를 확인해주세요.
-		return false;
-	}
-	
-}
 
-function chkDupYearMonth(value){
-	
-	var l;
-	let param = {};
-	param.STD_YEAR_MONTH = value;
-	
-	$.ajax({
-	    type : 'get',
-	    url : '/expend/chkDupYearMonth', 
-	    data : param,
-	    dataType : 'json', 
-	    async: false,
-	    success : function(result) { 
-	    	if(result.isExist == "TRUE"){
-	    		alert("이미 해당 연월에 등록된 지출계획 내역이 있습니다.\n 불러오시겠습니까?");
-	    	}
-	    }
-	});
-	return l;
-}
-
-function setFeildToggle(){
 	if($("#expendPlanList").children().length == 0){
-		$("#setField").hide();
+		alert('<spring:message code="com.dailyExpendPlan.chkSaveExpendPlanList"/>');  // 저장할 지출계획이 없습니다.
+		return false;
 	}else{
-		$("#setField").show();
+		let invalidCnt = 0;
+		$("#expendPlanList input[id^='AMOUNT_']").each(function(i, item){
+			if($(item).val() == null || $(item).val().trim().length == 0){
+				invalidCnt++;
+			}
+		});
+		if(invalidCnt > 0){
+			alert('<spring:message code="com.dailyExpendPlan.chkAssignedAmountField"/>'); // 할당금액 필드를 확인해주세요.
+			return false;
+		}else{
+			return true;
+		}
 	}
+}
+
+
+function setEqualAmount(){
+	if($("#expendPlanList").children().length > 0){
+		let amount = parseInt($("#amountOfExpendPlanValue").text().replace(/,/g, ""));
+		let dividedAmount = Math.ceil(amount / $("#expendPlanList").children().length);
+		$("#expendPlanList input[id^='AMOUNT_']").val(dividedAmount.toString().replace(/[^0-9]/g, "").replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","));
+	}else{
+		alert('<spring:message code="com.dailyExpendPlan.chkNoAdaptableDailyPlanList"/>');	 // 적용할 일단위지출계획 리스트가 없습니다.
+	}
+}
+
+
+
+function resetComponents(){
+	$("#expendPlanList").empty();
+	$("#amountOfExpendPlanValue").text('');
 }
 	
 </script>
@@ -246,7 +227,7 @@ function setFeildToggle(){
   </div>
 </div>
 <div class="panel panel-default" style="float: right;">
-	<button id="btnAdd" onclick="javascript:goAdd();" type="button" class="btn btn-success"><spring:message code="com.btn.add"/></button><!-- 추가 -->
+	<button id="btnAdd" onclick="javascript:goAddCheckFirst();" type="button" class="btn btn-success"><spring:message code="com.btn.add"/></button><!-- 추가 -->
 	<button id="btnDel" onclick="javascript:goDel();" type="button" class="btn btn-danger"><spring:message code="com.btn.delete"/></button><!-- 삭제 -->
 	<button id="btnSave" onclick="javascript:goSave();" type="button" class="btn btn-primary"><spring:message code="com.btn.save"/></button><!-- 저장 -->
 </div>
@@ -254,10 +235,9 @@ function setFeildToggle(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon">계획연월</div><!-- 계획연월 -->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.dailyExpendPlan.plannedYearMonth"/></div>    <!-- 계획연월 -->
     </div>
-    <input type="text" class="form-control" id="STD_YEAR_MONTH" onchange="javascript:chkDupYearMonth(this.value);">
- 	<p id="amountOfExpendPlan" style="float: left;">해당월 가용 지출액 : </p>
+    <input type="text" class="form-control" id="STD_YEAR_MONTH" onchange="javascript:resetComponents();">
   </div>
 </div>
 
@@ -266,14 +246,24 @@ function setFeildToggle(){
 <div class="table table-hover">	
 	<table class="table">
 	  <thead class="thead-dark" align="center">
+	  	 <tr>
+	      <th scope="col" width="18%">
+		      	<p id="amountOfExpendPlanText" style="float: left;"><spring:message code="com.dailyExpendPlan.usableExpendAmount"/></p><!-- 가용 지출액 : -->
+	 			<p id="amountOfExpendPlanValue"></p>
+ 		  </th> 
+	      <th scope="col" width="18%"><button id="setEqualAmountBtn" type="button" class="btn btn-primary" onclick="javascript:setEqualAmount();"><spring:message code="com.dailyExpendPlan.setEqualAmount"/></button></th>  <!-- 동일금액 적용 -->
+	      <th scope="col" width="18%"></th> 
+	      <th scope="col" width="18%"></th> 
+	      <th scope="col" width="18%"></th> 
+	      <th scope="col" width="18%"></th> 
+	    </tr>
 	    <tr>
-	      <th scope="col" width="*"><input id="chkAll" type="checkbox" onchange="javascript:checkFlag(this);"></th>
-	      <th scope="col" width="18%">날짜</th>          <!--  날짜 -->
-	      <th scope="col" width="18%">할당금액</th>       <!--  할당금액 -->
-	      <th scope="col" width="18%">당월누적사용액</th>   <!--  당월누적사용액 -->
-	      <th scope="col" width="18%">실사용액</th>       <!--  실사용액 -->
-	      <th scope="col" width="18%">누적실사용액</th>     <!-- 누적실사용액 -->
-	      <th scope="col" width="18%">오차</th>          <!--  오차-->
+	      <th scope="col" width="18%"><spring:message code="com.dailyExpendPlan.date"/></th>                      <!--  날짜 -->
+	      <th scope="col" width="18%"><spring:message code="com.dailyExpendPlan.assignedAmount"/></th>            <!--  할당금액 -->
+	      <th scope="col" width="18%"><spring:message code="com.dailyExpendPlan.monthlyAccumulatedAmount"/></th>  <!--  당월누적사용액 -->
+	      <th scope="col" width="18%"><spring:message code="com.dailyExpendPlan.realUseAmount"/></th>             <!--  실사용액 -->
+	      <th scope="col" width="18%"><spring:message code="com.dailyExpendPlan.accumulatedRealUseAmount"/></th>  <!--  누적실사용액 -->
+	      <th scope="col" width="18%"><spring:message code="com.dailyExpendPlan.error"/></th>                     <!--  오차-->
 	    </tr>
 	  </thead>
 	  <tbody id="expendPlanList">

@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
+import com.yhams.exception.StdYearNotFoundException;
+import com.yhams.exception.YearlyPlanNotDefinedException;
 import com.yhams.log.LogService;
 import com.yhams.util.CommonContraint;
 import com.yhams.util.PagingUtil;
@@ -30,7 +32,7 @@ import com.yhams.util.PagingUtil;
 @RequestMapping("/expend")
 public class ExpendController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(ExpendController.class);
+	private static final Logger log = LoggerFactory.getLogger(ExpendController.class);
 	
 	@Autowired
 	ExpendService expendService;
@@ -115,7 +117,7 @@ public class ExpendController {
 		logService.insertUserActLog(request, session);
 	    Enumeration<String> p =  request.getAttributeNames();
 	    while(p.hasMoreElements()) {
-	    	logger.info("params : {}", p.nextElement());
+	    	log.info("params : {}", p.nextElement());
 	    }
 	    
 		
@@ -154,7 +156,7 @@ public class ExpendController {
 		HashMap<String, Object> map = new HashMap<String,Object>();
 		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
 		int result = 0;
-		logger.info("param : {}", param.toString());
+		log.info("param : {}", param.toString());
 		try {
 			result = expendService.saveDepWithdralList(param);
 			if(result >= 0) {
@@ -181,7 +183,7 @@ public class ExpendController {
 		int r = 0;
 		try {
 			String[] actSeqs = param.get("ACT_SEQ").toString().split(",");
-			logger.info("actSeqs==>" + actSeqs);
+			log.info("actSeqs==>" + actSeqs);
 			param.put("actSeqs", actSeqs);
 			r = expendService.deleteDepWithdrawalList(param);
 		}catch (Exception e) {
@@ -223,7 +225,7 @@ public class ExpendController {
 			
 			
 			if(maybeDwCate1.isPresent()) {
-				logger.info("maybeDwCate1.isPresent() : {}, maybeDwCate1 : {}", maybeDwCate1.isPresent(), maybeDwCate1.get().toString());	
+				log.info("maybeDwCate1.isPresent() : {}, maybeDwCate1 : {}", maybeDwCate1.isPresent(), maybeDwCate1.get().toString());	
 				dwCate2List = commonService.getCgListByParCode("CG_2006", maybeDwCate1.get().toString(), "Y");
 			}
 			
@@ -291,7 +293,116 @@ public class ExpendController {
 			result.put("result", CommonContraint.FAIL);
 		}
 		return result;
+	}
+	
+	
+	
+	@GetMapping(value = "/chkExistOfDailyExpendPlan")
+	@ResponseBody
+	public HashMap<String, Object> chkExistOfDailyExpendPlan(@RequestParam HashMap<String, Object> param,
+																HttpSession session,
+															    HttpServletRequest request, 
+															    HttpServletResponse response){
 		
+		HashMap<String, Object> result = new HashMap<>();
+		log.info("chkExistOfDailyExpendPlan called... param : {}", param.toString());
+		
+		try {
+			
+			Optional<? extends Object> maybeStdYearMonth =  Optional.ofNullable(param.get("STD_YEAR_MONTH"));
+			if(maybeStdYearMonth.isPresent()) {
+				param.put("STD_YEAR_MONTH", maybeStdYearMonth.get().toString());
+				param.put("USER_SEQ"      , session.getAttribute("USER_SEQ"));
+								
+				long dailyExpendPlanCount = expendService.getDailyExpendPlanCount(param);
+				
+				if(dailyExpendPlanCount > 0) {
+					result.put("isExist", true);
+				}else {
+					result.put("isExist", false);
+				}
+				result.put("resultCode", CommonContraint.SUCCEESS);
+			}else{
+				throw new StdYearNotFoundException(maybeStdYearMonth.toString());
+			}
+		}catch (Exception e) {
+			result.put("resultCode", CommonContraint.FAIL);
+		}
+		
+		return result;
+	}
+	
+	
+	@GetMapping(value = "/chkExistOfYearlyExpendPlan")
+	@ResponseBody
+	public HashMap<String, Object> chkExistOfYearlyExpendPlan(@RequestParam HashMap<String, Object> param,
+																HttpSession session,
+															    HttpServletRequest request, 
+															    HttpServletResponse response){
+		
+		HashMap<String, Object> result = new HashMap<>();
+		log.info("chkExistOfYearlyExpendPlan called... param : {}", param.toString());
+		
+		try {
+			Optional<? extends Object> maybeStdYearMonth =  Optional.ofNullable(param.get("STD_YEAR_MONTH"));
+			
+			if(maybeStdYearMonth.isPresent()) {
+			
+				String[] stdYearMonth = maybeStdYearMonth.get().toString().split("-");
+				param.put("STD_YEAR",  stdYearMonth[0]);
+				param.put("STD_MONTH", stdYearMonth[1]);
+				param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+				
+				log.info("chkExistOfYearlyExpendPlan, stdYearMonth : {}, param : {}", stdYearMonth.toString(), param.toString());
+				
+				long existYearlyPlanCount = expendService.getExistYearlyPlanCountByStdYearAndStdMonth(param);
+				if(existYearlyPlanCount > 0) {
+					param.put("CATE", "EXP");
+					long existYearlyPlanAmount = expendService.existYearlyPlanAmount(param);
+					result.put("existYearlyPlanAmount", existYearlyPlanAmount);
+				}
+				result.put("existYearlyPlanCount", existYearlyPlanCount);
+				result.put("resultCode", CommonContraint.SUCCEESS);
+				
+			}else{
+				throw new StdYearNotFoundException(maybeStdYearMonth.toString());
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode", CommonContraint.FAIL);
+		}
+		
+		return result;
+	}
+	
+	
+	
+	@PostMapping(value = "/saveDailyExpendPlanList")
+	@ResponseBody
+	public HashMap<String, Object> saveDailyExpendPlanList(@RequestParam HashMap<String, Object> param,
+															HttpSession session,
+														    HttpServletRequest request, 
+														    HttpServletResponse response){
+		
+		log.info("saveDailyExpendPlanList called... param : {}", param.toString());
+		HashMap<String, Object> result = new HashMap<>();
+		
+		try {
+			param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+			int r = expendService.saveDailyExpendPlanList(param);
+			if(r > -1){
+				result.put("resultCode", CommonContraint.SUCCEESS);
+			}else{
+				result.put("resultCode", CommonContraint.FAIL);
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode", CommonContraint.FAIL);
+		}
+		
+		return result;
 	}
 	
 	
