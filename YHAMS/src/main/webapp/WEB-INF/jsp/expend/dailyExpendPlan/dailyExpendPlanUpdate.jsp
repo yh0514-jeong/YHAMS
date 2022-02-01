@@ -223,7 +223,7 @@ function resetComponents(){
 
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5 class="panel-title">일단위지출계획 등록</h5>
+    <h5 class="panel-title">${nav}</h5>
   </div>
 </div>
 <div class="panel panel-default" style="float: right;">

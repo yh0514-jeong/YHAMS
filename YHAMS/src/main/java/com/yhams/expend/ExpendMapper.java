@@ -32,4 +32,10 @@ public interface ExpendMapper {
 
 	int saveDailyExpendPlanList(HashMap<String, Object> param) throws Exception;
 
+	ArrayList<HashMap<String, Object>> dailyExpendPlanList(HashMap<String, Object> param) throws Exception;
+
+	long dailyExpendPlanCount(HashMap<String, Object> param) throws Exception;
+
+	ArrayList<HashMap<String, Object>> selectExpendPlanList(HashMap<String, Object> param) throws Exception;
+
 }

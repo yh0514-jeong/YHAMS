@@ -24,17 +24,14 @@
 	 }
 	 
 	 var param = {
-	    START_DATE    : $("#START_DATE").val().trim(),
-	    END_DATE      : $("#END_DATE").val().trim(),
-	    UED_SOURCE    : $("#UEN_SOURCE").val().trim(),
-	    UED_CTG_NM    : $("#UED_CTG_NM").val().trim(),
-		cntPerPage    : $("#cntPerPage").val(),
-		curPage       : $("#curPage").val()
+		STD_YEAR_MONTH : $("#STD_YEAR_MONTH").val().trim(),
+		cntPerPage     : $("#cntPerPage").val(),
+		curPage        : $("#curPage").val()
 	 };
 	 
 	 $.ajax({
 		    type : 'get',
-		    url : '/asset/unearnedList', 
+		    url : '/expend/dailyExpendPlanList', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
@@ -52,13 +49,13 @@
 			    			html += '<tr align="center">';
 				    		html += '    <td scope="row"><input type="checkbox" value="' + data[i].UED_SEQ + '"></td>';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_DATE + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_INCM + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_SOURCE + '</td>';
-				    		html += '    <td scope="row">' + data[i].UED_CTG_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].STD_YEAR_MONTH + '</td>';
+				    		html += '    <td scope="row">' + data[i].AMOUNT + '</td>';
+				    		html += '    <td scope="row">' + data[i].WITHDRL_TOTAL + '</td>';
+				    		html += '    <td scope="row">' + data[i].DIF + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goUpdate(\'' + data[i].UED_SEQ +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
-				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].UED_SEQ +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
+				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goUpdate(\'' + data[i].STD_YEAR_MONTH +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
+				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].STD_YEAR_MONTH +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -76,14 +73,14 @@
  }
  
  function goNew(){
-	 var url    = "/expend/dailyExpendPlanUpdate";
-	 var option = "width = 1000, height = 900, top = 100, left = 200, location = no";
+	 let url    = "/expend/dailyExpendPlanUpdate";
+	 let option = "width = 1000, height = 900, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
  
- function goUpdate(EXP_PLAN_SEQ){
-	 var url    = "/expend/dailyExpendPlanUpdate?EXP_PLAN_SEQ=" + EXP_PLAN_SEQ;
-	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
+ function goUpdate(STD_YEAR_MONTH){
+	 let url    = "/expend/dailyExpendPlanUpdate?STD_YEAR_MONTH=" + STD_YEAR_MONTH;
+	 let option = "width = 1000, height = 900, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
  
@@ -120,8 +117,8 @@ function enterkey(){
 }
 
 function initDatePicker(){
-	$("#START_DATE,#END_DATE").datepicker("destroy");
-	$("#START_DATE,#END_DATE").datepicker({dateFormat: 'yy-mm-dd'});
+	$("#STD_YEAR_MONTH").datepicker("destroy");
+	$("#STD_YEAR_MONTH").datepicker({dateFormat: 'yy-mm-dd'});
 }
 
 function goStringifyDelTarget(){
@@ -145,7 +142,7 @@ function goStringifyDelTarget(){
 <body>
 <div class="panel panel-default">
   <div class="panel-heading">
-    <h5 class="panel-title">알단위지출계획</h5>
+    <h5 class="panel-title">일단위지출계획</h5>
   </div>
   <div class="panel-body">
     지출관리 > 일단위지출계획
@@ -156,7 +153,7 @@ function goStringifyDelTarget(){
     <div class="input-group-prepend">
       <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.dailyExpendPlan.dailyPlanYearMonth"/></div><!--지출계획 연월-->
     </div>
-    <input type="text" class="form-control" id="UED_CTG_NM"  onkeyup="javascript:enterkey();" style="width: 150px;">
+    <input type="text" class="form-control" id="STD_YEAR_MONTH"  onkeyup="javascript:enterkey();" style="width: 150px;">
   </div>
   &nbsp;
   <button type="button" class="btn btn-primary" onclick="javascript:list(1);"><spring:message code="com.btn.search"/></button> <!-- 검색 -->

@@ -269,11 +269,41 @@ public class ExpendController {
 	
 	
 	@RequestMapping(value = "/dailyExpendPlanUpdate")
-	public ModelAndView expendPlanUpdate() {
+	public ModelAndView expendPlanUpdate(@RequestParam(required = false) String STD_YEAR_MONTH, 
+							            HttpSession session,
+							            HttpServletRequest request,
+							            HttpServletResponse response) {
+		logService.insertUserActLog(request, session);
+		
 		ModelAndView mv = new ModelAndView();
+		
+		ArrayList<HashMap<String, Object>> r = new ArrayList<>();
+		HashMap<String, Object> param = new HashMap<>();
+		
+		
+		try {
+			
+			if(STD_YEAR_MONTH != null &&  !"".equals(STD_YEAR_MONTH)){
+				param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+				param.put("STD_YEAR_MONTH", STD_YEAR_MONTH);
+				r = expendService.selectExpendPlanList(param);
+				mv.addObject("STD_YEAR_MONTH", STD_YEAR_MONTH);
+				mv.addObject("result", r);
+				mv.addObject("nav"   , "일단위지출계획 수정");
+			}else {
+				mv.addObject("nav"   , "일단위지출계획 등록");
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		mv.setViewName("expend/dailyExpendPlan/dailyExpendPlanUpdate");
 		return mv;
+		
 	}
+	
+	
 	
 	
 	@GetMapping(value = "/chkDupYearMonth")
@@ -405,5 +435,44 @@ public class ExpendController {
 		return result;
 	}
 	
+	
+	@GetMapping(value = "/dailyExpendPlanList")
+	@ResponseBody
+	public HashMap<String, Object> dailyExpendPlanList(@RequestParam HashMap<String, Object> param,
+														HttpSession session,
+														HttpServletRequest request, 
+														HttpServletResponse response){
+		
+		logService.insertUserActLog(request, session);
+	    Enumeration<String> p =  request.getAttributeNames();
+	    while(p.hasMoreElements()) {
+	    	log.info("dailyExpendPlanList called... params : {}", p.nextElement());
+	    }
+	    
+		
+		HashMap<String, Object> result          = new HashMap<String, Object>();
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+		param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+		
+		long total       = 0;
+		int cntPerPage   = param.get("cntPerPage") == null ? 10 : Integer.parseInt(param.get("cntPerPage").toString());
+		int curPage      = param.get("curPage")  == null ? 1 : Integer.parseInt(param.get("curPage").toString());
+		
+		try {
+			total = expendService.dailyExpendPlanCount(param);
+			list = expendService.dailyExpendPlanList(param);
+			
+			PagingUtil pagingUtil = new PagingUtil(10, cntPerPage, total);
+			Map<String, Object> block = pagingUtil.getFixedBlock(curPage);
+			result.put("block", block);
+			result.put("total", total);
+			result.put("list",  list);
+			result.put("resultCode",  CommonContraint.SUCCEESS);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode",  CommonContraint.FAIL);
+		}
+		return result;
+	}
 	
 }
