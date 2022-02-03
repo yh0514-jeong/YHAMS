@@ -38,4 +38,8 @@ public interface ExpendMapper {
 
 	ArrayList<HashMap<String, Object>> selectExpendPlanList(HashMap<String, Object> param) throws Exception;
 
+	int deleteDailyPlanList(HashMap<String, Object> param) throws Exception;
+
+	int deleteDailyPlanListByYear(HashMap<String, Object> param) throws Exception;
+
 }

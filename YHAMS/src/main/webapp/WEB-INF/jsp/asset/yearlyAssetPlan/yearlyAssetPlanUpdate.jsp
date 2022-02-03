@@ -43,6 +43,7 @@
 		});
 
 		var param = {
+			'STD_YEAR' : $("#STD_YEAR").val(),
 			'list' : JSON.stringify(list)
 		}
 

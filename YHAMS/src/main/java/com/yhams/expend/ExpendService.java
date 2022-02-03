@@ -35,4 +35,6 @@ public interface ExpendService {
 
 	ArrayList<HashMap<String, Object>> selectExpendPlanList(HashMap<String, Object> param) throws Exception;
 
+	int deleteDailyPlanList(HashMap<String, Object> param) throws Exception;
+
 }

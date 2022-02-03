@@ -695,27 +695,6 @@ public class AssetController {
 		return result;
 	}
 	
-	@PostMapping(value = "/deleteYearlyAssetPlanList")
-	@ResponseBody
-	public HashMap<String, Object> deleteYearlyAssetPlanList(@RequestParam(required = true) HashMap<String, Object> param,
-																 HttpSession session,
-													             HttpServletRequest request,
-													             HttpServletResponse response){
-		log.info("deleteYearlyAssetPlanList called...");
-		HashMap<String, Object> result = new HashMap<>();
-		try {
-			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
-			log.info("param : {}", param.toString());
-			int r = assetService.deleteYearlyAssetPlanList(param);
-			result.put("result", CommonContraint.SUCCEESS);
-		}catch (Exception e) {
-			result.put("result", CommonContraint.FAIL);
-			e.printStackTrace();
-		}
-		return result;
-		
-	}
-	
 	@GetMapping("/yearlyAssetPlanList")
 	@ResponseBody
 	public HashMap<String, Object> yearlyAssetPlanList(@RequestParam(required = true) HashMap<String, Object> param,
@@ -753,17 +732,17 @@ public class AssetController {
 	}
 	
 	
-	@PostMapping("/deleteYearlyAssetPlanListByStdYears")
+	@PostMapping("/deleteYearlyAssetPlanList")
 	@ResponseBody
-	public HashMap<String, Object> deleteYearlyAssetPlanListByStdYears(@RequestParam(required = true) HashMap<String, Object> param,
+	public HashMap<String, Object> deleteYearlyAssetPlanList(@RequestParam(required = true) HashMap<String, Object> param,
 																HttpSession session,
 																HttpServletRequest request,
 																HttpServletResponse response){
-		log.info("deleteYearlyAssetPlanListByStdYears... param : {}", param);
+		log.info("deleteYearlyAssetPlanList... param : {}", param);
 		HashMap<String, Object> result = new HashMap<>();
 		try {
 			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
-			int r = assetService.deleteYearlyAssetPlanListByStdYears(param);
+			int r = assetService.deleteYearlyAssetPlanList(param);
 			if(r > 0) {
 				result.put("result", CommonContraint.SUCCEESS);
 			}else {

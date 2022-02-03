@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class ExpendServiceImpl implements ExpendService{
 	
-	private static final Logger logger = LoggerFactory.getLogger(ExpendServiceImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(ExpendServiceImpl.class);
 	
 	@Autowired
 	ExpendMapper mapper;
@@ -28,7 +28,7 @@ public class ExpendServiceImpl implements ExpendService{
 		int r = 0;
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 		ObjectMapper mpr = new ObjectMapper();
-		logger.info("param.toString()==>" + param.toString());
+		log.info("param.toString()==>" + param.toString());
 		try {
 			list = mpr.readValue(param.get("list").toString(), ArrayList.class);
 			for(int i=0; i<list.size(); i++) {
@@ -37,7 +37,7 @@ public class ExpendServiceImpl implements ExpendService{
 				map.put("USER_SEQ", param.get("USER_SEQ").toString());
 				map.put("CREATE_ID", param.get("USER_SEQ").toString());
 				map.put("UPDATE_ID", param.get("USER_SEQ").toString());
-				logger.info("saveDepWithdralList map==> {}", map.toString());
+				log.info("saveDepWithdralList map==> {}", map.toString());
 				r = mapper.saveDepWithdralList(map);
 			}
 		}catch (Exception e) {
@@ -115,7 +115,7 @@ public class ExpendServiceImpl implements ExpendService{
 		
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 		ObjectMapper mpr = new ObjectMapper();
-		logger.info("param.toString()==>" + param.toString());
+		log.info("param.toString()==>" + param.toString());
 		int r = 0;
 		try {
 			
@@ -130,7 +130,7 @@ public class ExpendServiceImpl implements ExpendService{
 				map.put("AMOUNT"         , list.get(i).get("AMOUNT").toString());
 				map.put("CREATE_ID"      , param.get("USER_SEQ").toString());
 				map.put("UPDATE_ID"      , param.get("USER_SEQ").toString());
-				logger.info("saveDailyExpendPlanList map==> {}", map.toString());
+				log.info("saveDailyExpendPlanList map==> {}", map.toString());
 				r += mapper.saveDailyExpendPlanList(map);
 			}
 			
@@ -158,6 +158,30 @@ public class ExpendServiceImpl implements ExpendService{
 	@Override
 	public ArrayList<HashMap<String, Object>> selectExpendPlanList(HashMap<String, Object> param) throws Exception {
 		return mapper.selectExpendPlanList(param);
+	}
+
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int deleteDailyPlanList(HashMap<String, Object> param) throws Exception {
+		
+		int result = 0;
+		
+		try {
+			String[] STD_YEAR_MONTH = param.get("STD_YEAR_MONTH").toString().split(",");
+			log.info("deleteDailyPlanList STD_YEAR_MONTH : {}", STD_YEAR_MONTH.toString());
+			for(int i=0; i<STD_YEAR_MONTH.length; i++) {
+				param.put("STD_YEAR_MONTH", STD_YEAR_MONTH[i]);
+				log.info("deleteDailyPlanList param : {}", param.toString());
+				result = result + mapper.deleteDailyPlanList(param);
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			result = -1;
+		}
+		
+		return result;
 	}
 
 }

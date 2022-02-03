@@ -55,6 +55,4 @@ public interface AssetService {
 
 	long yearlyAssetPlanListCount(HashMap<String, Object> param) throws Exception;
 
-	int deleteYearlyAssetPlanListByStdYears(HashMap<String, Object> param) throws Exception;
-
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yhams.common.CommonMapper;
+import com.yhams.expend.ExpendMapper;
 
 @Service
 public class AssetServiceImpl implements AssetService {
@@ -21,49 +22,52 @@ public class AssetServiceImpl implements AssetService {
 	private static final Logger log = LoggerFactory.getLogger(AssetServiceImpl.class);
 	
 	@Autowired
-	AssetMapper mapper;
+	AssetMapper assetMapper;
+	
+	@Autowired
+	ExpendMapper expendMapper;
 	
 	@Autowired
 	CommonMapper commonMapper;
 	
 	@Override
 	public long accountCount(HashMap<String, Object> param) throws Exception {
-		return mapper.accountCount(param);
+		return assetMapper.accountCount(param);
 	}
 
 	@Override
 	public ArrayList<HashMap<String, Object>> accountListUp(HashMap<String, Object> param) throws Exception {
-		return mapper.accountListUp(param);
+		return assetMapper.accountListUp(param);
 	}
 
 	@Override
 	public HashMap<String, Object> selectAccount(String ACCOUNT_CD) throws Exception {
-		return mapper.selectAccount(ACCOUNT_CD);
+		return assetMapper.selectAccount(ACCOUNT_CD);
 	}
 
 	@Override
 	public int insertAccount(HashMap<String, Object> param) throws Exception {
-		return mapper.insertAccount(param);
+		return assetMapper.insertAccount(param);
 	}
 
 	@Override
 	public int updateAccount(HashMap<String, Object> param) throws Exception {
-		return mapper.updateAccount(param);
+		return assetMapper.updateAccount(param);
 	}
 
 	@Override
 	public int deleteAccount(HashMap<String, Object> param) throws Exception {
-		return mapper.deleteAccount(param);
+		return assetMapper.deleteAccount(param);
 	}
 
 	@Override
 	public long unearnedCount(HashMap<String, Object> param) throws Exception {
-		return mapper.unearnedCount(param);
+		return assetMapper.unearnedCount(param);
 	}
 
 	@Override
 	public ArrayList<HashMap<String, Object>> unearnedListUp(HashMap<String, Object> param) throws Exception {
-		return mapper.unearnedListUp(param);
+		return assetMapper.unearnedListUp(param);
 	}
 
 	@Override
@@ -82,7 +86,7 @@ public class AssetServiceImpl implements AssetService {
 				map.put("USER_SEQ" , param.get("USER_SEQ").toString());
 				map.put("CREATE_ID", param.get("USER_SEQ").toString());
 				map.put("UPDATE_ID", param.get("USER_SEQ").toString());
-				r = mapper.saveUnearned(map);
+				r = assetMapper.saveUnearned(map);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -93,17 +97,17 @@ public class AssetServiceImpl implements AssetService {
 
 	@Override
 	public HashMap<String, Object> selectUnearned(String param) throws Exception {
-		return mapper.selectUnearned(param);
+		return assetMapper.selectUnearned(param);
 	}
 
 	@Override
 	public int updateUnearned(HashMap<String, Object> param) throws Exception {
-		return mapper.updateUnearned(param);
+		return assetMapper.updateUnearned(param);
 	}
 
 	@Override
 	public int deleteUnearedList(HashMap<String, Object> param) throws Exception {
-		return mapper.deleteUnearedList(param);
+		return assetMapper.deleteUnearedList(param);
 	}
 
 	
@@ -133,7 +137,7 @@ public class AssetServiceImpl implements AssetService {
 				SAL_SEQ = commonMapper.getNextSalSeq();
 			// update
 			}else{
-				int delResult = mapper.deleteSalSeq(param);
+				int delResult = assetMapper.deleteSalSeq(param);
 			}
 			
 			for(int i=0; i<list.size(); i++) {
@@ -144,7 +148,7 @@ public class AssetServiceImpl implements AssetService {
 			   map.put("CREATE_ID"   ,  param.get("USER_SEQ"));
 			   map.put("UPDATE_ID"   ,  param.get("USER_SEQ"));
 			   log.info("map.toString()==>" + map.toString());
-			   result = result + mapper.saveSalaryList(map);
+			   result = result + assetMapper.saveSalaryList(map);
 			}
 			
 		}catch (Exception e) {
@@ -156,42 +160,42 @@ public class AssetServiceImpl implements AssetService {
 
 	@Override
 	public long salaryCount(HashMap<String, Object> param) throws Exception {
-		return mapper.salaryCount(param);
+		return assetMapper.salaryCount(param);
 	}
 
 	@Override
 	public ArrayList<HashMap<String, Object>> salaryListUp(HashMap<String, Object> param) throws Exception {
-		return mapper.salaryListUp(param);
+		return assetMapper.salaryListUp(param);
 	}
 
 	@Override
 	public ArrayList<HashMap<String, Object>> getPayDedList(HashMap<String, Object> param) throws Exception {
-		return mapper.getPayDedList(param);
+		return assetMapper.getPayDedList(param);
 	}
 
 	@Override
 	public HashMap<String, Object> getSalSeqDate(HashMap<String, Object> param) throws Exception {
-		return mapper.getSalSeqDate(param);
+		return assetMapper.getSalSeqDate(param);
 	}
 
 	@Override
 	public ArrayList<HashMap<String, Object>> getLastSalary(HashMap<String, Object> param) throws Exception {
-		return mapper.getLastSalary(param);
+		return assetMapper.getLastSalary(param);
 	}
 
 	@Override
 	public int dupChkSalMonth(HashMap<String, Object> param) throws Exception {
-		return mapper.dupChkSalMonth(param);
+		return assetMapper.dupChkSalMonth(param);
 	}
 
 	@Override
 	public String chkYearlyAssetPlanExist(HashMap<String, Object> param) throws Exception {
-		return mapper.chkYearlyAssetPlanExist(param);
+		return assetMapper.chkYearlyAssetPlanExist(param);
 	}
 
 	@Override
 	public ArrayList<HashMap<String, Object>> userYearlyPlanTemplate(HashMap<String, Object> param) throws Exception {
-		return mapper.userYearlyPlanTemplate(param);
+		return assetMapper.userYearlyPlanTemplate(param);
 	}
 
 	@Override
@@ -204,8 +208,8 @@ public class AssetServiceImpl implements AssetService {
 		int result = 0;
 		
 		try {
-			
-			result = mapper.deleteYearlyAssetPlanList(param);
+			log.info("AssetServiceImpl saveYearlyAssetPlanList... param.toString() : {}", param.toString());
+			result = assetMapper.deleteYearlyAssetPlanList(param);
 			list = mpr.readValue(param.get("list").toString(), ArrayList.class);
 			
 			for(int i=0; i<list.size(); i++) {
@@ -220,7 +224,7 @@ public class AssetServiceImpl implements AssetService {
 				p.put("CREATE_ID"     , param.get("USER_SEQ"));
 				p.put("UPDATE_ID"     , param.get("USER_SEQ"));
 				log.info("p==>{}", p);
-				result = result + mapper.saveYearlyAssetPlanList(p);
+				result = result + assetMapper.saveYearlyAssetPlanList(p);
 				result++;
 			}
 			
@@ -232,23 +236,18 @@ public class AssetServiceImpl implements AssetService {
 	}
 
 	@Override
-	public int deleteYearlyAssetPlanList(HashMap<String, Object> param) throws Exception {
-		return mapper.deleteYearlyAssetPlanList(param);
-	}
-
-	@Override
 	public ArrayList<HashMap<String, Object>> yearlyAssetPlanList(HashMap<String, Object> param) throws Exception {
-		return mapper.yearlyAssetPlanList(param);
+		return assetMapper.yearlyAssetPlanList(param);
 	}
 
 	@Override
 	public long yearlyAssetPlanListCount(HashMap<String, Object> param) throws Exception {
-		return mapper.yearlyAssetPlanListCount(param);
+		return assetMapper.yearlyAssetPlanListCount(param);
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public int deleteYearlyAssetPlanListByStdYears(HashMap<String, Object> param) throws Exception {
+	public int deleteYearlyAssetPlanList(HashMap<String, Object> param) throws Exception {
 		
 		String[] years = param.get("STD_YEAR").toString().split(",");
 		int result = 0;
@@ -256,7 +255,12 @@ public class AssetServiceImpl implements AssetService {
 	    try {
 	    	for(int i=0; i<years.length; i++) {
 	    		param.put("STD_YEAR", years[i]);
-	    		result += mapper.deleteYearlyAssetPlanList(param);
+	    		
+	    		// 해당연도 일자산계획 삭제
+	    		result += expendMapper.deleteDailyPlanListByYear(param);
+	    		
+	    		// 연자산계획 삭제
+	    		result += assetMapper.deleteYearlyAssetPlanList(param);
 			}
 	    }catch (Exception e) {
 	    	e.printStackTrace();

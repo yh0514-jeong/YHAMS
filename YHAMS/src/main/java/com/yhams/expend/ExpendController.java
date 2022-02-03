@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -286,9 +287,17 @@ public class ExpendController {
 			if(STD_YEAR_MONTH != null &&  !"".equals(STD_YEAR_MONTH)){
 				param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
 				param.put("STD_YEAR_MONTH", STD_YEAR_MONTH);
-				r = expendService.selectExpendPlanList(param);
+				param.put("STD_YEAR", STD_YEAR_MONTH.split("-")[0]);
+				param.put("STD_MONTH", STD_YEAR_MONTH.split("-")[1]);
+				param.put("CATE", "EXP");
+				
+				log.info("expendPlanUpdate, param : {}", param.toString());
+				
 				mv.addObject("STD_YEAR_MONTH", STD_YEAR_MONTH);
-				mv.addObject("result", r);
+				r = expendService.selectExpendPlanList(param);
+				JSONArray rJson = new JSONArray(r);
+				mv.addObject("existYearlyPlanAmount", expendService.existYearlyPlanAmount(param));
+				mv.addObject("result", rJson);
 				mv.addObject("nav"   , "일단위지출계획 수정");
 			}else {
 				mv.addObject("nav"   , "일단위지출계획 등록");
@@ -467,6 +476,29 @@ public class ExpendController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
+			result.put("resultCode",  CommonContraint.SUCCEESS);
+		}catch (Exception e) {
+			e.printStackTrace();
+			result.put("resultCode",  CommonContraint.FAIL);
+		}
+		return result;
+	}
+	
+	
+	@PostMapping(value = "/deleteDailyPlanList")
+	@ResponseBody
+	public HashMap<String, Object> deleteDailyPlanList(@RequestParam HashMap<String, Object> param,
+														HttpSession session,
+														HttpServletRequest request, 
+														HttpServletResponse response){
+		HashMap<String, Object> result = new HashMap<>();
+		
+		try {
+			param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
+			int r = expendService.deleteDailyPlanList(param);
+			if(r == -1) {
+				throw new Exception();
+			}
 			result.put("resultCode",  CommonContraint.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();

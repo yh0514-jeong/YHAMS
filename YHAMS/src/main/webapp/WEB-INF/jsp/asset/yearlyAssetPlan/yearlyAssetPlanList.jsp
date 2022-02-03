@@ -88,7 +88,7 @@
  
  function goDel(stdYears){
 	 
-	 if(!confirm('<spring:message code="com.msg.chkSelectedDelete"/>')) return;   // 선택된 항목을 삭제하시겠습니까?
+	 if(!confirm('<spring:message code="com.yearlyAssetPlan.chkDeleteWhenDbExist"/>')) return;   // 데이터베이스에 저장된 아래의 연자산계획 및 해당연도의 모든 일지출계획이 삭제됩니다. 그래도 삭제하시겠습니까?
 	 
 	 var param = {
 	    'STD_YEAR' : stdYears
@@ -96,7 +96,7 @@
 	 
 	 $.ajax({
 		    type : 'POST',
-		    url : '/asset/deleteYearlyAssetPlanListByStdYears', 
+		    url : '/asset/deleteYearlyAssetPlanList', 
 		    dataType : 'json',
 		    data : param,
 		    success : function(result) { 
@@ -152,7 +152,7 @@ function goStringifyDelTarget(){
 <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups" style="float: right;">
   <div class="input-group">
     <div class="input-group-prepend">
-      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.yearlyAssetPlan.planYear"/></div><!--자산계획 연도-->
+      <div class="input-group-text" id="btnGroupAddon"><spring:message code="com.yearlyAssetPlan.planYear"/></div>  <!--자산계획 연도-->
     </div>
     <input type="number" class="form-control" id="START_YEAR"  onkeyup="javascript:enterkey();" style="width: 150px;">
     &nbsp; ~ &nbsp;

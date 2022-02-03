@@ -47,7 +47,7 @@
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
 			    			html += '<tr align="center">';
-				    		html += '    <td scope="row"><input type="checkbox" value="' + data[i].UED_SEQ + '"></td>';
+				    		html += '    <td scope="row"><input type="checkbox" value="' + data[i].STD_YEAR_MONTH + '"></td>';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
 				    		html += '    <td scope="row">' + data[i].STD_YEAR_MONTH + '</td>';
 				    		html += '    <td scope="row">' + data[i].AMOUNT + '</td>';
@@ -85,21 +85,21 @@
  }
  
  
- function goDel(uedSeqs){
+ function goDel(stdYearMonth){
 	 
 	 if(!confirm('<spring:message code="com.msg.chkSelectedDelete"/>')) return;   // 선택된 항목을 삭제하시겠습니까?
 	 
-	 var param = {
-	    'UED_SEQS' : uedSeqs
+	 let param = {
+		STD_YEAR_MONTH : stdYearMonth
 	 };
 	 
 	 $.ajax({
-		    type : 'POST',
-		    url : '/asset/deleteUnearedList', 
+		    type : 'post',
+		    url  : '/expend/deleteDailyPlanList', 
 		    dataType : 'json',
 		    data : param,
 		    success : function(result) { 
-		    	if(result.result == "success"){
+		    	if(result.resultCode == "success"){
 		    		alert('<spring:message code="com.msg.deleteSuccess"/>');  // 삭제 성공!
 		    		list(1);
 		    	}else{

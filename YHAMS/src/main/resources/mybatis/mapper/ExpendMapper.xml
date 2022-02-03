@@ -434,20 +434,16 @@
 	 
 	 <select id="selectExpendPlanList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
 	 
-	 
-	 	SET @AMOUNT  = 0;
-		SET @WITHDRL = 0;	
 
-
-		SELECT   Y.RNUM,
-		         Y.USER_SEQ,
-		         Y.STD_YEAR_MONTH,
-		         Y.STD_DATE,
-		         FORMAT(Y.AMOUNT, 0) AS AMOUNT,
-		         FORMAT(@AMOUNT := @AMOUNT + Y.AMOUNT, 0)  AS CUM_AMOUNT,
-		         FORMAT(Y.WITHDRL_TOTAL, 0) AS WITHDRL_TOTAL,
-		         FORMAT(@WITHDRL := @WITHDRL + Y.WITHDRL_TOTAL, 0) AS CUM_WITHDRL_TOTAL,
-		         FORMAT(@AMOUNT- @WITHDRL, 0) AS DIF
+			SELECT   Y.RNUM,
+			         Y.USER_SEQ,
+			         Y.STD_YEAR_MONTH,
+			         Y.STD_DATE,
+			         FORMAT(Y.AMOUNT, 0) AS AMOUNT,
+			         SUM(Y.AMOUNT) OVER (ORDER BY Y.RNUM) AS CUM_AMOUNT,
+			         FORMAT(Y.WITHDRL_TOTAL, 0) AS WITHDRL_TOTAL,
+			         SUM(Y.WITHDRL_TOTAL) OVER (ORDER BY Y.RNUM) AS CUM_WITHDRL_TOTAL,
+			         SUM(Y.AMOUNT) OVER (ORDER BY Y.RNUM)-SUM(Y.WITHDRL_TOTAL) OVER (ORDER BY Y.RNUM) AS DIF
 		
 			FROM (
 					SELECT   ROW_NUMBER() OVER (ORDER BY X.STD_DATE ASC) AS RNUM,
@@ -499,9 +495,27 @@
 			
 				) Y
 						
-			ORDER BY Y.RNUM ASC;
+			ORDER BY Y.RNUM ASC
 	 
 	 </select>
+	 
+	 <delete id="deleteDailyPlanList"  parameterType="java.util.HashMap">
+	 		
+	 		DELETE FROM TB_TRAN_DAILY_EXP_PLAN
+	 		
+			WHERE  USER_SEQ       = #{USER_SEQ}
+			AND    STD_YEAR_MONTH = #{STD_YEAR_MONTH}
+	 
+	 </delete>
+	 
+	 <delete id="deleteDailyPlanListByYear" parameterType="java.util.HashMap">
+	 
+	 		DELETE FROM TB_TRAN_DAILY_EXP_PLAN
+	 		
+			WHERE  USER_SEQ = #{USER_SEQ}
+			AND    STD_YEAR_MONTH LIKE CONCAT(#{STD_YEAR},'-%')
+	 
+	 </delete>
 	 
 	 	 
 </mapper>
