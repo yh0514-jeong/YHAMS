@@ -192,7 +192,7 @@
 	   
 	   
 	   <script>
-	   var ctx = document.getElementById('myChart').getContext('2d');
+	    var ctx = document.getElementById('myChart').getContext('2d');
 	    var myChart = new Chart(ctx, {
 	        type: 'bar',
 	        data: {
@@ -221,7 +221,7 @@
 	        options: {
 	            scales: {
 	                y: {
-	                    beginAtZero: true
+	                    beginAtZero: false
 	                }
 	            },
 	            animations: {

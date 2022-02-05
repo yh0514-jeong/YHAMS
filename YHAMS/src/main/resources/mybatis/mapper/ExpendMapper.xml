@@ -465,7 +465,6 @@
 									         STD_YEAR_MONTH,
 									         CONCAT(YEAR(STD_DATE), '-', LPAD(MONTH(STD_DATE), 2, 0), '-', LPAD(DAY(STD_DATE), 2, 0)) AS STD_DATE,
 									         AMOUNT
-									   
 									   FROM  TB_TRAN_DAILY_EXP_PLAN 
     								 ) TTDEP
 										
@@ -473,16 +472,14 @@
 										
 									(SELECT  T1.USER_SEQ,
 									         T1.ACT_DATE,
-									         SUM(T1.WITHDRL_TOTAL) AS WITHDRL_TOTAL
-									  
+									         ABS(SUM(T1.WITHDRL_TOTAL)-SUM(DEPOSIT_TOTAL)) AS WITHDRL_TOTAL
 									   FROM ( SELECT  USER_SEQ,
 									      	          CONCAT(YEAR(ACT_DATE), '-', LPAD(MONTH(ACT_DATE), 2, 0), '-', LPAD(DAY(ACT_DATE), 2, 0)) AS ACT_DATE,
-											          WITHDRL_TOTAL
+											          WITHDRL_TOTAL,
+											          DEPOSIT_TOTAL
 											    FROM  TB_TRAN_ACCT_SMR
 											) T1
-								     
 								      GROUP BY T1.USER_SEQ, T1.ACT_DATE		
-									 
 									 ) TTAS
 										
 								ON   TTDEP.USER_SEQ  = TTAS.USER_SEQ

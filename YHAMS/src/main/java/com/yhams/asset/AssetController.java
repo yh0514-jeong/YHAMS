@@ -466,7 +466,7 @@ public class AssetController {
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			map.put("result", "fail");
+			map.put("result", CommonContraint.FAIL);
 		}
 		return map;
 	}

@@ -3,6 +3,7 @@ package com.yhams.asset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
@@ -117,28 +118,25 @@ public class AssetServiceImpl implements AssetService {
 	@Transactional(rollbackFor = Exception.class)
 	public int saveSalaryList(HashMap<String, Object> param) throws Exception {
 		
-		String SAL_SEQ = null;
+		Optional<? extends Object> maybeSalSeq = Optional.empty();
 		int result     = 0;
 		
-		try{
-			SAL_SEQ = param.get("SAL_SEQ").toString();
-		}catch (NullPointerException ne) {
-			SAL_SEQ = null;
-		}
+		maybeSalSeq = Optional.ofNullable(param.get("SAL_SEQ"));
+		
+		log.info("maybeSalSeq : {}", maybeSalSeq);
 		
 		ArrayList<HashMap<String, Object>> list  = new ArrayList<HashMap<String,Object>>();
 		ObjectMapper mpr = new ObjectMapper();
 		
 		try {
+			
 			list = mpr.readValue(param.get("list").toString(), ArrayList.class);
 			
-			// insert
-			if(SAL_SEQ == null) {
-				SAL_SEQ = commonMapper.getNextSalSeq();
-			// update
-			}else{
+			if(maybeSalSeq.isPresent()) {
 				int delResult = assetMapper.deleteSalSeq(param);
 			}
+			
+			String SAL_SEQ = UUID.randomUUID().toString();
 			
 			for(int i=0; i<list.size(); i++) {
 			   HashMap<String, Object> map = list.get(i);
