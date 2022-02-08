@@ -64,28 +64,26 @@
   }
   
    #charts1{
-       width: 48%;
-       height: 48%;
+       width: 43%;
+       height: 90%;
        float: left;
    }
    #charts2{
-       width: 48%;
-       height: 48%;
-       float: left;
+       width: 45%;
+       height: 45%;
+       float: right;
    }
    #charts3{
-       width: 48%;
-       height: 48%;
-       float: left;
-   }
-   #charts4{
-       width: 48%;
-       height: 48%;
-       float: left;
+       width: 45%;
+       height: 45%;
+        float: right;
    }
 </style>
 </head>
 <script type="text/javascript">
+
+	let sc, ac, asc;
+	let salChart, acChart, ascChart;
 
     var menu = '${menuList}';
 
@@ -93,6 +91,7 @@
 		$("#mainArea").show();
 		$("#menuArea").hide();
 		$("#subMenu").hide();
+		loadChartData();
 	});
 	
 	function drawTopMenu(){
@@ -148,7 +147,169 @@
 	function goMain(){
 		$("#menuArea").hide();
 		$("#mainArea").show();
+		loadChartData();
 	}
+	
+	
+	function loadChartData(){
+		
+		$.ajax({
+		    type : 'get',
+		    url  : '/dashboard/getSalaryStatistics', 
+		    dataType : 'json', 
+		    success : function(result) {
+		    	drawChart(result);
+		    },
+		    error : function(request, status, error) { 
+		    }
+		});
+		
+	}
+	
+	
+	function drawChart(data){
+		
+		   console.log(JSON.stringify(data));
+		
+			// 급여추이 
+			sc = document.getElementById('salaryChart').getContext('2d');
+		    salChart = new Chart(sc, {
+		        data: {
+		            labels: data.labels,
+		            datasets: [
+			            	{
+			            	  data:  data.salaryStatList,
+			            	  type: 'line',
+				              backgroundColor: [
+				                'rgba(54, 162, 235, 0.2)',
+				                'rgba(54, 162, 235, 0.2)',
+				                'rgba(54, 162, 235, 0.2)',
+				                'rgba(54, 162, 235, 0.2)',
+				                'rgba(54, 162, 235, 0.2)'
+				             ],
+				             label : '급여액',
+				             borderWidth: 1
+			              },
+	           			  {
+			               data:   data.assetStatList,
+			               type: 'bar',
+	 		               backgroundColor: [
+	 		            	  'rgba(255, 99, 132, 0.2)',
+	 		                  'rgba(255, 99, 132, 0.2)',
+	 		                  'rgba(255, 99, 132, 0.2)',
+	 		                  'rgba(255, 99, 132, 0.2)',
+	 		                  'rgba(255, 99, 132, 0.2)'
+	     		           ],
+	     		           label : '자산총액',
+	     		           borderWidth: 1
+     		         	}
+		            ]
+		        },
+		        options: {
+		            scales: {
+		                y: {
+		                    beginAtZero: false
+		                }
+		            },
+		            plugins: {
+		                title: {
+		                    display: true,
+		                    text: '자산·급여 추이',
+		                    font : {
+		                    	size : 20
+		                    }
+		                },
+		                legend : {
+		                	display : true,
+			            	position : 'top'
+			            }
+		        	}
+		    	}
+		  });
+	    
+		    // 자산추이
+	     ac = document.getElementById('assetChart').getContext('2d');
+		 acChart = new Chart(ac, {
+		 	type: 'bar',
+		     data: {
+		         labels: data.labels,
+		         datasets: [{
+		             data: data.assetStatList,
+		             backgroundColor: [
+		                 'rgba(255, 99, 132, 0.2)',
+		                 'rgba(255, 99, 132, 0.2)',
+		                 'rgba(255, 99, 132, 0.2)',
+		                 'rgba(255, 99, 132, 0.2)',
+		                 'rgba(255, 99, 132, 0.2)'
+		             ],
+		             label : '자산총액',
+		             borderWidth: 1
+		         }]
+		     },
+		     options: {
+		 	    plugins: {
+		 	    	title: {
+	                     display: true,
+	                     text: '자산추이',
+	                     font : {
+	                     	size : 20
+	                     }
+	                 },
+	                 legend : {
+	                 	display : true,
+		             	position : 'top'
+		             }
+	             }
+		     }
+		 });
+		 
+		 
+		  asc = document.getElementById('asseetConsistChart').getContext('2d');
+		  ascChart = new Chart(asc, {
+			    type: 'doughnut',
+		        data: {
+		            labels: data.assetConsistList.label,
+		            datasets: [{
+		            	data: data.assetConsistList.value,
+		                borderWidth: 1,
+		                backgroundColor: [
+		                	'rgb(255, 99, 132)',
+		                    'rgb(75, 192, 192)',
+		                    'rgb(255, 205, 86)',
+		                    'rgb(201, 203, 207)',
+		                    'rgb(54, 162, 235)',
+		                    'rgb(197, 54, 236)',
+		                    'rgb(131, 210, 239)'
+			             ]
+		            }]		           
+		        },
+		        options: {
+			 	    plugins: {
+			 	    	title: {
+		                     display: true,
+		                     text: '나의자산구성',
+		                     font : {
+		                     	size : 20
+		                     }
+		                 },
+		                 legend : {
+		                 	display : true,
+			             	position : 'top'
+			             },
+			             datalabels: {
+			                 display: true,
+			                 align: 'bottom',
+			                 backgroundColor: '#ccc',
+			                 borderRadius: 3,
+			                 font: {
+			                   size: 18,
+			                 }
+			             }
+		             }
+			     }
+		    });
+	}
+	
 </script>
 <body>
        <nav class="navbar navbar-expand-xl navbar-dark bg-success fixed-top" style="background-color: blueviolet;">
@@ -168,17 +329,14 @@
        </nav>
  
 	   <div id="mainArea"  style="padding-top: 73px;"> <!-- Main Chart List -->
-		    <div id="charts1">
-	            <canvas id="myChart"></canvas>
+	        <div id="charts1">
+	            <canvas id="asseetConsistChart"></canvas>
 	        </div>
-	        <div id="charts2">
-	            <canvas id="myChart2"></canvas>
+		    <div id="charts2">
+	            <canvas id="salaryChart"></canvas>
 	        </div>
 	        <div id="charts3">
-	            <canvas id="myChart3"></canvas>
-	        </div>
-	        <div id="charts4">
-	            <canvas id="myChart4"></canvas>
+	            <canvas id="assetChart"></canvas>
 	        </div>
 	   </div>
 	   
@@ -192,169 +350,6 @@
 	   
 	   
 	   <script>
-	    var ctx = document.getElementById('myChart').getContext('2d');
-	    var myChart = new Chart(ctx, {
-	        type: 'bar',
-	        data: {
-	            labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
-	            datasets: [{
-	                data: [12, 19, 3, 5, 2, 3],
-	                backgroundColor: [
-	                    'rgba(255, 99, 132, 0.2)',
-	                    'rgba(54, 162, 235, 0.2)',
-	                    'rgba(255, 206, 86, 0.2)',
-	                    'rgba(75, 192, 192, 0.2)',
-	                    'rgba(153, 102, 255, 0.2)',
-	                    'rgba(255, 159, 64, 0.2)'
-	                ],
-	                borderColor: [
-	                    'rgba(255, 99, 132, 1)',
-	                    'rgba(54, 162, 235, 1)',
-	                    'rgba(255, 206, 86, 1)',
-	                    'rgba(75, 192, 192, 1)',
-	                    'rgba(153, 102, 255, 1)',
-	                    'rgba(255, 159, 64, 1)'
-	                ],
-	                borderWidth: 1
-	            }]
-	        },
-	        options: {
-	            scales: {
-	                y: {
-	                    beginAtZero: false
-	                }
-	            },
-	            animations: {
-	                tension: {
-	                    duration: 1000,
-	                    easing: 'linear',
-	                    from: 1,
-	                    to: 0,
-	                    loop: true
-	                }
-	            },
-	            plugins: {
-	                title: {
-	                    display: true,
-	                    text: '급여 추이'
-	                }
-	            },
-	            legend : {
-	            	display : false
-	            }
-	        }
-	    });
-
-		var ctx1 = document.getElementById('myChart2').getContext('2d');
-		var myChart = new Chart(ctx1, {
-		    type: 'line',
-		    data: {
-		        labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
-		        datasets: [{
-		            data: [12, 19, 3, 5, 2, 3],
-		            backgroundColor: [
-		                'rgba(255, 99, 132, 0.2)',
-		                'rgba(54, 162, 235, 0.2)',
-		                'rgba(255, 206, 86, 0.2)',
-		                'rgba(75, 192, 192, 0.2)',
-		                'rgba(153, 102, 255, 0.2)',
-		                'rgba(255, 159, 64, 0.2)'
-		            ],
-		            borderColor: [
-		                'rgba(255, 99, 132, 1)',
-		                'rgba(54, 162, 235, 1)',
-		                'rgba(255, 206, 86, 1)',
-		                'rgba(75, 192, 192, 1)',
-		                'rgba(153, 102, 255, 1)',
-		                'rgba(255, 159, 64, 1)'
-		            ],
-		            borderWidth: 1
-		        }]
-		    },
-		    options: {
-		        scales: {
-		            y: {
-		                beginAtZero: true
-		            }
-		        },
-			    plugins: {
-	                title: {
-	                    display: true,
-	                    text: '자산 변화'
-	                }
-	            },
-	            legend: {
-	                display: false
-	            },
-	            tooltips: {
-	                callbacks: {
-	                   label: function(tooltipItem) {
-	                          return tooltipItem.yLabel;
-	                   }
-	                }
-	            }
-		    }
-		});
-
-	    var ctx2 = document.getElementById('myChart3').getContext('2d');
-	    var myChart = new Chart(ctx2, {
-	        type: 'line',
-	        data: {
-	            labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
-	            datasets: [{
-	                data: [12, 19, 3, 5, 2, 3],
-	                backgroundColor: [
-	                    'rgba(255, 99, 132, 0.2)',
-	                    'rgba(54, 162, 235, 0.2)',
-	                    'rgba(255, 206, 86, 0.2)',
-	                    'rgba(75, 192, 192, 0.2)',
-	                    'rgba(153, 102, 255, 0.2)',
-	                    'rgba(255, 159, 64, 0.2)'
-	                ],
-	                borderColor: [
-	                    'rgba(255, 99, 132, 1)',
-	                    'rgba(54, 162, 235, 1)',
-	                    'rgba(255, 206, 86, 1)',
-	                    'rgba(75, 192, 192, 1)',
-	                    'rgba(153, 102, 255, 1)',
-	                    'rgba(255, 159, 64, 1)'
-	                ],
-	                borderWidth: 1
-	            }]
-	        },
-	        options: {
-	            scales: {
-	                y: {
-	                    beginAtZero: true
-	                }
-	            },
-	            animations: {
-	                tension: {
-	                    duration: 1000,
-	                    easing: 'linear',
-	                    from: 1,
-	                    to: 0,
-	                    loop: true
-	                }
-	            },
-			    plugins: {
-	                title: {
-	                    display: true,
-	                    text: '지출 추이'
-	                }
-	            },
-	            legend: {
-	                display: false
-	            },
-	            tooltips: {
-	                callbacks: {
-	                   label: function(tooltipItem) {
-	                          return tooltipItem.yLabel;
-	                   }
-	                }
-	            }
-	        }
-	    });
 
 		var ctx3 = document.getElementById('myChart4').getContext('2d');
 		var myChart = new Chart(ctx3, {
