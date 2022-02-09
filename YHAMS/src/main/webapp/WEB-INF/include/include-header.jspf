@@ -17,4 +17,5 @@
 
 <!-- Chart.js -->
 <script src="/js/chart.js"></script>
+<script src="/js/chartjs-plugin-datalabels.js"></script>
 

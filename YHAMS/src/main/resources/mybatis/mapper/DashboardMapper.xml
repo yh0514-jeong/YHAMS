@@ -154,7 +154,7 @@
 						
 						) Z
 		
-			WHERE Z.RNUM <![CDATA[ <= ]]> 6
+			WHERE Z.RNUM <![CDATA[ <= ]]> 3
 				
 		UNION ALL
 		
@@ -184,7 +184,7 @@
 									   		GROUP BY ACCOUNT_CD
 						             	   ) B
 								) C
-							   WHERE C.RNUM <![CDATA[ >]]> 6 
+							   WHERE C.RNUM <![CDATA[ >]]> 3 
 						) AS ASSET
 						
 						FROM DUAL

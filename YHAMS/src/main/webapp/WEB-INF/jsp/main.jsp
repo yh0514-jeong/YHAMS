@@ -169,8 +169,6 @@
 	
 	function drawChart(data){
 		
-		   console.log(JSON.stringify(data));
-		
 			// 급여추이 
 			sc = document.getElementById('salaryChart').getContext('2d');
 		    salChart = new Chart(sc, {
@@ -266,21 +264,86 @@
 		 
 		  asc = document.getElementById('asseetConsistChart').getContext('2d');
 		  ascChart = new Chart(asc, {
+			    //type: 'pie',
 			    type: 'doughnut',
+			    plugins:[ ChartDataLabels,
+			    	{
+			    	    id: 'text',
+			    	    beforeDraw: function(chart, a, b) {
+			    	      var width  = chart.width,
+			    	          height = chart.height,
+			    	          ctx    = chart.ctx;
+			    	      ctx.restore();
+			    	      var fontSize = (height / 280).toFixed(2);
+			    	      ctx.font = fontSize + "em sans-serif";
+			    	      ctx.textBaseline = "middle";
+			    	      
+			    	      let sum = 0;
+			    	      for(let i=0; i<data.assetConsistList.value.length; i++){
+			    	    	  sum += data.assetConsistList.value[i];
+			    	      }
+			    	      var text =  sum.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","),
+			    	          textX = Math.round((width - ctx.measureText(text).width) / 2),
+			    	          textY = height / 1.8;
+			    	      ctx.fillText(text, textX, textY);
+			    	      ctx.save();
+			    	    }
+			    	}],
 		        data: {
 		            labels: data.assetConsistList.label,
 		            datasets: [{
 		            	data: data.assetConsistList.value,
+		            	datalabels : {
+		            		 labels: {
+		            	          name: {
+			            	            align: 'top',
+			            	            font: {
+			            	            	color : 'black',
+			            	            	weight : 'bold',
+			            	            	size: 13
+			            	            },
+			            	            formatter: function(value, ctx) {
+			            	               return ctx.chart.data.labels[ctx.dataIndex];
+			            	            }
+		            	          },
+		            	          value: {
+			            	            align: 'bottom',
+			            	            backgroundColor: 'black',
+			            	            borderColor: 'white',
+			            	            borderWidth: 2,
+			            	            borderRadius: 5,
+			            	            color: 'white',
+			            	            formatter: function(value, ctx) {
+			            	              return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");	
+			            	            },
+			            	            padding: 4
+		            	         }
+	            	        }
+		            	},
+		            	aspectRatio: 4 / 3,
+		            	cutoutPercentage: 32,
+		            	layout: {
+		            	      padding: 32
+		            	},
+		            	elements: {
+	            	       line: {
+	            	         fill: false
+	            	       },
+	            	       point: {
+	            	         hoverRadius: 7,
+	            	         radius: 5
+	            	       }
+		            	},
 		                borderWidth: 1,
 		                backgroundColor: [
-		                	'rgb(255, 99, 132)',
+		                    'rgb(201, 203, 207)',
 		                    'rgb(75, 192, 192)',
 		                    'rgb(255, 205, 86)',
-		                    'rgb(201, 203, 207)',
+		                	'rgb(255, 99, 132)',
 		                    'rgb(54, 162, 235)',
 		                    'rgb(197, 54, 236)',
 		                    'rgb(131, 210, 239)'
-			             ]
+			           ]
 		            }]		           
 		        },
 		        options: {
@@ -295,15 +358,6 @@
 		                 legend : {
 		                 	display : true,
 			             	position : 'top'
-			             },
-			             datalabels: {
-			                 display: true,
-			                 align: 'bottom',
-			                 backgroundColor: '#ccc',
-			                 borderRadius: 3,
-			                 font: {
-			                   size: 18,
-			                 }
 			             }
 		             }
 			     }
@@ -324,6 +378,11 @@
                			    <a onclick="javascript:drawLeftMenu(this.id);" class="nav-link active" aria-current="page" id="${item.MENU_ID}" style="cursor: pointer;">${item.MENU_NM}</a>
                			</li>                                                                                                      
                		</c:forEach>
+               </ul>
+                <ul class="navbar-nav" id="menu">	
+               		<li class="nav-item" style="float: right;">                                                                                     
+               			<a onclick="javascript:alert('로그아웃');" class="nav-link active" aria-current="page" id="logout" style="cursor: pointer;">로그아웃</a>
+             		</li>  
                </ul>
              </div>
        </nav>
@@ -347,55 +406,6 @@
 	       <div id="pageload" class="content"> <!--  style="padding-top: 84px;" -->
 	       </div>
 	   </div>
-	   
-	   
-	   <script>
-
-		var ctx3 = document.getElementById('myChart4').getContext('2d');
-		var myChart = new Chart(ctx3, {
-		    type: 'bar',
-		    data: {
-		        labels: ['4월', '5월', '6월', '7월', '8월', '9월'],
-		        datasets: [{
-		            label: '금액',
-		            data: [12, 19, 3, 5, 2, 3],
-		            backgroundColor: [
-		                'rgba(255, 99, 132, 0.2)',
-		                'rgba(54, 162, 235, 0.2)',
-		                'rgba(255, 206, 86, 0.2)',
-		                'rgba(75, 192, 192, 0.2)',
-		                'rgba(153, 102, 255, 0.2)',
-		                'rgba(255, 159, 64, 0.2)'
-		            ],
-		            borderColor: [
-		                'rgba(255, 99, 132, 1)',
-		                'rgba(54, 162, 235, 1)',
-		                'rgba(255, 206, 86, 1)',
-		                'rgba(75, 192, 192, 1)',
-		                'rgba(153, 102, 255, 1)',
-		                'rgba(255, 159, 64, 1)'
-		            ],
-		            borderWidth: 1
-		        }]
-		    },
-		    options: {
-		        scales: {
-		            y: {
-		                beginAtZero: true
-		            }
-		        },
-		        animations: {
-		            tension: {
-		                duration: 1000,
-		                easing: 'linear',
-		                from: 1,
-		                to: 0,
-		                loop: true
-		            }
-		        }
-		    }
-		});
-	   </script>
 	   
 </body>    
 </html>
