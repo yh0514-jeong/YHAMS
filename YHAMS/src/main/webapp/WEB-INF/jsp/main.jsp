@@ -65,18 +65,20 @@
   
    #charts1{
        width: 43%;
-       height: 90%;
+       height: 43%;
        float: left;
    }
    #charts2{
-       width: 45%;
-       height: 45%;
+       width: 50%;
+       height: 43%;
        float: right;
+       padding-bottom: 10%;
    }
    #charts3{
-       width: 45%;
-       height: 45%;
-        float: right;
+       width: 50%;
+       height: 43%;
+       float: right;
+       padding-top: 4%;
    }
 </style>
 </head>
@@ -85,7 +87,7 @@
 	let sc, ac, asc;
 	let salChart, acChart, ascChart;
 
-    var menu = '${menuList}';
+    let menu = '${menuList}';
 
 	$(document).ready(function(){
 		$("#mainArea").show();
@@ -155,7 +157,7 @@
 		
 		$.ajax({
 		    type : 'get',
-		    url  : '/dashboard/getSalaryStatistics', 
+		    url  : '/dashboard/getStatistics', 
 		    dataType : 'json', 
 		    success : function(result) {
 		    	drawChart(result);
@@ -169,126 +171,36 @@
 	
 	function drawChart(data){
 		
-			// 급여추이 
-			sc = document.getElementById('salaryChart').getContext('2d');
-		    salChart = new Chart(sc, {
-		        data: {
-		            labels: data.labels,
-		            datasets: [
-			            	{
-			            	  data:  data.salaryStatList,
-			            	  type: 'line',
-				              backgroundColor: [
-				                'rgba(54, 162, 235, 0.2)',
-				                'rgba(54, 162, 235, 0.2)',
-				                'rgba(54, 162, 235, 0.2)',
-				                'rgba(54, 162, 235, 0.2)',
-				                'rgba(54, 162, 235, 0.2)'
-				             ],
-				             label : '급여액',
-				             borderWidth: 1
-			              },
-	           			  {
-			               data:   data.assetStatList,
-			               type: 'bar',
-	 		               backgroundColor: [
-	 		            	  'rgba(255, 99, 132, 0.2)',
-	 		                  'rgba(255, 99, 132, 0.2)',
-	 		                  'rgba(255, 99, 132, 0.2)',
-	 		                  'rgba(255, 99, 132, 0.2)',
-	 		                  'rgba(255, 99, 132, 0.2)'
-	     		           ],
-	     		           label : '자산총액',
-	     		           borderWidth: 1
-     		         	}
-		            ]
-		        },
-		        options: {
-		            scales: {
-		                y: {
-		                    beginAtZero: false
-		                }
-		            },
-		            plugins: {
-		                title: {
-		                    display: true,
-		                    text: '자산·급여 추이',
-		                    font : {
-		                    	size : 20
-		                    }
-		                },
-		                legend : {
-		                	display : true,
-			            	position : 'top'
-			            }
-		        	}
-		    	}
-		  });
-	    
-		    // 자산추이
-	     ac = document.getElementById('assetChart').getContext('2d');
-		 acChart = new Chart(ac, {
-		 	type: 'bar',
-		     data: {
-		         labels: data.labels,
-		         datasets: [{
-		             data: data.assetStatList,
-		             backgroundColor: [
-		                 'rgba(255, 99, 132, 0.2)',
-		                 'rgba(255, 99, 132, 0.2)',
-		                 'rgba(255, 99, 132, 0.2)',
-		                 'rgba(255, 99, 132, 0.2)',
-		                 'rgba(255, 99, 132, 0.2)'
-		             ],
-		             label : '자산총액',
-		             borderWidth: 1
-		         }]
-		     },
-		     options: {
-		 	    plugins: {
-		 	    	title: {
-	                     display: true,
-	                     text: '자산추이',
-	                     font : {
-	                     	size : 20
-	                     }
-	                 },
-	                 legend : {
-	                 	display : true,
-		             	position : 'top'
-		             }
-	             }
-		     }
-		 });
-		 
-		 
 		  asc = document.getElementById('asseetConsistChart').getContext('2d');
 		  ascChart = new Chart(asc, {
 			    //type: 'pie',
 			    type: 'doughnut',
 			    plugins:[ ChartDataLabels,
-			    	{
-			    	    id: 'text',
-			    	    beforeDraw: function(chart, a, b) {
-			    	      var width  = chart.width,
-			    	          height = chart.height,
-			    	          ctx    = chart.ctx;
-			    	      ctx.restore();
-			    	      var fontSize = (height / 280).toFixed(2);
-			    	      ctx.font = fontSize + "em sans-serif";
-			    	      ctx.textBaseline = "middle";
-			    	      
-			    	      let sum = 0;
-			    	      for(let i=0; i<data.assetConsistList.value.length; i++){
-			    	    	  sum += data.assetConsistList.value[i];
-			    	      }
-			    	      var text =  sum.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","),
-			    	          textX = Math.round((width - ctx.measureText(text).width) / 2),
-			    	          textY = height / 1.8;
-			    	      ctx.fillText(text, textX, textY);
-			    	      ctx.save();
-			    	    }
-			    	}],
+				    	{
+				    	    id: 'text',
+				    	    beforeDraw: function(chart, a, b) {
+					    	      var width  = chart.width,
+					    	          height = chart.height,
+					    	          ctx    = chart.ctx;
+					    	      ctx.restore();
+					    	      var fontSize = (height / 400).toFixed(2);
+					    	      ctx.font = fontSize + "em sans-serif";
+					    	      ctx.textBaseline = "middle";
+					    	      
+					    	      let sum = 0;
+					    	      for(let i=0; i<data.assetConsistList.value.length; i++){
+					    	    	  sum += data.assetConsistList.value[i];
+					    	      }
+					    	      var text = "총액\n";
+					    	    	  text += sum.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+					    	    	  text += "원";
+					    	          textX = Math.round((width - ctx.measureText(text).width) / 2),
+					    	          textY = height / 1.8;
+					    	      ctx.fillText(text, textX, textY);
+					    	      ctx.save();
+				    	    }
+			    	   }
+			    ],
 		        data: {
 		            labels: data.assetConsistList.label,
 		            datasets: [{
@@ -362,8 +274,97 @@
 		             }
 			     }
 		    });
+		  
+		// 자산추이 
+		sc = document.getElementById('assetChart').getContext('2d');
+	    salChart = new Chart(sc, {
+	        data: {
+	            labels: data.labels,
+	            datasets: [
+		            	{
+		            	  data: data.salaryStatList,
+		            	  type: 'bar',
+			              backgroundColor: 'rgba(181, 236, 255, 0.8)',
+			              label : '급여액',
+			              borderWidth: 1
+		               },
+		               {
+		            	  data: data.unearnedStatList,
+		            	  type: 'bar',
+			              backgroundColor: 'rgba(125, 219, 253, 0.8)',
+			              label : '불로소득액',
+			              borderWidth: 1
+		               },
+           			   {
+			              data:  data.assetStatList,
+			              type: 'bar',
+	 		              backgroundColor: 'rgb(32, 193, 252, 0.8)',
+	     		          label : '자산총액',
+	     		          borderWidth: 1
+ 		         	   }
+	            ]
+	        },
+	        options: {
+	            scales: {
+	                y: {
+	                    beginAtZero: false
+	                }
+	            },
+	            plugins: {
+	                title: {
+	                    display: true,
+	                    text: '자산추이',
+	                    font : {
+	                    	size : 20
+	                    }
+	                },
+	                legend : {
+	                	display : true,
+		            	position : 'top'
+		            }
+	        	}
+	    	}
+		  }); 
+		
+		 
+		 // 지출추이
+	     ac = document.getElementById('expendChart').getContext('2d');
+		 acChart = new Chart(ac, {
+		 	type: 'bar',
+		     data: {
+		         labels: data.labels,
+		         datasets: [{
+		             data: data.assetStatList,
+		             backgroundColor: 'rgba(255, 99, 132, 0.2)',
+		             label : '지출총액',
+		             borderWidth: 1
+		         }]
+		     },
+		     options: {
+		 	    plugins: {
+		 	    	title: {
+	                     display: true,
+	                     text: '지출추이',
+	                     font : {
+	                     	size : 20
+	                     }
+	                 },
+	                 legend : {
+	                 	display : true,
+		             	position : 'top'
+		             }
+	             }
+		     }
+		 });
 	}
 	
+function logout(){
+	if(confirm('로그아웃 하시겠습니까?')){
+		window.location.href = "/logout";
+	}else{
+		return;
+	}
+}
 </script>
 <body>
        <nav class="navbar navbar-expand-xl navbar-dark bg-success fixed-top" style="background-color: blueviolet;">
@@ -379,23 +380,19 @@
                			</li>                                                                                                      
                		</c:forEach>
                </ul>
-                <ul class="navbar-nav" id="menu">	
-               		<li class="nav-item" style="float: right;">                                                                                     
-               			<a onclick="javascript:alert('로그아웃');" class="nav-link active" aria-current="page" id="logout" style="cursor: pointer;">로그아웃</a>
-             		</li>  
-               </ul>
              </div>
+             <img src="/img/logout.svg" style="padding-right: 3%; cursor: pointer; height: 50px; width: 70px;" onclick="javascript : logout();" alt="로그아웃">                                                                            
        </nav>
  
 	   <div id="mainArea"  style="padding-top: 73px;"> <!-- Main Chart List -->
 	        <div id="charts1">
 	            <canvas id="asseetConsistChart"></canvas>
 	        </div>
-		    <div id="charts2">
-	            <canvas id="salaryChart"></canvas>
-	        </div>
-	        <div id="charts3">
+	        <div id="charts2">
 	            <canvas id="assetChart"></canvas>
+	        </div>
+		    <div id="charts3">
+	            <canvas id="expendChart"></canvas>
 	        </div>
 	   </div>
 	   

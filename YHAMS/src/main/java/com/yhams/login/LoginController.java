@@ -7,8 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,21 +19,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
+import com.yhams.exception.SaveUserInfoException;
 import com.yhams.util.CommonContraint;
 import com.yhams.util.Encryption;
 
-import lombok.extern.log4j.Log4j2;
-
 @Controller
-@Log4j2
 @RequestMapping
 public class LoginController {
 	
-	@Autowired
-	LoginService loginservice;
+	private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 	
 	@Autowired
-	CommonService commonService;
+	private LoginService loginservice;
+	
+	@Autowired
+	private CommonService commonService;
 	
 	@RequestMapping(value = "/main")
 	public ModelAndView main() {
@@ -56,23 +59,43 @@ public class LoginController {
 	}
 	
 	
+	@GetMapping(value = "/idDupChk")
+	@ResponseBody
+	public HashMap<String, Object> idDupChk(@RequestParam HashMap<String, Object> param, 
+											  HttpServletRequest request, 
+											  HttpServletResponse response){
+	
+		HashMap<String, Object> result = new HashMap<>();
+		try {
+			String idDupChk = loginservice.idDupChk(param);
+			if("TRUE".equals(idDupChk)) {
+				result.put("result", true);
+			}else{
+				result.put("result", false);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	
 	@RequestMapping(value = "/signUpSave", method = RequestMethod.POST)
 	@ResponseBody
 	@SuppressWarnings("unused")
-	public HashMap<String, Object> signUpSave(@RequestParam HashMap<String, Object> param, HttpServletRequest request, HttpServletResponse response){
+	public HashMap<String, Object> signUpSave(@RequestParam HashMap<String, Object> param, 
+											  HttpServletRequest request, 
+											  HttpServletResponse response){
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		int res = 0;
 		try {
-			String nextUserSeq = commonService.getUserNextSeq();
-			param.put("USER_SEQ", nextUserSeq);
-			param.put("USER_PW", Encryption.encryptPassword(param.get("USER_PW").toString()));
 			res = loginservice.insertUser(param);
+			if(res == -1) throw new SaveUserInfoException(param.get("USER_ID").toString());
+			result.put("resultcode", CommonContraint.SUCCEESS);
 		}catch (Exception e) {
+			result.put("resultcode", CommonContraint.FAIL);
 			e.printStackTrace();
 		}
-		System.out.println("param.toString()==>" + param.toString());
-		result.put("resultcode", CommonContraint.SUCCEESS);
 		return result;
 	}
 	
@@ -149,5 +172,20 @@ public class LoginController {
 	}
 	
 	
+	@GetMapping(value = "/logout")
+	@SuppressWarnings("all")
+	public ModelAndView logout(HttpServletRequest request, 
+							   HttpServletResponse response, 
+							   HttpSession session){
+		ModelAndView mv = new ModelAndView();
+		
+		try {
+			session.invalidate();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		mv.setViewName("login/login");
+		return mv;
+	}
 	
 }

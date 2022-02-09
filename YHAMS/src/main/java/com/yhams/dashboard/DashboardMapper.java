@@ -16,4 +16,6 @@ public interface DashboardMapper {
 
 	ArrayList<HashMap<String, Object>> getAssetConsistList(HashMap<String, Object> param) throws Exception;
 
+	ArrayList<Integer> getUnearnedStatList(HashMap<String, Object> param) throws Exception;
+
 }

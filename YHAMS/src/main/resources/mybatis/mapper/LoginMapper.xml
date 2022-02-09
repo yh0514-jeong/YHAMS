@@ -62,7 +62,7 @@
 		        TMU.USER_NM,
 		        TMU.USER_NM_EN,
 		        TMU.USER_EMAIL,
-		        TMURM.ROLE_ID,
+		        GROUP_CONCAT(TMURM.ROLE_ID) AS ROLE_ID,
 		        TMR.ROLE_NM
 		        
 			FROM TB_META_USER TMU
@@ -82,7 +82,7 @@
     
     <select id="getUserMenuList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
     
-    	SELECT  TMMRM.MENU_ID,
+    	SELECT  DISTINCT TMMRM.MENU_ID,
 		        TMM.MENU_NM,
 		        TMM.MENU_NM_EN,
 		        TMM.MENU_URL
@@ -92,9 +92,9 @@
 			TB_META_MENU TMM
 			ON TMMRM.MENU_ID = TMM.MENU_ID
 		
-		   WHERE ROLE_ID = (SELECT ROLE_ID 
-		   	                FROM TB_META_USER_ROLE_MAPPING 
-		   	                WHERE USER_SEQ = #{USER_SEQ})
+		   WHERE ROLE_ID IN (SELECT ROLE_ID 
+		   	                   FROM TB_META_USER_ROLE_MAPPING 
+		   	                  WHERE USER_SEQ = #{USER_SEQ})
 									 	
 		   AND TMM.PAR_MENU_ID IS NULL
 		   
@@ -113,12 +113,38 @@
 			WHERE PAR_MENU_ID = #{PAR_MENU_ID}
 			AND   MENU_ID IN (SELECT MENU_ID
 			                    FROM TB_META_MENU_ROLE_MAPPING
-			                    WHERE ROLE_ID  = (SELECT ROLE_ID
-			                                       FROM  TB_META_USER_ROLE_MAPPING
-			                                       WHERE USER_SEQ = #{USER_SEQ}) 
+			                    WHERE ROLE_ID  IN (SELECT ROLE_ID
+			                                         FROM  TB_META_USER_ROLE_MAPPING
+			                                         WHERE USER_SEQ = #{USER_SEQ}) 
 						      )
 			
 			ORDER BY MENU_ORDR ASC
     </select>
+    
+    <select id="idDupChk" parameterType="java.util.HashMap" resultType="String">
+    	
+			SELECT  CASE WHEN COUNT(*) > 0 THEN 'TRUE'
+			             ELSE 'FALSE'
+			             END AS RESULT
+				FROM TB_META_USER
+				WHERE USER_ID = #{USER_ID}
+    
+    </select>
+    
+    	
+    <insert id="insertDefaultRole" parameterType="java.util.HashMap">
+    
+    	INSERT INTO TB_META_USER_ROLE_MAPPING
+				
+		SELECT     #{USER_SEQ} AS USER_SEQ,
+				   ROLE_ID,
+				   #{USER_SEQ} AS CREATE_ID,
+				   NOW(),
+				   #{USER_SEQ} AS UPDATE_ID,
+				   NOW()
+			FROM TB_META_ROLE
+			WHERE DEFAULT_YN = 'Y'
+    
+    </insert>
 
 </mapper>

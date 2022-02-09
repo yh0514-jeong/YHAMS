@@ -107,7 +107,7 @@ public class RoleController {
 		ArrayList<HashMap<String, Object>> roleList = new ArrayList<HashMap<String,Object>>();
 		
 		try {
-			
+			useYnCodeList = commonService.getCgList("CG_0003", "Y");
 			if(ROLE_ID != null && ROLE_ID != "undefined" && ROLE_ID != "") {
 				param.put("ROLE_ID", ROLE_ID);
 				result = roleservice.selectRole(param);

@@ -19,6 +19,7 @@
 			          TMR.PAR_ROLE_ID,
 			          TMR.ROLE_NM,
 			          TMR.ROLE_DC,
+			          TMR.DEFAULT_YN,
 			          TMR.CREATE_ID,
 			          (SELECT TU.USER_NM
 				          FROM TB_META_USER TU
@@ -48,6 +49,7 @@
 		       IFNULL(CONCAT(T1.PAR_ROLE_NM, '(' , T1.PAR_ROLE_ID, ')'), '') AS PAR_ROLE_ID,
 		       T1.ROLE_NM,
 		       T1.ROLE_DC,
+		       T1.DEFAULT_YN,
 		       T1.CREATE_ID,
 		       T1.CREATE_DATE,
 			   T1.UPDATE_ID,
@@ -63,6 +65,7 @@
 					  ) PAR_ROLE_NM,
 			          TMR.ROLE_NM,
 			          TMR.ROLE_DC,
+			          TMR.DEFAULT_YN,
 			          TMR.CREATE_ID,
 			          (SELECT TU.USER_NM
 				          FROM TB_META_USER TU
@@ -98,6 +101,7 @@
 				  ) PAR_ROLE_NM,
 		        TMR.ROLE_NM,
 		        TMR.ROLE_DC,
+		        TMR.DEFAULT_YN,
 		        (SELECT TU.USER_NM
 		           FROM  TB_META_USER TU
 		          WHERE  TMR.CREATE_ID = TU.USER_SEQ
@@ -124,6 +128,7 @@
 				PAR_ROLE_ID,
 				ROLE_NM,
 				ROLE_DC,
+				DEFAULT_YN,
 				CREATE_ID,
 				CREATE_DATE,
 				UPDATE_ID,
@@ -135,6 +140,7 @@
 				#{PAR_ROLE_ID},
 				#{ROLE_NM},
 				#{ROLE_DC},
+				#{DEFAULT_YN},
 				#{CREATE_ID},
 				NOW(),
 				#{UPDATE_ID},
@@ -150,6 +156,7 @@
 				SET PAR_ROLE_ID = #{PAR_ROLE_ID},
 		   			ROLE_NM     = #{ROLE_NM},	
 				    ROLE_DC     = #{ROLE_DC},
+				    DEFAULT_YN  = #{DEFAULT_YN},
 				    UPDATE_ID   = #{UPDATE_ID},
 				    UPDATE_DATE = NOW()
 				    

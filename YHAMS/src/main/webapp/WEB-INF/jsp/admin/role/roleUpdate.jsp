@@ -34,12 +34,18 @@
 			return;
 		}	
 		
+		if($("#DEFAULT_YN").val().trim().length == 0){
+			alert('<spring:message code="com.role.chkDefaultYn"/>');  // 기본권한여부를 확인해주세요.
+			return;
+		}	
+		
 		var param = {
 				ACTION        : ACTION,
 				ROLE_ID       : $("#ROLE_ID").val().trim(),
 				PAR_ROLE_ID   : $("#PAR_ROLE_ID").val().trim(),
 				ROLE_NM       : $("#ROLE_NM").val().trim(),
-				ROLE_DC       : $("#ROLE_DC").val().trim()
+				ROLE_DC       : $("#ROLE_DC").val().trim(),
+				DEFAULT_YN    : $("#DEFAULT_YN").val()
 		}
 		
 		$.ajax({
@@ -82,7 +88,7 @@
 	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.role.uppserRole"/></label>  <!-- 상위권한 -->
 	    <div class="col-sm-10">
 	      <select id="PAR_ROLE_ID" class="form-select" aria-label="Default select example">
-	          		<option value="">선택</option>
+	          		<option value=""><spring:message code="com.txt.optionSelect"/></option> <!-- 선택 -->
 	          <c:forEach items="${roleList}" var="item">
 	          		<option value="${item.ROLE_ID}" <c:if test ="${result.PAR_ROLE_ID eq item.ROLE_ID}"> selected="selected"</c:if>>${item.ROLE_NM}</option>
 	          </c:forEach>
@@ -99,6 +105,17 @@
 	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.role.roleDc"/></label>  <!-- 권한설명 -->
 	    <div class="col-sm-10">
 	      <input type="text" class="form-control" id="ROLE_DC" value="${result.ROLE_DC}">
+    	</div>
+	</div>
+	<div class="row mb-3">
+	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.role.defaultYn"/></label>  <!-- 기본권한여부 -->
+	    <div class="col-sm-10">
+	      <select id="DEFAULT_YN" class="form-select" aria-label="Default select example">
+	          		<option value=""><spring:message code="com.txt.optionSelect"/></option>  <!-- 선택 -->
+	          <c:forEach items="${useYnCodeList}" var="item">
+	          		<option value="${item.CODE_CD}" <c:if test ="${result.DEFAULT_YN eq item.CODE_CD}"> selected="selected"</c:if>>${item.CODE_NM}</option>
+	          </c:forEach>
+			</select>
     	</div>
 	</div>
 	

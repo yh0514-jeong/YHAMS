@@ -17,4 +17,7 @@ public interface LoginService {
 
 	ArrayList<HashMap<String, Object>> getSubMenuList(HashMap<String, Object> param) throws Exception;
 
+	String idDupChk(HashMap<String, Object> param) throws Exception;
+
+
 }

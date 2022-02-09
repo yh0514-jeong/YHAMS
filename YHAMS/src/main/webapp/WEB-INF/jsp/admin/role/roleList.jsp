@@ -43,7 +43,7 @@ function list(targetPage){
 			    	var html = "";
 			    	if(data.length == 0){
 				    		html += '<tr align="center">';
-				    		html += '    <th scope="row" colspan="6"><spring:message code="com.txt.noresult"/></th>';
+				    		html += '    <th scope="row" colspan="7"><spring:message code="com.txt.noresult"/></th>';
 				    		html += '</tr>';
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
@@ -53,6 +53,7 @@ function list(targetPage){
 				    		html += '    <td scope="row">' + data[i].PAR_ROLE_ID + '</td>';
 				    		html += '    <td scope="row">' + data[i].ROLE_NM + '</td>';
 				    		html += '    <td scope="row">' + data[i].ROLE_DC + '</td>';
+				    		html += '    <td scope="row">' + data[i].DEFAULT_YN + '</td>';
 				    		html += '    <td scope="row">';
 				    		html += '         <button type="button" class="btn btn-danger" onclick=\"javascript:goNew(\'' + data[i].ROLE_ID +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
 				    		html += '         <button type="button" class="btn btn-success" onclick=\"javascript:goMenuMap(\'' + data[i].ROLE_ID +  '\');\">' + '<spring:message code="com.menu.menuManage"/></button>';
@@ -75,7 +76,7 @@ function list(targetPage){
 function goNew(roleId){
 	 var url    = (roleId == null || typeof roleId == 'undefined') ? "/role/roleUpdate" : "/role/roleUpdate?ROLE_ID=" + roleId ;
 	 var name   = (roleId == null || typeof roleId == 'undefined') ? '<spring:message code="com.role.insertRole"/>': '<spring:message code="com.role.updateRole"/>';
-	 var option = "width = 500, height = 500, top = 100, left = 200, location = no";
+	 var option = "width = 500, height = 600, top = 100, left = 200, location = no";
      window.open(url, name, option);
 }
 
@@ -145,6 +146,7 @@ function enterkey(){
 	      <th scope="col"><spring:message code="com.role.uppserRole"/></th> <!-- 상위권한 -->
 	      <th scope="col"><spring:message code="com.role.roleNm"/></th>     <!-- 권한명 -->
 	      <th scope="col"><spring:message code="com.role.roleDc"/></th>     <!-- 권한설명 -->
+	      <th scope="col"><spring:message code="com.role.defaultYn"/></th>  <!-- 기본권한여부 -->
 	      <th scope="col"><spring:message code="com.txt.function"/></th>    <!-- 기능 -->
 	    </tr>
 	  </thead>

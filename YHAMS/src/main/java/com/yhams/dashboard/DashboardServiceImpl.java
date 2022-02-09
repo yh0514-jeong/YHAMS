@@ -32,4 +32,9 @@ public class DashboardServiceImpl implements DashboardService {
 		return dashboardMapper.getAssetConsistList(param);
 	}
 
+	@Override
+	public ArrayList<Integer> getUnearnedStatList(HashMap<String, Object> param) throws Exception {
+		return dashboardMapper.getUnearnedStatList(param);
+	}
+
 }

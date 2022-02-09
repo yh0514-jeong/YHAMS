@@ -31,9 +31,7 @@
 		               USER_EMAIL
 			      FROM TB_META_USER
 			
-			      WHERE USER_SEQ NOT IN (SELECT DISTINCT USER_SEQ
-			                               FROM TB_META_USER_ROLE_MAPPING)
-					AND (
+			      WHERE (
 					     USER_NM LIKE CONCAT('%',#{searchContent},'%') OR 
 					     USER_ID LIKE CONCAT('%',#{searchContent},'%') 
 					     )

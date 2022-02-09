@@ -17,6 +17,20 @@
 					SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 3 MONTH), '%c월') AS MONTH, 4 AS RNUM FROM DUAL
 						UNION ALL 
 					SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 4 MONTH), '%c월') AS MONTH, 5 AS RNUM FROM DUAL
+						UNION ALL 
+					SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 5 MONTH), '%c월') AS MONTH, 6 AS RNUM FROM DUAL
+						UNION ALL 
+					SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 6 MONTH), '%c월') AS MONTH, 7 AS RNUM FROM DUAL
+						UNION ALL 
+					SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 7 MONTH), '%c월') AS MONTH, 8 AS RNUM FROM DUAL
+						UNION ALL 
+					SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 8 MONTH), '%c월') AS MONTH, 9 AS RNUM FROM DUAL
+						UNION ALL 
+					SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 9 MONTH), '%c월') AS MONTH, 10 AS RNUM FROM DUAL
+						UNION ALL 
+					SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 10 MONTH), '%c월') AS MONTH, 11 AS RNUM FROM DUAL
+						UNION ALL 
+					SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 11 MONTH), '%c월') AS MONTH, 12 AS RNUM FROM DUAL
 				
 				) T1
 		
@@ -39,6 +53,20 @@
 				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 3 MONTH), '%Y-%m') AS SAL_DATE FROM DUAL
 					UNION ALL 
 				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 4 MONTH), '%Y-%m') AS SAL_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 5 MONTH), '%Y-%m') AS SAL_DATE FROM DUAL
+					UNION ALL                                                     
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 6 MONTH), '%Y-%m') AS SAL_DATE FROM DUAL
+					UNION ALL                                                     
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 7 MONTH), '%Y-%m') AS SAL_DATE FROM DUAL
+					UNION ALL                                                     
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 8 MONTH), '%Y-%m') AS SAL_DATE FROM DUAL
+					UNION ALL                                                     
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 9 MONTH), '%Y-%m') AS SAL_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 10 MONTH), '%Y-%m') AS SAL_DATE FROM DUAL 
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 11 MONTH), '%Y-%m') AS SAL_DATE FROM DUAL 
 		      ) X
 		 
 		 
@@ -111,6 +139,78 @@
 						WHERE   USER_SEQ = #{USER_SEQ}
 						AND     ACT_DATE <![CDATA[ < ]]>  DATE_FORMAT(DATE_ADD(LAST_DAY(DATE_SUB(NOW(), INTERVAL 4 MONTH)), INTERVAL 1 DAY), '%Y-%m-%d %H:%i:%s')
 						GROUP BY USER_SEQ
+						
+					UNION ALL 
+						
+						SELECT  TTAS.USER_SEQ,
+								DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 5 MONTH), '%Y-%m') AS SAL_DATE,	
+						        SUM(TTAS.DEPOSIT_TOTAL) - SUM(TTAS.WITHDRL_TOTAL) AS ASSET
+						FROM    TB_TRAN_ACCT_SMR TTAS
+						WHERE   USER_SEQ = #{USER_SEQ}
+						AND     ACT_DATE <![CDATA[ < ]]>  DATE_FORMAT(DATE_ADD(LAST_DAY(DATE_SUB(NOW(), INTERVAL 5 MONTH)), INTERVAL 1 DAY), '%Y-%m-%d %H:%i:%s')
+						GROUP BY USER_SEQ	
+					
+					UNION ALL 
+						
+						SELECT  TTAS.USER_SEQ,
+								DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 6 MONTH), '%Y-%m') AS SAL_DATE,	
+						        SUM(TTAS.DEPOSIT_TOTAL) - SUM(TTAS.WITHDRL_TOTAL) AS ASSET
+						FROM    TB_TRAN_ACCT_SMR TTAS
+						WHERE   USER_SEQ = #{USER_SEQ}
+						AND     ACT_DATE <![CDATA[ < ]]>  DATE_FORMAT(DATE_ADD(LAST_DAY(DATE_SUB(NOW(), INTERVAL 6 MONTH)), INTERVAL 1 DAY), '%Y-%m-%d %H:%i:%s')
+						GROUP BY USER_SEQ	
+						
+					UNION ALL 
+						
+						SELECT  TTAS.USER_SEQ,
+								DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 7 MONTH), '%Y-%m') AS SAL_DATE,	
+						        SUM(TTAS.DEPOSIT_TOTAL) - SUM(TTAS.WITHDRL_TOTAL) AS ASSET
+						FROM    TB_TRAN_ACCT_SMR TTAS
+						WHERE   USER_SEQ = #{USER_SEQ}
+						AND     ACT_DATE <![CDATA[ < ]]>  DATE_FORMAT(DATE_ADD(LAST_DAY(DATE_SUB(NOW(), INTERVAL 7 MONTH)), INTERVAL 1 DAY), '%Y-%m-%d %H:%i:%s')
+						GROUP BY USER_SEQ	
+						
+					UNION ALL 
+						
+						SELECT  TTAS.USER_SEQ,
+								DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 8 MONTH), '%Y-%m') AS SAL_DATE,	
+						        SUM(TTAS.DEPOSIT_TOTAL) - SUM(TTAS.WITHDRL_TOTAL) AS ASSET
+						FROM    TB_TRAN_ACCT_SMR TTAS
+						WHERE   USER_SEQ = #{USER_SEQ}
+						AND     ACT_DATE <![CDATA[ < ]]>  DATE_FORMAT(DATE_ADD(LAST_DAY(DATE_SUB(NOW(), INTERVAL 8 MONTH)), INTERVAL 1 DAY), '%Y-%m-%d %H:%i:%s')
+						GROUP BY USER_SEQ	
+						
+					UNION ALL 
+						
+						SELECT  TTAS.USER_SEQ,
+								DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 9 MONTH), '%Y-%m') AS SAL_DATE,	
+						        SUM(TTAS.DEPOSIT_TOTAL) - SUM(TTAS.WITHDRL_TOTAL) AS ASSET
+						FROM    TB_TRAN_ACCT_SMR TTAS
+						WHERE   USER_SEQ = #{USER_SEQ}
+						AND     ACT_DATE <![CDATA[ < ]]>  DATE_FORMAT(DATE_ADD(LAST_DAY(DATE_SUB(NOW(), INTERVAL 9 MONTH)), INTERVAL 1 DAY), '%Y-%m-%d %H:%i:%s')
+						GROUP BY USER_SEQ
+					
+					UNION ALL 
+						
+						SELECT  TTAS.USER_SEQ,
+								DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 10 MONTH), '%Y-%m') AS SAL_DATE,	
+						        SUM(TTAS.DEPOSIT_TOTAL) - SUM(TTAS.WITHDRL_TOTAL) AS ASSET
+						FROM    TB_TRAN_ACCT_SMR TTAS
+						WHERE   USER_SEQ = #{USER_SEQ}
+						AND     ACT_DATE <![CDATA[ < ]]>  DATE_FORMAT(DATE_ADD(LAST_DAY(DATE_SUB(NOW(), INTERVAL 10 MONTH)), INTERVAL 1 DAY), '%Y-%m-%d %H:%i:%s')
+						GROUP BY USER_SEQ
+						
+					UNION ALL 
+						
+						SELECT  TTAS.USER_SEQ,
+								DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 11 MONTH), '%Y-%m') AS SAL_DATE,	
+						        SUM(TTAS.DEPOSIT_TOTAL) - SUM(TTAS.WITHDRL_TOTAL) AS ASSET
+						FROM    TB_TRAN_ACCT_SMR TTAS
+						WHERE   USER_SEQ = #{USER_SEQ}
+						AND     ACT_DATE <![CDATA[ < ]]>  DATE_FORMAT(DATE_ADD(LAST_DAY(DATE_SUB(NOW(), INTERVAL 11 MONTH)), INTERVAL 1 DAY), '%Y-%m-%d %H:%i:%s')
+						GROUP BY USER_SEQ
+						
+						
 			  ) X
 	
 	     ORDER BY X.SAL_DATE ASC
@@ -160,36 +260,91 @@
 		
 				SELECT    7 AS RNUM,
 						  '기타' AS ACCOUNT_NM,
-				 	      (SELECT SUM(C.ASSET)
-			                 FROM (
-			                 		SELECT  ROW_NUMBER() OVER (ORDER BY B.ASSET DESC) AS RNUM,
-								            B.ACCOUNT_NM,
-								            B.ASSET
-								      FROM (SELECT (SELECT ACCOUNT_NM
-											         FROM  TB_META_ACCOUNT TMA
-											        WHERE  A.USER_SEQ   = #{USER_SEQ}
-												      AND  A.ACCOUNT_CD = TMA.ACCOUNT_CD
-											        ) AS ACCOUNT_NM,
-									                SUM(DEPOSIT_TOTAL) - SUM(WITHDRL_TOTAL) AS ASSET
-										    
-										     FROM (SELECT   USER_SEQ,
-													        ACCOUNT_CD,
-													        CONCAT(YEAR(ACT_DATE), '-', LPAD(MONTH(ACT_DATE),2,0)) AS ACT_DATE,
-													        DEPOSIT_TOTAL,
-													        WITHDRL_TOTAL
-													 FROM   TB_TRAN_ACCT_SMR
-												     WHERE  USER_SEQ = #{USER_SEQ}
-									             ) A
-									   		
-									   		GROUP BY ACCOUNT_CD
-						             	   ) B
-								) C
-							   WHERE C.RNUM <![CDATA[ >]]> 3 
-						) AS ASSET
+				 	      IFNULL((SELECT SUM(C.ASSET)
+				                   FROM (
+					                 		SELECT  ROW_NUMBER() OVER (ORDER BY B.ASSET DESC) AS RNUM,
+										            B.ACCOUNT_NM,
+										            B.ASSET
+										      FROM (SELECT (SELECT ACCOUNT_NM
+													         FROM  TB_META_ACCOUNT TMA
+													        WHERE  A.USER_SEQ   = #{USER_SEQ}
+														      AND  A.ACCOUNT_CD = TMA.ACCOUNT_CD
+													        ) AS ACCOUNT_NM,
+											                SUM(DEPOSIT_TOTAL) - SUM(WITHDRL_TOTAL) AS ASSET
+												    
+												     FROM (SELECT   USER_SEQ,
+															        ACCOUNT_CD,
+															        CONCAT(YEAR(ACT_DATE), '-', LPAD(MONTH(ACT_DATE),2,0)) AS ACT_DATE,
+															        DEPOSIT_TOTAL,
+															        WITHDRL_TOTAL
+															 FROM   TB_TRAN_ACCT_SMR
+														     WHERE  USER_SEQ = #{USER_SEQ}
+											             ) A
+											   		
+											   		GROUP BY ACCOUNT_CD
+								             	   ) B
+										) C
+								   WHERE C.RNUM <![CDATA[ >]]> 3 
+							), 0) AS ASSET
 						
 						FROM DUAL
 						
 		ORDER BY RNUM ASC
+	
+	</select>
+	
+	
+	<select id="getUnearnedStatList" parameterType="java.util.HashMap" resultType="int">
+	
+		SELECT IFNULL(Y.UED_INCM, 0) AS UED_INCM
+		  
+		  FROM (	
+		  
+				SELECT DATE_FORMAT(NOW(), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 2 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 3 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 4 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 5 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 6 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 7 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 8 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 9 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 10 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+					UNION ALL 
+				SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 11 MONTH), '%Y-%m') AS UED_DATE FROM DUAL
+			
+			 ) X
+		 
+		 LEFT OUTER JOIN
+		 	
+		 ( SELECT  T1.UED_DATE,
+			       SUM(UED_INCM) AS UED_INCM
+		     
+		     FROM ( SELECT  CONCAT(YEAR(UED_DATE), '-', LPAD(MONTH(UED_DATE), 2, 0)) AS UED_DATE, 
+		        			USER_SEQ,
+		                    UED_INCM
+					   FROM TB_TRAN_UNEARNED
+					  WHERE USER_SEQ = #{USER_SEQ}
+				   ) T1
+			
+			GROUP BY T1.UED_DATE 
+		  
+		  ) Y
+		  
+		  ON X.UED_DATE = Y.UED_DATE
+		
+		  ORDER BY X.UED_DATE ASC
 	
 	</select>
 

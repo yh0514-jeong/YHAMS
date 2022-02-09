@@ -18,6 +18,10 @@ public interface LoginMapper {
 
 	ArrayList<HashMap<String, Object>> getUserMenuList(HashMap<String, Object> param) throws Exception;
 
-	ArrayList<HashMap<String, Object>> getSubMenuList(HashMap<String, Object> param)  throws Exception;
+	ArrayList<HashMap<String, Object>> getSubMenuList(HashMap<String, Object> param) throws Exception;
+
+	String idDupChk(HashMap<String, Object> param) throws Exception;
+
+	int insertDefaultRole(HashMap<String, Object> param) throws Exception;
 
 }
