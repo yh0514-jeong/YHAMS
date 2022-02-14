@@ -268,4 +268,25 @@ public class AssetServiceImpl implements AssetService {
 		return result;
 	}
 
+	
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public int deleteSalary(HashMap<String, Object> param) throws Exception {
+		int result = 0;
+		try {
+			
+			String[] salSeqs = param.get("SAL_SEQ").toString().split(",");
+			
+			for(int i=0; i<salSeqs.length; i++) {
+				param.put("SAL_SEQ", salSeqs[i]);
+				result += assetMapper.deleteSalary(param);
+			}
+			
+		}catch (Exception e) {
+			e.printStackTrace();
+			result = -1;
+		}
+		return result;
+	}
+
 }

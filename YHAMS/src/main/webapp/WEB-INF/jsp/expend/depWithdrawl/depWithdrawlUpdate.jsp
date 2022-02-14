@@ -56,6 +56,11 @@
 			return;
 		}
 		
+		if($("#REAL_USE_YN").val().trim().length == 0){
+			alert('<spring:message code="com.depwithdral.chkRealUseYn"/>');    // 실사용여부를 확인해주세요.
+			return;
+		}
+		
 		var param = {
 				ACT_SEQ       : ACT_SEQ,
 				ACT_DATE      : $("#ACT_DATE").val().trim(),
@@ -64,7 +69,8 @@
 				WITHDRL_TOTAL : $("#WITHDRL_TOTAL").val().trim().replace(/,/g, ""),
 				DESCRIPT      : $("#DESCRIPT").val().trim(),
 				DW_CATE1      : $("#DW_CATE1").val().trim(),
-				DW_CATE2      : $("#DW_CATE2").val().trim()
+				DW_CATE2      : $("#DW_CATE2").val().trim(),
+				REAL_USE_YN   : $("#REAL_USE_YN").val().trim()
 		}
 
 		$.ajax({
@@ -184,6 +190,17 @@
 	          <c:forEach items="${dwCate2List}" var="item">
 	          		<option value="${item.CODE_CD}" <c:if test ="${result.DW_CATE2 eq item.CODE_CD}"> selected="selected"</c:if>>${item.CODE_NM}</option>
 	          </c:forEach>
+			</select>
+    	</div>
+	</div>
+	<div class="row mb-3">
+	    <label for="inputPassword3" class="col-sm-2 col-form-label"><spring:message code="com.depwithdral.realUseYn"/></label><!-- 실사용여부 -->
+	    <div class="col-sm-10">
+	      <select id="REAL_USE_YN" class="form-select" aria-label="Default select example">
+	          		<option value=""><spring:message code="com.txt.optionSelect"/></option>
+          	  <c:forEach items="${useYnCodeList}" var="item">
+	          		<option value="${item.CODE_CD}" <c:if test ="${result.REAL_USE_YN eq item.CODE_CD}"> selected="selected"</c:if>>${item.CODE_NM}</option>
+	          </c:forEach>	
 			</select>
     	</div>
 	</div>

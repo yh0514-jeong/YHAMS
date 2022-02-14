@@ -755,4 +755,28 @@ public class AssetController {
 		return result;
 	}
 	
+	
+	@PostMapping("/deleteSalary")
+	@ResponseBody
+	public HashMap<String, Object> deleteSalary(@RequestParam(required = true) HashMap<String, Object> param,
+												 HttpSession session,
+												 HttpServletRequest request,
+												 HttpServletResponse response){
+		
+		log.info("deleteSalary... param : {}", param);
+		HashMap<String, Object> result = new HashMap<>();
+		try {
+			int r = assetService.deleteSalary(param);
+			if(r != -1) {
+				result.put("resultCode", CommonContraint.SUCCEESS);
+			}else {
+				result.put("resultCode", CommonContraint.FAIL);
+			}
+		}catch (Exception e) {
+			result.put("result", CommonContraint.FAIL);
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 }

@@ -146,5 +146,34 @@
 			WHERE DEFAULT_YN = 'Y'
     
     </insert>
+    
+    <select id="getActiveStatus" parameterType="java.util.HashMap" resultType="String">
+    	
+    	SELECT ACT_ST    
+		  FROM TB_META_USER
+		 WHERE USER_ID = #{USER_ID}
+		 
+    </select>
+    
+    <update id="updateLastLoginTime" parameterType="java.util.HashMap"> 
+    	
+    	UPDATE TB_META_USER
+		SET    LAST_LOGIN_DATE = NOW()
+		WHERE  USER_ID = #{USER_ID}
+    
+    </update>
+    
+    
+    <update id="increateFailCount" parameterType="java.util.HashMap">
+    
+         UPDATE TB_META_USER
+         SET   PWD_FAIL_CNT = PWD_FAIL_CNT + 1,
+               ACT_ST       = (CASE WHEN PWD_FAIL_CNT >= 5 AND ACT_ST = 'A' THEN 'L'
+                                    ELSE ACT_ST
+                                    END   
+               				   )
+         WHERE USER_ID      = #{USER_ID}
+    
+    </update>
 
 </mapper>

@@ -24,4 +24,10 @@ public interface LoginMapper {
 
 	int insertDefaultRole(HashMap<String, Object> param) throws Exception;
 
+	String getActiveStatus(HashMap<String, Object> param) throws Exception;
+
+	void updateLastLoginTime(HashMap<String, Object> param) throws Exception;
+
+	void increateFailCount(HashMap<String, Object> param) throws Exception;
+
 }

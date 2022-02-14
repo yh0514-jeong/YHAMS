@@ -935,4 +935,13 @@
 	 
 	 </select>
 	 
+	 
+	 <delete id="deleteSalary" parameterType="java.util.HashMap">
+	 
+	 	DELETE	FROM TB_TRAN_SALARY
+		WHERE SAL_SEQ = #{SAL_SEQ}
+	 
+	 </delete>
+	 
+	 
 </mapper>

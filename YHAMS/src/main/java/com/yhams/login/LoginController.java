@@ -119,26 +119,53 @@ public class LoginController {
 			
 			if("TRUE".equals(result)) {
 				
-				mv.setViewName("main");
+				String activeCode = loginservice.getActiveStatus(param);
 				
-				userInfo = loginservice.getUserInfo(param);
+				if("A".equals(activeCode)){
+					
+					mv.setViewName("main");
+					
+					loginservice.updateLastLoginTime(param);
+					
+					userInfo = loginservice.getUserInfo(param);
+					
+					session.setAttribute("USER_SEQ",      userInfo.get("USER_SEQ"));
+					session.setAttribute("USER_ID",       userInfo.get("USER_ID"));
+					session.setAttribute("USER_NM",       userInfo.get("USER_NM"));
+					session.setAttribute("USER_NM_EN",    userInfo.get("USER_NM_EN"));
+					session.setAttribute("USER_EMAIL",    userInfo.get("USER_EMAIL"));
+					session.setAttribute("ROLE_ID",       userInfo.get("ROLE_ID"));
+					
+					System.out.println("userInfo session==>" + session.toString());
+					 
+					menuList = loginservice.getUserMenuList(userInfo);
+					mv.addObject("menuList", menuList);
 				
-				session.setAttribute("USER_SEQ",      userInfo.get("USER_SEQ"));
-				session.setAttribute("USER_ID",       userInfo.get("USER_ID"));
-				session.setAttribute("USER_NM",       userInfo.get("USER_NM"));
-				session.setAttribute("USER_NM_EN",    userInfo.get("USER_NM_EN"));
-				session.setAttribute("USER_EMAIL",    userInfo.get("USER_EMAIL"));
-				session.setAttribute("ROLE_ID",       userInfo.get("ROLE_ID"));
-				
-				System.out.println("userInfo session==>" + session.toString());
-				 
-				menuList = loginservice.getUserMenuList(userInfo);
-				mv.addObject("menuList", menuList);
+				}else {
+					request.setCharacterEncoding("UTF-8");   
+					response.setCharacterEncoding("UTF-8"); 
+					if("L".equals(activeCode)) {
+						response.getWriter().write("<script> alert('계정이 잠금 상태입니다. 관리자에게 문의해주세요.'); </script>");
+					}else if("I".equals(activeCode)){
+						response.getWriter().write("<script> alert('계정이 비활성화 상태입니다. 관리자에게 문의해주세요.'); </script>");
+					}
+					response.getWriter().flush();
+					mv.setViewName("login/login");
+				} 
 				
 			}else {
+				
+				String increateFailCountAndResult = loginservice.increateFailCountAndResult(param);
+				
 				request.setCharacterEncoding("UTF-8");   
-				response.setCharacterEncoding("UTF-8");   
-				response.getWriter().write("<script> alert('아이디와 비밀번호를 다시 한 번 확인해주세요.'); </script>");
+				response.setCharacterEncoding("UTF-8"); 
+				if("A".equals(increateFailCountAndResult)) {
+					response.getWriter().write("<script> alert('아이디와 비밀번호를 다시 한 번 확인해주세요.'); </script>");
+				}else if("I".equals(increateFailCountAndResult)){
+					response.getWriter().write("<script> alert('계정이 비활성화 상태입니다. 관리자에게 문의해주세요.'); </script>");
+				}else if("L".equals(increateFailCountAndResult)) {
+					response.getWriter().write("<script> alert('계정이 잠금 상태입니다. 관리자에게 문의해주세요.'); </script>");
+				}
 				response.getWriter().flush();
 				mv.setViewName("login/login");
 			}

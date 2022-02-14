@@ -46,7 +46,7 @@
 			    	var html = "";
 			    	if(data.length == 0){
 				    		html += '<tr align="center">';
-				    		html += '    <th scope="row" colspan="10"><spring:message code="com.txt.noresult"/></th>';
+				    		html += '    <th scope="row" colspan="11"><spring:message code="com.txt.noresult"/></th>';
 				    		html += '</tr>';
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
@@ -60,6 +60,7 @@
 				    		html += '    <td scope="row">' + data[i].DESCRIPT + '</td>';
 				    		html += '    <td scope="row">' + data[i].DW_CATE1_NM + '</td>';
 				    		html += '    <td scope="row">' + data[i].DW_CATE2_NM + '</td>';
+				    		html += '    <td scope="row">' + data[i].REAL_USE_YN + '</td>';
 				    		html += '    <td scope="row">';
 				    		html += '       <button type="button" class="btn btn-success" onclick=\"javascript:goUpdate(\'' + data[i].ACT_SEQ +  '\');\">' + '<spring:message code="com.txt.update"/></button>';
 				    		html += '       <button type="button" class="btn btn-danger"  onclick=\"javascript:goDel(\'' + data[i].ACT_SEQ +  '\');\">' + '<spring:message code="com.txt.delete"/></button>';
@@ -87,7 +88,7 @@
  
  function goUpdate(ACT_SEQ){
 	 var url    = "/expend/updateDepWithdrawal?ACT_SEQ=" + ACT_SEQ;
-	 var option = "width = 700, height = 500, top = 100, left = 200, location = no";
+	 var option = "width = 700, height = 550, top = 100, left = 200, location = no";
      window.open(url, name, option);
  }
  
@@ -195,15 +196,16 @@ function goStringifyDelTarget(){
 	<table class="table">
 	  <thead align="center">
 	    <tr>
-	      <th scope="col" width="2%"></th>
-	      <th scope="col" width="5%"><spring:message code="com.txt.number"/></th>             <!-- No. -->
-	      <th scope="col" width="10%"><spring:message code="com.depwithdral.actDate"/></th>   <!-- 일자 -->
-	      <th scope="col" width="15%"><spring:message code="com.depwithdral.account"/></th>   <!-- 계좌 -->
-	      <th scope="col" width="10%"><spring:message code="com.depwithdral.depTotal"/></th>  <!-- 입금액 -->
-	      <th scope="col" width="10%"><spring:message code="com.depwithdral.withTotal"/></th> <!-- 지출액 -->
-	      <th scope="col" width="15%"><spring:message code="com.depwithdral.descript"/></th>  <!-- 입/출금사유 -->
-	      <th scope="col" width="10%"><spring:message code="com.depwithdral.dwCate1"/></th>   <!-- 대분류 -->
-	      <th scope="col" width="10%"><spring:message code="com.depwithdral.dwCate2"/></th>   <!-- 소분류 -->
+	      <th scope="col" width="3%"></th>
+	      <th scope="col" width="3%"><spring:message code="com.txt.number"/></th>             <!-- No. -->
+	      <th scope="col" width="9%"><spring:message code="com.depwithdral.actDate"/></th>    <!-- 일자 -->
+	      <th scope="col" width="11%"><spring:message code="com.depwithdral.account"/></th>   <!-- 계좌 -->
+	      <th scope="col" width="9%"><spring:message code="com.depwithdral.depTotal"/></th>   <!-- 입금액 -->
+	      <th scope="col" width="9%"><spring:message code="com.depwithdral.withTotal"/></th>  <!-- 지출액 -->
+	      <th scope="col" width="11%"><spring:message code="com.depwithdral.descript"/></th>  <!-- 입/출금사유 -->
+	      <th scope="col" width="11%"><spring:message code="com.depwithdral.dwCate1"/></th>   <!-- 대분류 -->
+	      <th scope="col" width="11%"><spring:message code="com.depwithdral.dwCate2"/></th>   <!-- 소분류 -->
+	      <th scope="col" width="8%"><spring:message code="com.depwithdral.realUseYn"/></th>  <!-- 실사용여부 -->
 	      <th scope="col" width="*"></th>
 	    </tr>
 	  </thead>

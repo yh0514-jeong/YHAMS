@@ -41,18 +41,20 @@ function list(targetPage){
 			    	var html = "";
 			    	if(data.length == 0){
 				    		html += '<tr align="center">';
-				    		html += '    <th scope="row" colspan="6"><spring:message code="com.txt.noresult"/></th>';
+				    		html += '    <th scope="row" colspan="7"><spring:message code="com.txt.noresult"/></th>';
 				    		html += '</tr>';
 			    	}else{
 			    		for(var i=0; i<data.length; i++){
 			    			html += '<tr align="center">';
+				    		html += '    <td scope="row"><input type="checkbox" value="' + data[i].SAL_SEQ + '"></td>';
 				    		html += '    <td scope="row">' + data[i].RNUM + '</td>';
 				    		html += '    <td scope="row">' + data[i].SAL_DATE + '</td>';
 				    		html += '    <td scope="row">' + data[i].PAY_AMOUNT + '</td>';
 				    		html += '    <td scope="row">' + data[i].DED_AMOUNT + '</td>';
 				    		html += '    <td scope="row">' + data[i].NET_AMOUNT + '</td>';
 				    		html += '    <td scope="row">';
-				    		html += '       <button type="button" class="btn btn-danger" onclick=\"javascript:goNew(\'' + data[i].SAL_SEQ +  '\');\">' + '상세보기/수정</button>';
+				    		html += '       <button type="button" class="btn btn-info" onclick=\"javascript:goNew(\'' + data[i].SAL_SEQ +  '\');\">' + '상세보기/수정</button>';
+				    		html += '       <button type="button" class="btn btn-danger" onclick=\"javascript:goDel(\'' + data[i].SAL_SEQ +  '\');\">' + '삭제</button>';
 				    		html += '    </td>';
 				    		html += '</tr>';
 				    	}
@@ -76,25 +78,26 @@ function list(targetPage){
      window.open(url, name, option);
  }
  
- function goDel(accountCd){
+ function goDel(salSeq){
 	 
-	 if(!confirm('<spring:message code="com.acccount.cfrmAccountDelete"/>')) return;   // 해당 계좌를 삭제하시겠습니까?
+	 if(!confirm('<spring:message code="com.salary.chkDelete"/>')) return;   // 해당 급여내역을 삭제하시겠습니까?
 	 
 	 var param = {
-			    ACCOUNT_CD    : accountCd
-			 };
+			SAL_SEQ  : salSeq
+	 };
 	 
 	 $.ajax({
 		    type : 'POST',
-		    url : '/asset/deleteAccount', 
+		    url : '/asset/deleteSalary', 
 		    dataType : 'json', 
 		    data : param,
 		    success : function(result) { 
-		    	if(result.result == "success"){
-		    		alert('<spring:message code="com.msg.deleteSuccess"/>');  // 삭제 성공!
+		    	if(result.resultCode == "success"){
+		    		alert('<spring:message code="com.msg.deleteSuccess"/>');  // 삭제 성공
 		    		list(1);
 		    	}else{
 		    		alert('<spring:message code="com.msg.deleteFail"/>');   // 삭제 실패!
+		    		return;
 		    	}
 		    },
 		    error : function(request, status, error) { 
@@ -105,6 +108,23 @@ function list(targetPage){
 
 function enterkey(){
 	if (window.event.keyCode == 13) { list(1); }
+}
+
+function goStringifyDelTarget(){
+	var delTargets = '';
+	$("#list").children().find("input[type='checkbox']:checked").each(function(i, val){
+		if(delTargets == ''){
+			delTargets += $(this).val();
+		}else{
+			delTargets += ',' + $(this).val();
+		}
+	});
+	if(delTargets == ''){
+		alert('<spring:message code="com.msg.unselected"/>');   // 선택된 내역이 없습니다.
+		return;
+	}else{
+		goDel(delTargets);
+	}
 }
 
 
@@ -137,11 +157,13 @@ function enterkey(){
 <br>
 <div style="float: left;">
 	<button id="btnNew" onclick="javascript:goNew();" type="button" class="btn btn-success"><spring:message code="com.btn.register"/></button><!-- 등록 -->
+	<button id="btnDel" onclick="javascript:goStringifyDelTarget();" type="button" class="btn btn-danger"><spring:message code="com.btn.delete"/></button><!-- 삭제 -->
 </div>
 <div class="table table-hover">
 	<table class="table">
 	  <thead align="center">
 	    <tr>
+	      <th scope="col" width="3%"></th>
 	      <th scope="col" width="10%"><spring:message code="com.txt.number"/></th><!-- No. -->
 	      <th scope="col" width="15%"><spring:message code="com.salary.salDate"/></th><!-- 급여연월 -->
 	      <th scope="col" width="15%"><spring:message code="com.salary.payAmount"/></th><!-- 지급총액 -->

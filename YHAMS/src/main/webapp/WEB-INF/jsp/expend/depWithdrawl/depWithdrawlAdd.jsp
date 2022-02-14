@@ -29,7 +29,8 @@ function goSave(){
 			    WITHDRL_TOTAL : $(this).children().find("input[id^=WITHDRL_TOTAL_]").val().replace(/,/g, ""),
 			    DESCRIPT      : $(this).children().find("input[id^=DESCRIPT_]").val(),
 			    DW_CATE1	  : $(this).children().find("select[id^=DW_CATE1_]").val(),
-			    DW_CATE2	  : $(this).children().find("select[id^=DW_CATE2_]").val()
+			    DW_CATE2	  : $(this).children().find("select[id^=DW_CATE2_]").val(),
+			    REAL_USE_YN   : $(this).children().find("input[id^=REAL_USE_YN_]").is(':checked') ? 'Y' : 'N' 
 			};
 			list.push(map);
 		});
@@ -62,9 +63,9 @@ function goSave(){
 
 
 function goDel(){
-	var len = $("#depWithDrawlList").children().find("input[type='checkbox']:checked").length;
+	var len = $("#depWithDrawlList").children().find("input[id^='CHKUEDSEQ_']:checked").length;
 	if(len > 0){
-		$("#depWithDrawlList").children().find("input[type='checkbox']:checked").each(function(i, val){
+		$("#depWithDrawlList").children().find("input[id^='CHKUEDSEQ_']:checked").each(function(i, val){
 			$(this).closest('tr').remove();
 		});
 	}else{
@@ -104,6 +105,9 @@ function goAdd(){
 	    html += '        <select id="'+ tmpId + '"  style="width:110px;">';
 	    html += '             <option value=""><spring:message code="com.txt.optionSelect"/></option>';
 	    html += '        </select>'; 
+	    html += '   </td>'; 
+	    html += '	<td scope="col" style="text-align : center;">'
+	    html += '       <input id="REAL_USE_YN_' +  trCnt + '" type="checkbox" checked="checked">';
 	    html += '   </td>'; 
 	    html += '</tr>';
 	    
@@ -297,6 +301,7 @@ function formCheck(){
 	      <th scope="col"><spring:message code="com.depwithdral.descript"/></th>     <!--  입출금사유 -->
 	      <th scope="col"><spring:message code="com.depwithdral.dwCate1"/></th>      <!--  대분류 -->
 	      <th scope="col"><spring:message code="com.depwithdral.dwCate2"/></th>      <!--  소분류 -->
+	      <th scope="col"><spring:message code="com.depwithdral.realUseYn"/></th>    <!--  실사용여부 -->
 	    </tr>
 	  </thead>
 	  <tbody id="depWithDrawlList">

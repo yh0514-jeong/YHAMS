@@ -38,10 +38,13 @@ $(document).ready(function() {
 		set_date.setFullYear(Number(SAL_DATE.split('-')[0]));
 		set_date.setMonth(Number(SAL_DATE.split('-')[1])-1);
 		set_date.setDate(1);
+		$("#btnDel").show();
 		$("#SAL_DATE").datepicker('option','disabled', true);
 		$("#SAL_DATE").datepicker().datepicker("setDate", set_date);
 		calTotal('PAY');
 		calTotal('DED');
+	}else{
+		$("#btnDel").hide();
 	}
 	
 });
@@ -351,6 +354,35 @@ function dupChkSalMonth(dateText){
 	});
 }
 
+function goDelDb(salSeq){
+	 
+	 if(!confirm('<spring:message code="com.salary.chkDelete"/>')) return;   // 해당 급여내역을 삭제하시겠습니까?
+	 
+	 var param = {
+			SAL_SEQ  : SAL_SEQ
+	 };
+	 
+	 $.ajax({
+		    type : 'POST',
+		    url : '/asset/deleteSalary', 
+		    dataType : 'json', 
+		    data : param,
+		    success : function(result) { 
+		    	if(result.resultCode == "success"){
+		    		alert('<spring:message code="com.msg.deleteSuccess"/>');  // 삭제 성공
+		    		opener.parent.list(1); 
+		        	window.close();
+		    	}else{
+		    		alert('<spring:message code="com.msg.deleteFail"/>');   // 삭제 실패!
+		    		return;
+		    	}
+		    },
+		    error : function(request, status, error) { 
+		    	alert('<spring:message code="com.msg.deleteFail"/>');   // 삭제 실패!
+		    }
+		});			 
+}
+
 </script>
 <body>
 
@@ -367,7 +399,8 @@ function dupChkSalMonth(dateText){
     </div>
     <input type="text" class="form-control" id="SAL_DATE">
     <button id="lastMonthSal" onclick="javascript:callLastSalary();" type="button" class="btn btn-info" style="float: right; margin-left: 5px;"><spring:message code="com.salary.callLateMonthSalary"/></button><!-- 지난달 급여항목 가져오기 -->
-    <button onclick="javascript:goSave();" type="button" class="btn btn-primary" style="float: right; margin-left: 5px;"><spring:message code="com.btn.save"/></button><!--저장 -->
+    <button id="btnSave" onclick="javascript:goSave();" type="button" class="btn btn-primary" style="float: right; margin-left: 5px;"><spring:message code="com.btn.save"/></button><!--저장 -->
+    <button id="btnDel" onclick="javascript:goDelDb();" type="button" class="btn btn-danger" style="float: right; margin-left: 5px;"><spring:message code="com.btn.delete"/></button><!--삭제 -->
   </div>
 </div>
 

@@ -60,4 +60,6 @@ public interface AssetMapper {
 
 	long yearlyAssetPlanListCount(HashMap<String, Object> param) throws Exception;
 
+	int deleteSalary(HashMap<String, Object> param) throws Exception;
+
 }

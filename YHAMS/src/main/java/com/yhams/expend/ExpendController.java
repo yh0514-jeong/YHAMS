@@ -213,6 +213,7 @@ public class ExpendController {
 		ArrayList<HashMap<String, Object>> accounCdList = new ArrayList<HashMap<String,Object>>();
 		ArrayList<HashMap<String, Object>> dwCate1List  = new ArrayList<HashMap<String,Object>>();
 		ArrayList<HashMap<String, Object>> dwCate2List  = new ArrayList<HashMap<String,Object>>();
+		ArrayList<HashMap<String, Object>> useYnCodeList = new ArrayList<HashMap<String,Object>>();
 		
 		try {
 			
@@ -230,9 +231,12 @@ public class ExpendController {
 				dwCate2List = commonService.getCgListByParCode("CG_2006", maybeDwCate1.get().toString(), "Y");
 			}
 			
+			useYnCodeList = commonService.getCgList("CG_0003", "Y");
+			
 			mv.addObject("accounCdList", accounCdList);
 			mv.addObject("dwCate1List", dwCate1List);
 			mv.addObject("dwCate2List", dwCate2List);
+			mv.addObject("useYnCodeList", useYnCodeList);
 			
 			mv.addObject("result", r);
 			mv.addObject("nav"   , "입출금내역 수정");

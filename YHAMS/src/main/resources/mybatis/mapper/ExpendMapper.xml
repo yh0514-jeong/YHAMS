@@ -61,6 +61,7 @@
 					DESCRIPT,
 					DW_CATE1,
 					DW_CATE2,
+					REAL_USE_YN,
 					CREATE_ID,
 					CREATE_DATE,
 					UPDATE_ID,
@@ -77,6 +78,7 @@
 					#{DESCRIPT},
 					#{DW_CATE1},
 					#{DW_CATE2},
+					#{REAL_USE_YN},
 					#{CREATE_ID},
 					NOW(),
 					#{UPDATE_ID},
@@ -98,7 +100,8 @@
 		 		 FORMAT(T1.WITHDRL_TOTAL, 0) AS WITHDRL_TOTAL,
 				 T1.DESCRIPT,
 				 T1.DW_CATE1_NM, 
-				 T1.DW_CATE2_NM
+				 T1.DW_CATE2_NM,
+				 T1.REAL_USE_YN
 			
 		  FROM (SELECT    ROW_NUMBER() OVER (ORDER BY TMP.ACT_DATE DESC) AS RNUM,
 		  	 			  TMP.*
@@ -124,6 +127,7 @@
 								    FROM TB_CMM_CDDTL TCC
 							       WHERE TTAS.DW_CATE2 = TCC.CODE_CD		    
 								 ) AS DW_CATE2_NM,
+								 TTAS.REAL_USE_YN,
 								 TTAS.CREATE_ID,
 								 TTAS.CREATE_DATE,
 								 TTAS.UPDATE_ID,
@@ -172,6 +176,7 @@
 								    FROM TB_CMM_CDDTL TCC
 							       WHERE TTAS.DW_CATE2 = TCC.CODE_CD		    
 								 ) AS DW_CATE2_NM,
+								 TTAS.REAL_USE_YN,
 								 TTAS.CREATE_ID,
 								 TTAS.CREATE_DATE,
 								 TTAS.UPDATE_ID,
@@ -214,7 +219,8 @@
 			        TTAS.WITHDRL_TOTAL,
 			        TTAS.DESCRIPT,
 			        TTAS.DW_CATE1,
-			        TTAS.DW_CATE2
+			        TTAS.DW_CATE2,
+			        TTAS.REAL_USE_YN
 		        
 			   FROM TB_TRAN_ACCT_SMR TTAS
 			
@@ -234,6 +240,7 @@
 		       DESCRIPT       = #{DESCRIPT},
 		       DW_CATE1       = #{DW_CATE1},
 		       DW_CATE2       = #{DW_CATE2},
+		       REAL_USE_YN    = #{REAL_USE_YN},
 		       UPDATE_DATE    = NOW(),
 		       UPDATE_ID      = #{UPDATE_ID}
 		       
@@ -472,11 +479,11 @@
 										
 									(SELECT  T1.USER_SEQ,
 									         T1.ACT_DATE,
-									         ABS(SUM(T1.WITHDRL_TOTAL)-SUM(DEPOSIT_TOTAL)) AS WITHDRL_TOTAL
+									         SUM(T1.WITHDRL_TOTAL)-SUM(DEPOSIT_TOTAL) AS WITHDRL_TOTAL
 									   FROM ( SELECT  USER_SEQ,
 									      	          CONCAT(YEAR(ACT_DATE), '-', LPAD(MONTH(ACT_DATE), 2, 0), '-', LPAD(DAY(ACT_DATE), 2, 0)) AS ACT_DATE,
-											          WITHDRL_TOTAL,
-											          DEPOSIT_TOTAL
+											          CASE WHEN REAL_USE_YN = 'Y' THEN WITHDRL_TOTAL ELSE 0 END AS WITHDRL_TOTAL,
+											          CASE WHEN REAL_USE_YN = 'Y' THEN DEPOSIT_TOTAL ELSE 0 END AS DEPOSIT_TOTAL
 											    FROM  TB_TRAN_ACCT_SMR
 											) T1
 								      GROUP BY T1.USER_SEQ, T1.ACT_DATE		

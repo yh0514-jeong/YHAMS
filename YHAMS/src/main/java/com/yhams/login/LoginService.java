@@ -19,5 +19,11 @@ public interface LoginService {
 
 	String idDupChk(HashMap<String, Object> param) throws Exception;
 
+	String getActiveStatus(HashMap<String, Object> param) throws Exception;
+
+	void updateLastLoginTime(HashMap<String, Object> param) throws Exception;
+
+	String increateFailCountAndResult(HashMap<String, Object> param) throws Exception;
+
 
 }
