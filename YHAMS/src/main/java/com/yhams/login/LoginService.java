@@ -23,7 +23,6 @@ public interface LoginService {
 
 	void updateLastLoginTime(HashMap<String, Object> param) throws Exception;
 
-	String increateFailCountAndResult(HashMap<String, Object> param) throws Exception;
-
+	HashMap<String, Object> increaseFailCount(HashMap<String, Object> param) throws Exception;
 
 }

@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
 import com.yhams.log.LogService;
-import com.yhams.util.CommonContraint;
+import com.yhams.util.Constant;
 import com.yhams.util.PagingUtil;
 
 import lombok.extern.log4j.Log4j2;
@@ -108,9 +108,9 @@ public class ComCodeController {
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
-		result.put("result", CommonContraint.SUCCEESS);
+		result.put("result", Constant.SUCCEESS);
 		return result;
 	}
 	
@@ -141,10 +141,10 @@ public class ComCodeController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  CommonContraint.SUCCEESS);
+			result.put("resultCode",  Constant.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  CommonContraint.FAIL);
+			result.put("resultCode",  Constant.FAIL);
 		}
 		
 		return result;

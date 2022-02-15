@@ -28,6 +28,8 @@ public interface LoginMapper {
 
 	void updateLastLoginTime(HashMap<String, Object> param) throws Exception;
 
-	void increateFailCount(HashMap<String, Object> param) throws Exception;
+	void increaseFailCount(HashMap<String, Object> param) throws Exception;
+
+	HashMap<String, Object> getStatusAndFailureCnt(HashMap<String, Object> param) throws Exception;
 
 }

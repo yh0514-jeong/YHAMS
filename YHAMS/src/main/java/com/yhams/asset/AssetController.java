@@ -24,7 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
 import com.yhams.log.LogService;
-import com.yhams.util.CommonContraint;
+import com.yhams.util.Constant;
 import com.yhams.util.PagingUtil;
 
 @Controller
@@ -106,10 +106,10 @@ public class AssetController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  CommonContraint.SUCCEESS);
+			result.put("resultCode",  Constant.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  CommonContraint.FAIL);
+			result.put("resultCode",  Constant.FAIL);
 		}
 		
 		return result;
@@ -182,9 +182,9 @@ public class AssetController {
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
-		result.put("result", CommonContraint.SUCCEESS);
+		result.put("result", Constant.SUCCEESS);
 		return result;
 	}
 	
@@ -206,9 +206,9 @@ public class AssetController {
 			r = assetService.deleteAccount(param);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
-		result.put("result", CommonContraint.SUCCEESS);
+		result.put("result", Constant.SUCCEESS);
 		return result;
 	}
 	
@@ -241,10 +241,10 @@ public class AssetController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  CommonContraint.SUCCEESS);
+			result.put("resultCode",  Constant.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  CommonContraint.FAIL);
+			result.put("resultCode",  Constant.FAIL);
 		}
 		
 		return result;
@@ -280,9 +280,9 @@ public class AssetController {
 		try {
 			result = assetService.saveUnearnedList(param);
 			if(result >= 0) {
-				map.put("result", CommonContraint.SUCCEESS);
+				map.put("result", Constant.SUCCEESS);
 			}else {
-				map.put("result", CommonContraint.FAIL);
+				map.put("result", Constant.FAIL);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -336,9 +336,9 @@ public class AssetController {
 			r = assetService.updateUnearned(param);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
-		result.put("result", CommonContraint.SUCCEESS);
+		result.put("result", Constant.SUCCEESS);
 		return result;
 	}
 	
@@ -360,9 +360,9 @@ public class AssetController {
 			r = assetService.deleteUnearedList(param);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
-		result.put("result", CommonContraint.SUCCEESS);
+		result.put("result", Constant.SUCCEESS);
 		return result;
 	}
 	
@@ -460,13 +460,13 @@ public class AssetController {
 		try {
 			result = assetService.saveSalaryList(param);
 			if(result >= 0) {
-				map.put("result", CommonContraint.SUCCEESS);
+				map.put("result", Constant.SUCCEESS);
 			}else {
-				map.put("result", CommonContraint.FAIL);
+				map.put("result", Constant.FAIL);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			map.put("result", CommonContraint.FAIL);
+			map.put("result", Constant.FAIL);
 		}
 		return map;
 	}
@@ -497,10 +497,10 @@ public class AssetController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  CommonContraint.SUCCEESS);
+			result.put("resultCode",  Constant.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  CommonContraint.FAIL);
+			result.put("resultCode",  Constant.FAIL);
 		}
 		return result;
 	}
@@ -533,18 +533,18 @@ public class AssetController {
 			list = assetService.getLastSalary(param);
 			
 			if(list.size() > 0) {
-				result.put("result", CommonContraint.SUCCEESS);
+				result.put("result", Constant.SUCCEESS);
 				result.put("paySelectList", paySelectList);
 				result.put("dedSelectList", dedSelectList);
 				result.put("list", list);
 			}else {
-				result.put("result", CommonContraint.FAIL);
+				result.put("result", Constant.FAIL);
 				result.put("list", list);
 			}
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
 		
 		return result;
@@ -568,13 +568,13 @@ public class AssetController {
 			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
 			res = assetService.dupChkSalMonth(param);
 			if(res <= 0) {
-				result.put("result", CommonContraint.SUCCEESS);
+				result.put("result", Constant.SUCCEESS);
 			}else {
-				result.put("result", CommonContraint.FAIL);
+				result.put("result", Constant.FAIL);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
 		
 		return result;
@@ -684,12 +684,12 @@ public class AssetController {
 			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
 			int r = assetService.saveYearlyAssetPlanList(param);
 			if(r > 0) {
-				result.put("result", CommonContraint.SUCCEESS);
+				result.put("result", Constant.SUCCEESS);
 			}else {
-				result.put("result", CommonContraint.FAIL);
+				result.put("result", Constant.FAIL);
 			}
 		}catch (Exception e) {
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 			e.printStackTrace();
 		}
 		return result;
@@ -721,10 +721,10 @@ public class AssetController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("result", CommonContraint.SUCCEESS);
+			result.put("result", Constant.SUCCEESS);
 			
 		}catch (Exception e) {
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 			e.printStackTrace();
 		}
 		
@@ -744,12 +744,12 @@ public class AssetController {
 			param.put("USER_SEQ",  session.getAttribute("USER_SEQ"));
 			int r = assetService.deleteYearlyAssetPlanList(param);
 			if(r > 0) {
-				result.put("result", CommonContraint.SUCCEESS);
+				result.put("result", Constant.SUCCEESS);
 			}else {
-				result.put("result", CommonContraint.FAIL);
+				result.put("result", Constant.FAIL);
 			}
 		}catch (Exception e) {
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 			e.printStackTrace();
 		}
 		return result;
@@ -768,12 +768,12 @@ public class AssetController {
 		try {
 			int r = assetService.deleteSalary(param);
 			if(r != -1) {
-				result.put("resultCode", CommonContraint.SUCCEESS);
+				result.put("resultCode", Constant.SUCCEESS);
 			}else {
-				result.put("resultCode", CommonContraint.FAIL);
+				result.put("resultCode", Constant.FAIL);
 			}
 		}catch (Exception e) {
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 			e.printStackTrace();
 		}
 		return result;

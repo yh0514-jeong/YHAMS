@@ -2,6 +2,7 @@ package com.yhams.login;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
 import com.yhams.exception.SaveUserInfoException;
-import com.yhams.util.CommonContraint;
+import com.yhams.util.Constant;
 import com.yhams.util.Encryption;
 
 @Controller
@@ -91,9 +92,9 @@ public class LoginController {
 		try {
 			res = loginservice.insertUser(param);
 			if(res == -1) throw new SaveUserInfoException(param.get("USER_ID").toString());
-			result.put("resultcode", CommonContraint.SUCCEESS);
+			result.put("resultcode", Constant.SUCCEESS);
 		}catch (Exception e) {
-			result.put("resultcode", CommonContraint.FAIL);
+			result.put("resultcode", Constant.FAIL);
 			e.printStackTrace();
 		}
 		return result;
@@ -107,74 +108,100 @@ public class LoginController {
 										HttpServletRequest request, 
 										HttpServletResponse response, 
 										HttpSession session){
+		
 		ModelAndView mv = new ModelAndView();
-		System.out.println("param.toString()==>" + param.toString());
 		String result = null;
 		ArrayList<HashMap<String, Object>> menuList = new ArrayList<HashMap<String,Object>>();
-		HashMap<String, Object> userInfo            = new HashMap<String, Object>();
+		Optional<HashMap<String, Object>> userInfo  = Optional.empty();
+		Optional<HashMap<String, Object>> maybeLoginFailInfo = Optional.empty();
+		Optional<String> maybeActSt = Optional.empty();
 		
 		try {
 			param.put("USER_PW", Encryption.encryptPassword(param.get("USER_PW").toString()));
-			result = loginservice.chkUserInfo(param);
+			param.put("PWD_FAIL_CNT", Constant.PWD_FAIL_CNT);
+			log.info("loginCheck Invoked... input userInfo : {}", param.toString());
+
 			
-			if("TRUE".equals(result)) {
-				
-				String activeCode = loginservice.getActiveStatus(param);
-				
-				if("A".equals(activeCode)){
-					
-					mv.setViewName("main");
-					
-					loginservice.updateLastLoginTime(param);
-					
-					userInfo = loginservice.getUserInfo(param);
-					
-					session.setAttribute("USER_SEQ",      userInfo.get("USER_SEQ"));
-					session.setAttribute("USER_ID",       userInfo.get("USER_ID"));
-					session.setAttribute("USER_NM",       userInfo.get("USER_NM"));
-					session.setAttribute("USER_NM_EN",    userInfo.get("USER_NM_EN"));
-					session.setAttribute("USER_EMAIL",    userInfo.get("USER_EMAIL"));
-					session.setAttribute("ROLE_ID",       userInfo.get("ROLE_ID"));
-					
-					System.out.println("userInfo session==>" + session.toString());
+			userInfo = Optional.ofNullable(loginservice.getUserInfo(param));
+			maybeActSt = Optional.ofNullable(loginservice.getActiveStatus(param));
+			log.info("loginCheck Invoked... selected UserInfo : {}, actSt : {}", userInfo.toString(), maybeActSt.toString());
+			
+			request.setCharacterEncoding("UTF-8");   
+			response.setCharacterEncoding("UTF-8"); 
+			
+			if(userInfo.isPresent()) {
+				if(Constant.ACTIVE.equals(maybeActSt.get())) {
+					loginservice.updateLastLoginTime(userInfo.get());
 					 
-					menuList = loginservice.getUserMenuList(userInfo);
-					mv.addObject("menuList", menuList);
+					 session.setAttribute("USER_SEQ",      userInfo.get().get("USER_SEQ"));
+					 session.setAttribute("USER_ID",       userInfo.get().get("USER_ID"));
+					 session.setAttribute("USER_NM",       userInfo.get().get("USER_NM"));
+					 session.setAttribute("USER_NM_EN",    userInfo.get().get("USER_NM_EN"));
+					 session.setAttribute("USER_EMAIL",    userInfo.get().get("USER_EMAIL"));
+					 session.setAttribute("ROLE_ID",       userInfo.get().get("ROLE_ID"));
+					 
+					 menuList = loginservice.getUserMenuList(userInfo.get());
+					 mv.addObject("menuList", menuList);
+					 mv.setViewName("/main");
 				
 				}else {
-					request.setCharacterEncoding("UTF-8");   
-					response.setCharacterEncoding("UTF-8"); 
-					if("L".equals(activeCode)) {
-						response.getWriter().write("<script> alert('계정이 잠금 상태입니다. 관리자에게 문의해주세요.'); </script>");
-					}else if("I".equals(activeCode)){
-						response.getWriter().write("<script> alert('계정이 비활성화 상태입니다. 관리자에게 문의해주세요.'); </script>");
+					switch (maybeActSt.get()) {
+						case Constant.INACTIVE:
+							response.getWriter().write("<script> alert('계정이 비활성화 상태입니다. 관리자에게 문의해주세요.'); </script>");
+							break;
+						
+						case Constant.LOCK:
+							response.getWriter().write("<script> alert('계정이 잠금 상태입니다. 관리자에게 문의해주세요.'); </script>"); 
+							break;
 					}
 					response.getWriter().flush();
 					mv.setViewName("login/login");
-				} 
-				
-			}else {
-				
-				String increateFailCountAndResult = loginservice.increateFailCountAndResult(param);
-				
-				request.setCharacterEncoding("UTF-8");   
-				response.setCharacterEncoding("UTF-8"); 
-				if("A".equals(increateFailCountAndResult)) {
-					response.getWriter().write("<script> alert('아이디와 비밀번호를 다시 한 번 확인해주세요.'); </script>");
-				}else if("I".equals(increateFailCountAndResult)){
-					response.getWriter().write("<script> alert('계정이 비활성화 상태입니다. 관리자에게 문의해주세요.'); </script>");
-				}else if("L".equals(increateFailCountAndResult)) {
-					response.getWriter().write("<script> alert('계정이 잠금 상태입니다. 관리자에게 문의해주세요.'); </script>");
 				}
+			}else{
+				// 로그인 실패시, 실패 횟수 증가
+				maybeLoginFailInfo = Optional.ofNullable(loginservice.increaseFailCount(param));
+				
+				StringBuffer message = new StringBuffer("<script>alert('");
+				
+				if(maybeLoginFailInfo.isPresent()) {
+					
+					String actSt   = maybeLoginFailInfo.get().get("ACT_ST").toString();
+					int pwdFailCnt = Integer.parseInt(maybeLoginFailInfo.get().get("PWD_FAIL_CNT").toString());
+					
+					switch (actSt) {
+						case Constant.LOCK :
+							message.append("계정이 잠금 상태입니다. 관리자에게 문의해주세요.");
+							break;
+							
+						case Constant.INACTIVE :
+							message.append("계정이 비활성화 상태입니다. 관리자에게 문의해주세요.");
+							break;
+							
+						case Constant.ACTIVE : 
+							message.append("아이디와 비밀번호를 다시 한 번 확인해주세요. (총 ");
+							message.append(Constant.PWD_FAIL_CNT);
+							message.append("회이상 잘못 입력시 계정이 잠금 상태로 전환, 현재까지 시도 회수 : ");
+							message.append(pwdFailCnt);
+							break;
+							
+						default :
+							message.append("아이디와 비밀번호를 다시 한 번 확인해주세요.");
+							break;
+							
+					}
+				
+				}else{
+					message.append("아이디와 비밀번호를 다시 한 번 확인해주세요.");
+				}
+				message.append("');</script>");
+				response.getWriter().write(message.toString());
 				response.getWriter().flush();
 				mv.setViewName("login/login");
 			}
-			
 		}catch (Exception e) {
 			e.printStackTrace();
 			mv.setViewName("login/login");
 		}
-		
 		return mv;
 	}
 	

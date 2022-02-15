@@ -93,10 +93,10 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public String increateFailCountAndResult(HashMap<String, Object> param) throws Exception {
-		loginMapper.increateFailCount(param);
-		String result = loginMapper.getActiveStatus(param);
-		return result;
+	public HashMap<String, Object> increaseFailCount(HashMap<String, Object> param) throws Exception {
+		 loginMapper.increaseFailCount(param);
+		 HashMap<String, Object> result = loginMapper.getStatusAndFailureCnt(param);
+		 return result; 
 	}
 
 }

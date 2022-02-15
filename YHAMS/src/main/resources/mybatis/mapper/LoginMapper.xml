@@ -63,7 +63,10 @@
 		        TMU.USER_NM_EN,
 		        TMU.USER_EMAIL,
 		        GROUP_CONCAT(TMURM.ROLE_ID) AS ROLE_ID,
-		        TMR.ROLE_NM
+		        TMR.ROLE_NM,
+		        TMU.ACT_ST,
+		        TMU.LAST_LOGIN_DATE,
+		        TMU.PWD_FAIL_CNT
 		        
 			FROM TB_META_USER TMU
 			
@@ -76,6 +79,7 @@
 			ON TMURM.ROLE_ID = TMR.ROLE_ID
 			
 			WHERE TMU.USER_ID = #{USER_ID}
+			AND   USER_PW     = #{USER_PW}
 			
     </select>
     
@@ -158,22 +162,35 @@
     <update id="updateLastLoginTime" parameterType="java.util.HashMap"> 
     	
     	UPDATE TB_META_USER
-		SET    LAST_LOGIN_DATE = NOW()
-		WHERE  USER_ID = #{USER_ID}
+		SET    LAST_LOGIN_DATE = NOW(),
+		       PWD_FAIL_CNT    = 0
+		WHERE  USER_ID         = #{USER_ID}
     
     </update>
     
     
-    <update id="increateFailCount" parameterType="java.util.HashMap">
+    <update id="increaseFailCount" parameterType="java.util.HashMap">
     
          UPDATE TB_META_USER
+         
          SET   PWD_FAIL_CNT = PWD_FAIL_CNT + 1,
-               ACT_ST       = (CASE WHEN PWD_FAIL_CNT >= 5 AND ACT_ST = 'A' THEN 'L'
+               ACT_ST       = (CASE WHEN PWD_FAIL_CNT >= #{PWD_FAIL_CNT} AND ACT_ST = 'A' THEN 'L'
                                     ELSE ACT_ST
                                     END   
                				   )
          WHERE USER_ID      = #{USER_ID}
     
     </update>
+    
+    <select id="getStatusAndFailureCnt" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+    
+    	   SELECT  PWD_FAIL_CNT,
+	               ACT_ST
+	          
+	          FROM TB_META_USER
+	         
+	         WHERE USER_ID = #{USER_ID}
+	         
+    </select>
 
 </mapper>

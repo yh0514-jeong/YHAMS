@@ -26,7 +26,7 @@ import com.yhams.common.CommonService;
 import com.yhams.exception.StdYearNotFoundException;
 import com.yhams.exception.YearlyPlanNotDefinedException;
 import com.yhams.log.LogService;
-import com.yhams.util.CommonContraint;
+import com.yhams.util.Constant;
 import com.yhams.util.PagingUtil;
 
 @Controller
@@ -138,10 +138,10 @@ public class ExpendController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  CommonContraint.SUCCEESS);
+			result.put("resultCode",  Constant.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  CommonContraint.FAIL);
+			result.put("resultCode",  Constant.FAIL);
 		}
 		return result;
 	}
@@ -161,9 +161,9 @@ public class ExpendController {
 		try {
 			result = expendService.saveDepWithdralList(param);
 			if(result >= 0) {
-				map.put("result", CommonContraint.SUCCEESS);
+				map.put("result", Constant.SUCCEESS);
 			}else {
-				map.put("result", CommonContraint.FAIL);
+				map.put("result", Constant.FAIL);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -189,9 +189,9 @@ public class ExpendController {
 			r = expendService.deleteDepWithdrawalList(param);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
-		result.put("result", CommonContraint.SUCCEESS);
+		result.put("result", Constant.SUCCEESS);
 		return result;
 	}
 	
@@ -265,9 +265,9 @@ public class ExpendController {
 			r = expendService.updateDepWithdrawl(param);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
-		result.put("result", CommonContraint.SUCCEESS);
+		result.put("result", Constant.SUCCEESS);
 		return result;
 	}
 	
@@ -333,7 +333,7 @@ public class ExpendController {
 			isExist = expendService.chkDupYearMonth(param);
 			result.put("isExist", isExist);
 		}catch (Exception e) {
-			result.put("result", CommonContraint.FAIL);
+			result.put("result", Constant.FAIL);
 		}
 		return result;
 	}
@@ -364,12 +364,12 @@ public class ExpendController {
 				}else {
 					result.put("isExist", false);
 				}
-				result.put("resultCode", CommonContraint.SUCCEESS);
+				result.put("resultCode", Constant.SUCCEESS);
 			}else{
 				throw new StdYearNotFoundException(maybeStdYearMonth.toString());
 			}
 		}catch (Exception e) {
-			result.put("resultCode", CommonContraint.FAIL);
+			result.put("resultCode", Constant.FAIL);
 		}
 		
 		return result;
@@ -405,7 +405,7 @@ public class ExpendController {
 					result.put("existYearlyPlanAmount", existYearlyPlanAmount);
 				}
 				result.put("existYearlyPlanCount", existYearlyPlanCount);
-				result.put("resultCode", CommonContraint.SUCCEESS);
+				result.put("resultCode", Constant.SUCCEESS);
 				
 			}else{
 				throw new StdYearNotFoundException(maybeStdYearMonth.toString());
@@ -413,7 +413,7 @@ public class ExpendController {
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode", CommonContraint.FAIL);
+			result.put("resultCode", Constant.FAIL);
 		}
 		
 		return result;
@@ -435,14 +435,14 @@ public class ExpendController {
 			param.put("USER_SEQ", session.getAttribute("USER_SEQ"));
 			int r = expendService.saveDailyExpendPlanList(param);
 			if(r > -1){
-				result.put("resultCode", CommonContraint.SUCCEESS);
+				result.put("resultCode", Constant.SUCCEESS);
 			}else{
-				result.put("resultCode", CommonContraint.FAIL);
+				result.put("resultCode", Constant.FAIL);
 			}
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode", CommonContraint.FAIL);
+			result.put("resultCode", Constant.FAIL);
 		}
 		
 		return result;
@@ -480,10 +480,10 @@ public class ExpendController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  CommonContraint.SUCCEESS);
+			result.put("resultCode",  Constant.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  CommonContraint.FAIL);
+			result.put("resultCode",  Constant.FAIL);
 		}
 		return result;
 	}
@@ -503,10 +503,10 @@ public class ExpendController {
 			if(r == -1) {
 				throw new Exception();
 			}
-			result.put("resultCode",  CommonContraint.SUCCEESS);
+			result.put("resultCode",  Constant.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  CommonContraint.FAIL);
+			result.put("resultCode",  Constant.FAIL);
 		}
 		return result;
 	}
