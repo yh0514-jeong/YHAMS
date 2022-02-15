@@ -3,6 +3,7 @@ package com.yhams.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -39,4 +40,8 @@ public class MvcConfiguration implements WebMvcConfigurer {
 		return messageSource;
 	}
 	
+	@Bean
+	public MessageSourceAccessor messageSourceAccessor() {
+		return new MessageSourceAccessor(messageSource());
+	}
 }

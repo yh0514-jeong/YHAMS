@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.yhams.common.CommonService;
 import com.yhams.log.LogService;
-import com.yhams.util.Constant;
+import com.yhams.util.Constants;
 import com.yhams.util.Encryption;
 import com.yhams.util.PagingUtil;
 
@@ -70,10 +70,10 @@ public class UserController {
 			result.put("block", block);
 			result.put("total", total);
 			result.put("list",  list);
-			result.put("resultCode",  Constant.SUCCEESS);
+			result.put("resultCode",  Constants.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  Constant.FAIL);
+			result.put("resultCode",  Constants.FAIL);
 		}
 		
 		return result;
@@ -143,9 +143,9 @@ public class UserController {
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("result", Constant.FAIL);
+			result.put("result", Constants.FAIL);
 		}
-		result.put("result", Constant.SUCCEESS);
+		result.put("result", Constants.SUCCEESS);
 		return result;
 	}
 	
@@ -168,10 +168,10 @@ public class UserController {
 		try {
 			list  = userService.getUserList(param);
 			result.put("list",  list);
-			result.put("resultCode",  Constant.SUCCEESS);
+			result.put("resultCode",  Constants.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  Constant.FAIL);
+			result.put("resultCode",  Constants.FAIL);
 		}
 		
 		return result;
@@ -196,10 +196,10 @@ public class UserController {
 			logger.info("/initPwd param.toString()==>" + param.toString());
 			userService.initPwd(param);
 			result.put("initPwd",  tmpPw);
-			result.put("resultCode",  Constant.SUCCEESS);
+			result.put("resultCode",  Constants.SUCCEESS);
 		}catch (Exception e) {
 			e.printStackTrace();
-			result.put("resultCode",  Constant.FAIL);
+			result.put("resultCode",  Constants.FAIL);
 		}
 		
 		return result;

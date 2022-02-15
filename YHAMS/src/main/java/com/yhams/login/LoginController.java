@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.yhams.common.CommonService;
 import com.yhams.exception.SaveUserInfoException;
-import com.yhams.util.Constant;
+import com.yhams.util.Constants;
 import com.yhams.util.Encryption;
 
 @Controller
@@ -34,7 +34,7 @@ public class LoginController {
 	private LoginService loginservice;
 	
 	@Autowired
-	private CommonService commonService;
+	private MessageSourceAccessor messageSourceAccessor;
 	
 	@RequestMapping(value = "/main")
 	public ModelAndView main() {
@@ -92,9 +92,9 @@ public class LoginController {
 		try {
 			res = loginservice.insertUser(param);
 			if(res == -1) throw new SaveUserInfoException(param.get("USER_ID").toString());
-			result.put("resultcode", Constant.SUCCEESS);
+			result.put("resultcode", Constants.SUCCEESS);
 		}catch (Exception e) {
-			result.put("resultcode", Constant.FAIL);
+			result.put("resultcode", Constants.FAIL);
 			e.printStackTrace();
 		}
 		return result;
@@ -118,7 +118,7 @@ public class LoginController {
 		
 		try {
 			param.put("USER_PW", Encryption.encryptPassword(param.get("USER_PW").toString()));
-			param.put("PWD_FAIL_CNT", Constant.PWD_FAIL_CNT);
+			param.put("PWD_FAIL_CNT", Constants.PWD_FAIL_CNT);
 			log.info("loginCheck Invoked... input userInfo : {}", param.toString());
 
 			
@@ -130,7 +130,7 @@ public class LoginController {
 			response.setCharacterEncoding("UTF-8"); 
 			
 			if(userInfo.isPresent()) {
-				if(Constant.ACTIVE.equals(maybeActSt.get())) {
+				if(Constants.ACTIVE.equals(maybeActSt.get())) {
 					loginservice.updateLastLoginTime(userInfo.get());
 					 
 					 session.setAttribute("USER_SEQ",      userInfo.get().get("USER_SEQ"));
@@ -145,15 +145,21 @@ public class LoginController {
 					 mv.setViewName("/main");
 				
 				}else {
+					
+					StringBuffer message = new StringBuffer("<script>alert('");
+					
 					switch (maybeActSt.get()) {
-						case Constant.INACTIVE:
-							response.getWriter().write("<script> alert('계정이 비활성화 상태입니다. 관리자에게 문의해주세요.'); </script>");
+						case Constants.INACTIVE:
+							message.append(messageSourceAccessor.getMessage("login.status.inactive"));    // 계정이 비활성화 상태입니다. 관리자에게 문의해주세요.
 							break;
 						
-						case Constant.LOCK:
-							response.getWriter().write("<script> alert('계정이 잠금 상태입니다. 관리자에게 문의해주세요.'); </script>"); 
+						case Constants.LOCK:
+							message.append(messageSourceAccessor.getMessage("login.status.chkIdAndPwd"));  // 계정이 잠금 상태입니다. 관리자에게 문의해주세요.
 							break;
 					}
+					
+					message.append("');</script>");
+					response.getWriter().write(message.toString());
 					response.getWriter().flush();
 					mv.setViewName("login/login");
 				}
@@ -169,29 +175,29 @@ public class LoginController {
 					int pwdFailCnt = Integer.parseInt(maybeLoginFailInfo.get().get("PWD_FAIL_CNT").toString());
 					
 					switch (actSt) {
-						case Constant.LOCK :
-							message.append("계정이 잠금 상태입니다. 관리자에게 문의해주세요.");
+						case Constants.LOCK :
+							message.append(messageSourceAccessor.getMessage("login.status.chkIdAndPwd"));  // 계정이 잠금 상태입니다. 관리자에게 문의해주세요.
 							break;
 							
-						case Constant.INACTIVE :
-							message.append("계정이 비활성화 상태입니다. 관리자에게 문의해주세요.");
+						case Constants.INACTIVE :
+							message.append(messageSourceAccessor.getMessage("login.status.inactive"));    // 계정이 비활성화 상태입니다. 관리자에게 문의해주세요.
 							break;
 							
-						case Constant.ACTIVE : 
-							message.append("아이디와 비밀번호를 다시 한 번 확인해주세요. (총 ");
-							message.append(Constant.PWD_FAIL_CNT);
-							message.append("회이상 잘못 입력시 계정이 잠금 상태로 전환, 현재까지 시도 회수 : ");
+						case Constants.ACTIVE : 
+							message.append(messageSourceAccessor.getMessage("login.status.chkIdAndPwd.prefix"));  // 아이디와 비밀번호를 다시 한 번 확인해주세요. (총
+							message.append(Constants.PWD_FAIL_CNT);
+							message.append(messageSourceAccessor.getMessage("login.status.chkIdAndPwd.suffix"));  // 회이상 잘못 입력시 계정이 잠금 상태로 전환, 현재까지 시도 회수 : 
 							message.append(pwdFailCnt);
 							break;
 							
 						default :
-							message.append("아이디와 비밀번호를 다시 한 번 확인해주세요.");
+							message.append(messageSourceAccessor.getMessage("login.status.chkIdAndPwd"));    // 아이디와 비밀번호를 다시 한 번 확인해주세요.
 							break;
 							
 					}
 				
 				}else{
-					message.append("아이디와 비밀번호를 다시 한 번 확인해주세요.");
+					message.append(messageSourceAccessor.getMessage("login.status.chkIdAndPwd"));    // 아이디와 비밀번호를 다시 한 번 확인해주세요
 				}
 				message.append("');</script>");
 				response.getWriter().write(message.toString());
