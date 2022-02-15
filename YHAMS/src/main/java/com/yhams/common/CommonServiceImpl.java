@@ -14,31 +14,31 @@ public class CommonServiceImpl implements CommonService {
 	private static final Logger log = LoggerFactory.getLogger(CommonServiceImpl.class);
 
 	@Autowired
-	CommonMapper mapper;
+	private CommonMapper commonMapper;
 
 	@Override
 	public String getUserNextSeq() throws Exception {
-		return mapper.getUserNextSeq();
+		return commonMapper.getUserNextSeq();
 	}
 
 	@Override
 	public String getNextCodeId() throws Exception {
-		return mapper.getNextCodeId();
+		return commonMapper.getNextCodeId();
 	}
 	
 	@Override
 	public String getNextRoleId() throws Exception {
-		return mapper.getNextRoleId();
+		return commonMapper.getNextRoleId();
 	}
 	
 	@Override
 	public String getNextMenuId() throws Exception {
-		return mapper.getNextMenuId();
+		return commonMapper.getNextMenuId();
 	}
 	
 	@Override
 	public long getNextActLogSeq() throws Exception {
-		return mapper.getNextActLogSeq();
+		return commonMapper.getNextActLogSeq();
 	}
 
 	@Override
@@ -47,17 +47,17 @@ public class CommonServiceImpl implements CommonService {
 		param.put("codeGrp", codeGrp);
 		param.put("useYn", useYn);
 		log.info("getCgList param : {}", param.toString());
-		return mapper.getCgList(param);
+		return commonMapper.getCgList(param);
 	}
 
 	@Override
 	public String getNextAccountCd() throws Exception {
-		return mapper.getNextAccountCd();
+		return commonMapper.getNextAccountCd();
 	}
 
 	@Override
 	public String getNextUedSeq() throws Exception {
-		return mapper.getNextUedSeq();
+		return commonMapper.getNextUedSeq();
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class CommonServiceImpl implements CommonService {
 		param.put("parCode", parCode);
 		param.put("useYn", useYn);
 		log.info("getCgListByParCode param : {}", param.toString());
-		return mapper.getCgListByParCode(param);
+		return commonMapper.getCgListByParCode(param);
 	}
 
 }

@@ -20,7 +20,6 @@ public class Encryption {
 		}catch(NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		
 		return encrypted;
 	}
 

@@ -78,7 +78,6 @@ public class DashboardController {
 			e.printStackTrace();
 		}
 		
-		
 		return result;
 	}
 	

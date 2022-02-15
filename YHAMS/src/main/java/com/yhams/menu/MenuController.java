@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,16 +30,16 @@ import com.yhams.util.StringUtil;
 @RequestMapping("/menu")
 public class MenuController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MenuController.class);
+	private static final Logger log = LoggerFactory.getLogger(MenuController.class);
 
 	@Autowired
-	MenuService menuService;
+	private MenuService menuService;
 	
 	@Autowired
-	CommonService commonService;
+	private CommonService commonService;
 	
 	@Autowired
-	LogService logService;
+	private LogService logService;
 	
 	@RequestMapping(value = "/menuManageMain")
 	public ModelAndView main() {
@@ -46,7 +48,7 @@ public class MenuController {
 		return mv;
 	}
 	
-	@RequestMapping(value = "/menuListUp", method = RequestMethod.GET)
+	@GetMapping(value = "/menuListUp")
 	@ResponseBody
 	public HashMap<String, Object> menuListUp(@RequestParam HashMap<String, Object> param, 
 			                                                HttpSession session,
@@ -88,7 +90,7 @@ public class MenuController {
 		
 		logService.insertUserActLog(request, session);
 		
-		logger.info("/menuUpdate MENU_ID=>" + MENU_ID);
+		log.info("/menuUpdate MENU_ID=>" + MENU_ID);
 		
 		ModelAndView mv               = new ModelAndView();
 		HashMap<String, Object> r     = new HashMap<String, Object>();
@@ -120,7 +122,7 @@ public class MenuController {
 	
 	
 	
-	@RequestMapping(value = "/updateMenu", method = RequestMethod.POST)
+	@PostMapping(value = "/updateMenu")
 	@ResponseBody
 	public HashMap<String, Object> updateMenu(@RequestParam HashMap<String, Object> param, 
 			                                     HttpSession session,
@@ -131,7 +133,7 @@ public class MenuController {
 		
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		
-		logger.info("/updateMenu, param.toString()==>" + param.toString());
+		log.info("/updateMenu, param.toString()==>" + param.toString());
 		int r = 0;
 		try {
 			param.put("CREATE_ID", session.getAttribute("USER_SEQ"));

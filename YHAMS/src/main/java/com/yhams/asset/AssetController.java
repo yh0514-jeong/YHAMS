@@ -34,13 +34,13 @@ public class AssetController {
 	private static final Logger log = LoggerFactory.getLogger(AssetController.class);
 	
 	@Autowired
-	AssetService assetService;
+	private AssetService assetService;
 	
 	@Autowired
-	LogService logService;
+	private LogService logService;
 	
 	@Autowired
-	CommonService commonService;
+	private CommonService commonService;
 	
 	@RequestMapping(value = "/accountManageMain")
 	public ModelAndView accountManageMain() {
@@ -214,7 +214,7 @@ public class AssetController {
 	
 	
 	
-	@RequestMapping(value = "/unearnedList", method = RequestMethod.GET)
+	@GetMapping(value = "/unearnedList")
 	@ResponseBody
 	public HashMap<String, Object> unearnedList(@RequestParam   HashMap<String, Object> param, 
 											                    HttpSession session,
@@ -251,7 +251,7 @@ public class AssetController {
 	}
 	
 	
-	@RequestMapping(value = "/uedCtgList", method = RequestMethod.GET)
+	@GetMapping(value = "/uedCtgList")
 	@ResponseBody
 	public ArrayList<HashMap<String, Object>> uedCtgList(HttpSession session,
 														 HttpServletRequest  request,
@@ -267,7 +267,7 @@ public class AssetController {
 	}
 	
 	
-	@RequestMapping(value = "/saveUnearnedList", method = RequestMethod.POST)
+	@PostMapping(value = "/saveUnearnedList")
 	@ResponseBody
 	public HashMap<String, Object> saveUnearnedList( @RequestParam(required = true) HashMap<String, Object> param,
 												     HttpSession session,
@@ -322,7 +322,7 @@ public class AssetController {
 
 	
 	
-	@RequestMapping(value = "/updateUnearned", method = RequestMethod.POST)
+	@PostMapping(value = "/updateUnearned")
 	@ResponseBody
 	public HashMap<String, Object> updateUnearned(@RequestParam HashMap<String, Object> param, 
 			                                      HttpSession session,
@@ -343,7 +343,7 @@ public class AssetController {
 	}
 	
 	
-	@RequestMapping(value = "/deleteUnearedList", method = RequestMethod.POST)
+	@PostMapping(value = "/deleteUnearedList")
 	@ResponseBody
 	public HashMap<String, Object> deleteUnearedList(@RequestParam HashMap<String, Object> param, 
 			                                      HttpSession session,
@@ -421,7 +421,7 @@ public class AssetController {
 	}
 	
 	
-	@RequestMapping(value = "/payDeducDtlList", method = RequestMethod.GET)
+	@GetMapping(value = "/payDeducDtlList")
 	@ResponseBody
 	public ArrayList<HashMap<String, Object>> payDeducDtlList(@RequestParam(required = true) HashMap<String, Object> param,
 													          HttpSession session,
@@ -447,7 +447,7 @@ public class AssetController {
 	}
 	
 	
-	@RequestMapping(value = "/saveSalaryList", method = RequestMethod.POST)
+	@PostMapping(value = "/saveSalaryList")
 	@ResponseBody
 	public HashMap<String, Object> saveSalaryList( @RequestParam(required = true) HashMap<String, Object> param,
 												   HttpSession session,
@@ -472,7 +472,7 @@ public class AssetController {
 	}
 	
 	
-	@RequestMapping(value = "/salaryList", method = RequestMethod.GET)
+	@GetMapping(value = "/salaryList")
 	@ResponseBody
 	public HashMap<String, Object> salaryList(@RequestParam    HashMap<String, Object> param, 
 											                   HttpSession session,
@@ -508,7 +508,7 @@ public class AssetController {
 	
 	
 	
-	@RequestMapping(value = "/callLastSalary", method = RequestMethod.GET)
+	@GetMapping(value = "/callLastSalary")
 	@SuppressWarnings("all")
 	@ResponseBody
 	public HashMap<String, Object> callLastSalary(HttpSession session,
@@ -551,7 +551,7 @@ public class AssetController {
 	}
 	
 	
-	@RequestMapping(value = "/dupChkSalMonth", method = RequestMethod.GET)
+	@GetMapping(value = "/dupChkSalMonth")
 	@SuppressWarnings("all")
 	@ResponseBody
 	public HashMap<String, Object> dupChkSalMonth(@RequestParam(required = true) HashMap<String, Object> param,
@@ -624,9 +624,7 @@ public class AssetController {
 			mv.addObject("nav", "연자산계획 수정");
 			
 		}else {
-			
 			mv.addObject("nav", "연자산계획 등록");
-		
 		}
 		
 		mv.setViewName("asset/yearlyAssetPlan/yearlyAssetPlanUpdate");
@@ -773,7 +771,7 @@ public class AssetController {
 				result.put("resultCode", Constants.FAIL);
 			}
 		}catch (Exception e) {
-			result.put("result", Constants.FAIL);
+			result.put("resultCode", Constants.FAIL);
 			e.printStackTrace();
 		}
 		return result;

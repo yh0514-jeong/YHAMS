@@ -36,13 +36,13 @@ public class ExpendController {
 	private static final Logger log = LoggerFactory.getLogger(ExpendController.class);
 	
 	@Autowired
-	ExpendService expendService;
+	private ExpendService expendService;
 	
 	@Autowired
-	LogService logService;
+	private LogService logService;
 	
 	@Autowired
-	CommonService commonService;
+	private CommonService commonService;
 	
 	
 	@RequestMapping(value = "/dailyExpendPlan")

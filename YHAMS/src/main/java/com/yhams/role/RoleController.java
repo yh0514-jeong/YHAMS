@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,19 +30,19 @@ import com.yhams.util.PagingUtil;
 @RequestMapping(value = "/role")
 public class RoleController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(RoleController.class);
+	private static final Logger log = LoggerFactory.getLogger(RoleController.class);
 	
 	@Autowired
-	RoleService roleservice;
+	private RoleService roleservice;
 	
 	@Autowired
-	CommonService commonService;
+	private CommonService commonService;
 	
 	@Autowired
-	MenuService menuService;
+	private MenuService menuService;
 	
 	@Autowired
-	LogService logService;
+	private LogService logService;
 	
 	@RequestMapping(value = "/roleManageMain")
 	public ModelAndView main() {
@@ -50,7 +52,7 @@ public class RoleController {
 	}
 	
 	
-	@RequestMapping(value = "/roleListUp", method = RequestMethod.GET)
+	@GetMapping(value = "/roleListUp")
 	@ResponseBody
 	public HashMap<String, Object> roleListUp(@RequestParam HashMap<String, Object> param,
 			                                                HttpSession session,
@@ -62,7 +64,7 @@ public class RoleController {
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 		
-		logger.info("roleListUp param.toString()==>" + param.toString());
+		log.info("roleListUp param.toString()==>" + param.toString());
 		
 		long total       = 0;
 		int cntPerPage   = param.get("cntPerPage") == null ? 10 : Integer.parseInt(param.get("cntPerPage").toString());
@@ -94,7 +96,7 @@ public class RoleController {
 		
 		logService.insertUserActLog(request, session);
 		
-		logger.info("/roleUpdate ==> ROLE_ID " +  ROLE_ID);
+		log.info("/roleUpdate ==> ROLE_ID " +  ROLE_ID);
 		
 		ModelAndView mv                = new ModelAndView();
 		HashMap<String, Object> result = new HashMap<String, Object>();
@@ -111,7 +113,7 @@ public class RoleController {
 			if(ROLE_ID != null && ROLE_ID != "undefined" && ROLE_ID != "") {
 				param.put("ROLE_ID", ROLE_ID);
 				result = roleservice.selectRole(param);
-				logger.info("result==>" + result.toString());
+				log.info("result==>" + result.toString());
 				mv.addObject("ROLE_ID", ROLE_ID);
 				mv.addObject("result" , result);
 				mv.addObject("nav"    , "권한 수정");
@@ -134,7 +136,7 @@ public class RoleController {
 	
 	
 	
-	@RequestMapping(value = "/updateRole", method = RequestMethod.POST)
+	@PostMapping(value = "/updateRole")
 	@ResponseBody
 	public HashMap<String, Object> updateRole(@RequestParam HashMap<String, Object> param, 
 			                                     HttpSession session,
@@ -206,8 +208,7 @@ public class RoleController {
 	}
 	
 	
-	@RequestMapping(value = "/updateRoleMenuMap", method = RequestMethod.POST)
-	@ResponseBody
+	@PostMapping(value = "/updateRoleMenuMap")
 	public HashMap<String, Object> updateRoleMenuMap(@RequestParam HashMap<String, Object> param,
 													  HttpSession session,
 													  HttpServletRequest  request,
@@ -266,7 +267,7 @@ public class RoleController {
 	}
 	
 	
-	@RequestMapping(value = "/updateRoleUserMap", method = RequestMethod.POST)
+	@PostMapping(value = "/updateRoleUserMap")
 	@ResponseBody
 	public HashMap<String, Object> updateRoleUserMap(@RequestParam HashMap<String, Object> param,
 													  HttpSession session,

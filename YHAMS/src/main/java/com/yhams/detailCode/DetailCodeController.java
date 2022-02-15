@@ -29,19 +29,19 @@ import com.yhams.util.StringUtil;
 @RequestMapping("/dtlCode")
 public class DetailCodeController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(DetailCodeController.class);
+	private static final Logger log = LoggerFactory.getLogger(DetailCodeController.class);
 	
 	@Autowired
-	DetailCodeService dtlCodeService;
+	private DetailCodeService dtlCodeService;
 	
 	@Autowired
-	CommonService commonService;
+	private CommonService commonService;
 	
 	@Autowired
-	ComCodeService comCodeService;
+	private ComCodeService comCodeService;
 	
 	@Autowired
-	LogService logService;
+	private LogService logService;
 	
 	
 	@RequestMapping(value = "/dtlCodeManageMain")
@@ -67,8 +67,6 @@ public class DetailCodeController {
 		ArrayList<HashMap<String, Object>> comCodeList = new ArrayList<HashMap<String,Object>>();
 		
 		HashMap<String, Object> param = new HashMap<String, Object>();
-		HashMap<String, Object> cdListParam = new HashMap<String, Object>();
-		
 		
 		try {
 			comCodeList   = comCodeService.getComCodeUseList();
@@ -105,7 +103,7 @@ public class DetailCodeController {
 		
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		
-		logger.info("/updateDtlCode, param.toString()==>" + param.toString());
+		log.info("/updateDtlCode, param.toString()==>" + param.toString());
 		int r = 0;
 		try {
 			param.put("CREATE_ID", session.getAttribute("USER_SEQ"));

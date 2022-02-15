@@ -12,8 +12,9 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,16 +29,16 @@ import com.yhams.util.PagingUtil;
 @RequestMapping("/user")
 public class UserController {
 	
-	private Logger logger = Logger.getLogger(this.getClass());
+	private Logger log = Logger.getLogger(this.getClass());
 	
 	@Autowired
-	UserService userService;
+	private UserService userService;
 	
 	@Autowired
-	CommonService commonService;
+	private CommonService commonService;
 	
 	@Autowired
-	LogService logService;
+	private LogService logService;
 	
 	@RequestMapping(value = "/userManageMain")
 	public ModelAndView main() {
@@ -46,7 +47,7 @@ public class UserController {
 		return mv;
 	}
 	
-	@RequestMapping(value = "/userListUp", method = RequestMethod.GET)
+	@GetMapping(value = "/userListUp")
 	@ResponseBody
 	public HashMap<String, Object> userListUp(@RequestParam HashMap<String, Object> param, 
 			                                                HttpSession session,
@@ -88,7 +89,7 @@ public class UserController {
 		
 		logService.insertUserActLog(request, session);
 		
-		logger.info("/userUpdate USER_SEQ=>" + USER_SEQ);
+		log.info("/userUpdate USER_SEQ=>" + USER_SEQ);
 		
 		ModelAndView mv               = new ModelAndView();
 		HashMap<String, Object> r     = new HashMap<String, Object>();
@@ -119,7 +120,7 @@ public class UserController {
 	
 	
 	
-	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
+	@PostMapping(value = "/updateUser")
 	@ResponseBody
 	public HashMap<String, Object> updateUser(@RequestParam HashMap<String, Object> param, 
 			                                     HttpSession session,
@@ -150,7 +151,7 @@ public class UserController {
 	}
 	
 	
-	@RequestMapping(value = "/getUserList", method = RequestMethod.GET)
+	@GetMapping(value = "/getUserList")
 	@ResponseBody
 	public HashMap<String, Object> getUserList(@RequestParam HashMap<String, Object> param, 
 			                                                   HttpSession session,
@@ -162,8 +163,8 @@ public class UserController {
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 		
-		logger.info("param==>" + param.toString());
-		logger.info(request.getRequestURL());
+		log.info("param==>" + param.toString());
+		log.info(request.getRequestURL());
 		
 		try {
 			list  = userService.getUserList(param);
@@ -178,7 +179,7 @@ public class UserController {
 	}
 	
 	
-	@RequestMapping(value = "/initPwd", method = RequestMethod.GET)
+	@GetMapping(value = "/initPwd")
 	@ResponseBody
 	public HashMap<String, Object> initPwd(@RequestParam HashMap<String, Object> param, 
 		                                                 HttpSession session,
@@ -193,7 +194,7 @@ public class UserController {
 		try {
 			tmpPw = UUID.randomUUID().toString().split("-")[0];
 			param.put("USER_PW", Encryption.encryptPassword(tmpPw));
-			logger.info("/initPwd param.toString()==>" + param.toString());
+			log.info("/initPwd param.toString()==>" + param.toString());
 			userService.initPwd(param);
 			result.put("initPwd",  tmpPw);
 			result.put("resultCode",  Constants.SUCCEESS);

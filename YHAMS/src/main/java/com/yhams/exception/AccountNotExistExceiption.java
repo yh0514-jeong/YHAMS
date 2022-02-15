@@ -1,10 +1,10 @@
 package com.yhams.exception;
 
-public class AccoutnNotExistExceiption extends RuntimeException{
+public class AccountNotExistExceiption extends RuntimeException{
 	
 	private static final long serialVersionUID = -3563027447699525063L;
 
-	public AccoutnNotExistExceiption() {
+	public AccountNotExistExceiption() {
 		  super("Account does not exist");
 	} 
 

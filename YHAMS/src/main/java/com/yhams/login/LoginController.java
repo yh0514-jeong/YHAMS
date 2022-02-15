@@ -83,7 +83,6 @@ public class LoginController {
 	
 	@RequestMapping(value = "/signUpSave", method = RequestMethod.POST)
 	@ResponseBody
-	@SuppressWarnings("unused")
 	public HashMap<String, Object> signUpSave(@RequestParam HashMap<String, Object> param, 
 											  HttpServletRequest request, 
 											  HttpServletResponse response){

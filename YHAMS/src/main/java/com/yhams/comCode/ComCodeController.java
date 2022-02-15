@@ -29,16 +29,16 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/comCode")
 public class ComCodeController {
 	
-	private Logger logger = Logger.getLogger(this.getClass());
+	private Logger log = Logger.getLogger(this.getClass());
 	
 	@Autowired
-	ComCodeService comCodeService;
+	private ComCodeService comCodeService;
 	
 	@Autowired
-	CommonService commonService;
+	private CommonService commonService;
 	
 	@Autowired
-	LogService logService;
+	private LogService logService;
 	
 	
 	@RequestMapping(value = "/comCodeManageMain")
@@ -127,7 +127,7 @@ public class ComCodeController {
 		HashMap<String, Object> result          = new HashMap<String, Object>();
 		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String,Object>>();
 		
-		logger.info("param==>" + param.toString());
+		log.info("param==>" + param.toString());
 		
 		long total       = 0;
 		int cntPerPage   = param.get("cntPerPage") == null ? 10 : Integer.parseInt(param.get("cntPerPage").toString());
